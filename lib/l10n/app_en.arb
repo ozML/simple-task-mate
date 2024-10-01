@@ -1,0 +1,105 @@
+{
+	"buttonStampArrive": "Arrive",
+	"buttonStampLeave": "Leave",
+	"buttonOk" : "Ok",
+	"buttonCancel" : "Cancel",
+	"buttonAdd" : "Add",
+	"buttonSave" : "Save",
+	"buttonApply" : "Apply",
+	"buttonReset" : "Reset",
+	"labelArrive": "Arrive",
+	"labelLeave": "Leave",
+	"labelPresentnessTime" : "Presentness time",
+	"labelWorkingTime" : "Working time",
+	"labelPauseTime" : "Pause time",
+	"labelBookedTime" : "Booked time",
+	"labelRemainingTime" : "Remaining time",
+	"labelMonday" : "Monday",
+	"labelTuesday" : "Tuesday",
+	"labelWednesday" : "Wednesday",
+	"labelThursday" : "Thursday",
+	"labelFriday" : "Friday",
+	"labelSaturday" : "Saturday",
+	"labelSunday" : "Sunday",
+	"labelMondayShort" : "Mon",
+	"labelTuesdayShort" : "Tue",
+	"labelWednesdayShort" : "Wen",
+	"labelThursdayShort" : "Thu",
+	"labelFridayShort" : "Fri",
+	"labelSaturdayShort" : "Sat",
+	"labelSundayShort" : "Sun",
+	"labelWeek" : "Week",
+	"labelStamps" : "Stamps",
+	"labelTasks" : "Tasks",
+	"labelDuration" : "Duration: {time}",
+	"@labelDuration" : {
+		"placeholders" : {
+			"time" : {
+				"type" : "String"
+			}
+		}
+	},
+	"labelSearch" : "Search",
+	"labelSelectedTask" : "Selected task",
+	"labelDescription" : "Description",
+	"labelSearchPlaceholderTaskEntry" : "Enter ref ID or title",
+	"labelAddEntry" : "Add entry",
+	"labelEditEntry" : "Edit entry",
+	"labelNewTask" : "New task",
+	"labelTaskRefId" : "Reference ID",
+	"labelTaskTitle" : "Task title",
+	"labelTaskInfo" : "Task description",
+	"labelTaskEntryInfo" : "Description",
+	"labelSettings" : "Settings",
+	"labelLanguageGerman" : "German",
+	"labelLanguageEnglish" : "English",
+	"labelViewStamp" : "Stamp",
+	"labelViewTask" : "Task",
+	"labelSettingDatabasePath" : "Database path",
+	"labelSettingStyle" : "Style",
+	"labelSettingLanguage" : "Language",
+	"labelSettingStartView" : "Start view",
+	"dialogTitleStampDelete": "Delete stamp",
+	"dialogInfoStampDelete" : "Stamp \"{type}\" at {time} will be deleted",
+	"@dialogInfoStampDelete" : {
+		"placeholders" : {
+			"type" : {
+				"type" : "String"
+			},
+			"time" : {
+				"type" : "String"
+			}
+		}
+	},
+	"dialogTitleTaskDelete": "Delete task",
+	"dialogInfoTaskDelete" : "Task \n\"{title}\" \nwill be deleted",
+	"@dialogInfoTaskDelete" : {
+		"placeholders" : {
+			"title" : {
+				"type" : "String"
+			}
+		}
+	},
+	"dialogTitleTaskEntryDelete": "Delete task entry",
+	"dialogInfoTaskEntryDelete" : "Task entry with info \"{info}\" will be deleted",
+	"@dialogInfoTaskEntryDelete" : {
+		"placeholders" : {
+			"info" : {
+				"type" : "String"
+			}
+		}
+	},
+	"dialogTitleTaskEntryDeleteAll": "Delete all task entries",
+	"dialogInfoTaskEntryDeleteAll" : "All entries of \n\"{title}\" \nfor this day will be deleted",
+	"@dialogInfoTaskEntryDeleteAll" : {
+		"placeholders" : {
+			"title" : {
+				"type" : "String"
+			}
+		}
+	},
+	"dialogTitleRestart": "Restart required",
+	"dialogInfoRestart" : "Changes require restart.\nApply now?",
+	"dialogTitleResetSettings": "Reset settings",
+	"dialogInfoResetSettings" : "The settings will be set back to default. \nRestart required for the changes to take effect."
+}

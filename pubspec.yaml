@@ -1,0 +1,34 @@
+name: simple_task_mate
+description: "A new Flutter project."
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.4.3 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  intl: ^0.19.0
+  provider: ^6.1.2
+  equatable: ^2.0.5
+  collection: ^1.18.0
+  sqflite_common_ffi: ^2.3.3
+  properties: ^2.1.1
+  async: ^2.11.0
+  file_picker: ^8.1.2
+  flutter_localizations:
+    sdk: flutter
+  package_info_plus: ^8.0.3
+  font_awesome_flutter: ^10.7.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true
