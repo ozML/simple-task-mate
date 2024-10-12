@@ -11,6 +11,7 @@ class TaskSummaryViewer extends StatelessWidget {
   const TaskSummaryViewer({
     required this.summaries,
     this.titleStyle = TitleStyle.header,
+    this.searchText,
     this.onSelect,
     this.onDelete,
     this.onEdit,
@@ -20,6 +21,7 @@ class TaskSummaryViewer extends StatelessWidget {
 
   final List<TaskSummary> summaries;
   final TitleStyle titleStyle;
+  final String? searchText;
   final void Function(TaskSummary summary)? onSelect;
   final void Function(TaskSummary summary)? onDelete;
   final void Function(TaskSummary summary)? onEdit;
@@ -35,6 +37,7 @@ class TaskSummaryViewer extends StatelessWidget {
       title: context.texts.labelTasks,
       titleStyle: titleStyle,
       showSearchField: onSearchTextChanged != null,
+      searchText: searchText,
       searchFieldHintText: context.texts.labelSearchPlaceholderTaskEntry,
       onSelect: onSelect,
       onSearchTextChanged: onSearchTextChanged,

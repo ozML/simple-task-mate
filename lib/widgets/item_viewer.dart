@@ -120,6 +120,7 @@ class ItemListViewer<T> extends StatefulWidget {
     required this.title,
     this.titleStyle = TitleStyle.header,
     this.showSearchField = false,
+    this.searchText,
     this.searchFieldHintText,
     this.onSelect,
     this.onSearchTextChanged,
@@ -135,6 +136,7 @@ class ItemListViewer<T> extends StatefulWidget {
   final String title;
   final TitleStyle titleStyle;
   final bool showSearchField;
+  final String? searchText;
   final String? searchFieldHintText;
   final void Function(T item)? onSelect;
   final void Function(String value)? onSearchTextChanged;
@@ -145,7 +147,9 @@ class ItemListViewer<T> extends StatefulWidget {
 
 class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
   static const _searchDelay = Duration(milliseconds: 500);
-  final _searchTextController = TextEditingController();
+  late final _searchTextController = TextEditingController(
+    text: widget.searchText,
+  );
   RestartableTimer? _searchDelayTimer;
 
   @override

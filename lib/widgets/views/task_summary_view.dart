@@ -218,6 +218,7 @@ class TaskSummaryViewState extends State<TaskSummaryView> {
                     content = TaskSummaryViewer(
                       summaries: value.summaries,
                       titleStyle: TitleStyle.none,
+                      searchText: _searchText,
                       onSelect: (summary) =>
                           value.loadFilledTask(summary.taskId),
                       onDelete: (summary) => confirmDeleteTask(
