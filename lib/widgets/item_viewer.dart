@@ -11,6 +11,7 @@ class ItemTile<T> extends StatefulWidget {
     this.subTitle,
     this.content,
     this.footNote,
+    this.infoIcon,
     this.onSelect,
     this.actions = const [],
     super.key,
@@ -21,6 +22,7 @@ class ItemTile<T> extends StatefulWidget {
   final String? subTitle;
   final Widget? content;
   final String? footNote;
+  final Widget? infoIcon;
   final void Function(T item)? onSelect;
   final List<ItemTileAction<T>> actions;
 
@@ -48,6 +50,7 @@ class ItemTileState<T> extends State<ItemTile<T>> {
     final subTitle = widget.subTitle;
     final content = widget.content;
     final footNode = widget.footNote;
+    final infoIcon = widget.infoIcon;
 
     return GestureDetector(
       onTap: () => widget.onSelect?.call(widget.item),
@@ -69,23 +72,30 @@ class ItemTileState<T> extends State<ItemTile<T>> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (title != null || subTitle != null)
-                    RichText(
-                      text: TextSpan(
-                        children: [
-                          if (title != null)
-                            TextSpan(
-                              text: '$title\n',
-                              style: primaryTextStyle?.copyWith(
-                                fontWeight: FontWeight.bold,
-                              ),
+                  if (infoIcon != null || title != null)
+                    Row(
+                      children: [
+                        if (infoIcon != null)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: infoIcon,
+                          ),
+                        Expanded(
+                          child: Text(
+                            title ?? '',
+                            style: primaryTextStyle?.copyWith(
+                              fontWeight: FontWeight.bold,
                             ),
-                          if (subTitle != null)
-                            TextSpan(text: subTitle, style: secondaryTextStyle),
-                        ],
-                      ),
+                          ),
+                        ),
+                      ],
                     ),
-                  if (content != null) content,
+                  if (subTitle != null)
+                    Text(
+                      subTitle,
+                      style: secondaryTextStyle,
+                    ),
+                  if (content != null) Expanded(child: content),
                   if (footNode != null) ...[
                     const SizedBox(height: 20),
                     Text(footNode, style: secondaryTextStyle),
@@ -215,7 +225,10 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
             child: ListView.builder(
               itemCount: widget.items.length,
               itemBuilder: (context, index) => widget.tileBuilder(
-                  context, widget.items[index], widget.onSelect),
+                context,
+                widget.items[index],
+                widget.onSelect,
+              ),
             ),
           ),
         ),

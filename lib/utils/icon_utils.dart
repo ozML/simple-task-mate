@@ -65,6 +65,18 @@ class IconUtils {
         size: size,
       );
 
+  static Widget circleInfo(
+    BuildContext context, {
+    Color? color,
+    double? size,
+  }) =>
+      _getIcon(
+        context: context,
+        icon: FontAwesomeIcons.circleInfo,
+        color: color,
+        size: size,
+      );
+
   static Widget circleQuestion(
     BuildContext context, {
     Color? color,
@@ -74,6 +86,7 @@ class IconUtils {
         context: context,
         icon: FontAwesomeIcons.circleQuestion,
         color: color,
+        size: size,
       );
 
   static Widget table(
@@ -117,7 +130,12 @@ class IconUtils {
     Color? color,
     double? size,
   }) =>
-      _getIcon(context: context, icon: FontAwesomeIcons.check, color: color);
+      _getIcon(
+        context: context,
+        icon: FontAwesomeIcons.check,
+        color: color,
+        size: size,
+      );
 
   static Widget replay(
     BuildContext context, {

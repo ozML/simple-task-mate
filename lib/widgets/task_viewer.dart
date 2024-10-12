@@ -4,6 +4,7 @@ import 'package:simple_task_mate/extensions/context.dart';
 import 'package:simple_task_mate/extensions/duration.dart';
 import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
+import 'package:simple_task_mate/utils/theme_utils.dart';
 import 'package:simple_task_mate/widgets/content_box.dart';
 import 'package:simple_task_mate/widgets/item_viewer.dart';
 
@@ -48,6 +49,13 @@ class TaskViewer extends StatelessWidget {
           footNote: hideDurations
               ? null
               : context.texts.labelDuration(item.time().asHHMM),
+          infoIcon: item.info != null
+              ? Tooltip(
+                  message: item.info,
+                  child: IconUtils.circleInfo(context,
+                      color: inversePrimaryColorFrom(context), size: 20),
+                )
+              : null,
           onSelect: onSelect,
           actions: [
             ItemTileAction(
