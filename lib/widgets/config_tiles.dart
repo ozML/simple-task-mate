@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:equatable/equatable.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
@@ -188,10 +190,16 @@ class FileSelectionConfigTile extends ConfigEntryTile<String> {
           onChanged: updateValue,
         );
 
+        final file = File(state.value);
+
         final button = IconButton(
           icon: IconUtils.file(context),
           onPressed: () async {
             final result = await FilePicker.platform.pickFiles(
+              initialDirectory:
+                  file.statSync().type == FileSystemEntityType.directory
+                      ? file.path
+                      : file.parent.path,
               type: fileExtensions?.isNotEmpty == true
                   ? FileType.custom
                   : FileType.any,
