@@ -36,6 +36,7 @@ TextStyle? bigPrimaryTextStyleFrom(BuildContext context, {bool bold = false}) {
 InputDecoration textInputDecoration(
   BuildContext context, {
   String? labelText,
+  String? suffixLabelText,
   String? hintText,
 }) =>
     InputDecoration(
@@ -43,7 +44,8 @@ InputDecoration textInputDecoration(
         borderSide: BorderSide(color: primaryColorFrom(context)),
         borderRadius: BorderRadius.circular(16),
       ),
-      labelText: labelText,
+      labelText:
+          labelText != null ? '$labelText ${suffixLabelText ?? ''}' : null,
       hintText: hintText,
       floatingLabelAlignment: FloatingLabelAlignment.start,
       floatingLabelBehavior: FloatingLabelBehavior.always,

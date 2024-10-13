@@ -70,6 +70,7 @@ class Task with EquatableMixin {
     required this.name,
     this.refId,
     this.info,
+    this.hRef,
     this.entries,
     this.createdAt,
     this.modifiedAt,
@@ -80,6 +81,7 @@ class Task with EquatableMixin {
   final String? refId;
   final String name;
   final String? info;
+  final String? hRef;
   final List<TaskEntry>? entries;
   final DateTime? createdAt;
   final DateTime? modifiedAt;
@@ -90,6 +92,7 @@ class Task with EquatableMixin {
         refId,
         name,
         info,
+        hRef,
         entries,
         createdAt,
         modifiedAt,
@@ -100,6 +103,7 @@ class Task with EquatableMixin {
         refId: map[alias?['refid'] ?? 'refid'],
         name: map[alias?['name'] ?? 'name'],
         info: map[alias?['info'] ?? 'info'],
+        hRef: map[alias?['href'] ?? 'href'],
         createdAt: (map[alias?['created'] ?? 'created'] as int?)
             ?.mapTo(DateTimeExtension.fromSecondsSinceEpoch),
         modifiedAt: (map[alias?['modified'] ?? 'modified'] as int?)
@@ -111,6 +115,7 @@ class Task with EquatableMixin {
         'refId': refId,
         'name': name,
         'info': info,
+        'href': hRef,
         'created': createdAt?.secondsSinceEpoch,
         'modified': modifiedAt?.secondsSinceEpoch,
       };
@@ -130,6 +135,7 @@ class Task with EquatableMixin {
     String? refId,
     String? name,
     String? info,
+    String? hRef,
     List<TaskEntry>? entries,
     DateTime? createdAt,
     DateTime? modifiedAt,
@@ -139,6 +145,7 @@ class Task with EquatableMixin {
         refId: refId ?? this.refId,
         name: name ?? this.name,
         info: info ?? this.info,
+        hRef: hRef ?? this.hRef,
         entries: entries ?? this.entries,
         createdAt: createdAt ?? this.createdAt,
         modifiedAt: modifiedAt ?? this.modifiedAt,

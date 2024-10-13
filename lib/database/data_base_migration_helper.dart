@@ -3,7 +3,7 @@ import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 class DatabBaseMigrationHelper {
   DatabBaseMigrationHelper._();
 
-  static const dataBaseVersion = 1;
+  static const dataBaseVersion = 2;
 
   static Future<void> init(String dataBasePath) async {
     await databaseFactoryFfi.openDatabase(
@@ -26,6 +26,9 @@ class DatabBaseMigrationHelper {
       switch (version + 1) {
         case 1:
           await updateToVersion1(db);
+          break;
+        case 2:
+          await updateToVersion2(db);
           break;
       }
     }
@@ -83,7 +86,7 @@ class DatabBaseMigrationHelper {
   static Future<void> updateToVersion2(Database db) async {
     const alterTaskTableQuery = '''
     ALTER TABLE task
-    ADD 
+    ADD href TEXT
     ''';
 
     await db.execute(alterTaskTableQuery);

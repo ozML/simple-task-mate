@@ -7,6 +7,7 @@ class TaskContract implements IDataBaseContract {
   static const columnRefId = 'refid';
   static const columnName = 'name';
   static const columnInfo = 'info';
+  static const columnHRef = 'href';
   static const columnCreated = 'created';
   static const columnModified = 'modified';
 
@@ -19,6 +20,7 @@ class TaskContract implements IDataBaseContract {
         columnRefId,
         columnName,
         columnInfo,
+        columnHRef,
         columnCreated,
         columnModified,
       ];

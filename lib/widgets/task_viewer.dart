@@ -7,11 +7,13 @@ import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
 import 'package:simple_task_mate/widgets/content_box.dart';
 import 'package:simple_task_mate/widgets/item_viewer.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class TaskViewer extends StatelessWidget {
   const TaskViewer({
     required this.tasks,
     this.titleStyle = TitleStyle.header,
+    this.hideCopyButton = false,
     this.hideDurations = false,
     this.onSelect,
     this.onDelete,
@@ -22,6 +24,7 @@ class TaskViewer extends StatelessWidget {
 
   final List<Task> tasks;
   final TitleStyle titleStyle;
+  final bool hideCopyButton;
   final bool hideDurations;
   final void Function(Task task)? onSelect;
   final void Function(Task task)? onDelete;
@@ -56,14 +59,27 @@ class TaskViewer extends StatelessWidget {
                       color: inversePrimaryColorFrom(context), size: 20),
                 )
               : null,
+          linkIcon: item.hRef != null
+              ? Tooltip(
+                  message: item.hRef,
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () => launchUrl(Uri.parse(item.hRef ?? '')),
+                      child: IconUtils.link(context, size: 16),
+                    ),
+                  ),
+                )
+              : null,
           onSelect: onSelect,
           actions: [
-            ItemTileAction(
-              icon: IconUtils.copy(context),
-              onPressed: (_) {
-                Clipboard.setData(ClipboardData(text: item.fullName()));
-              },
-            ),
+            if (!hideCopyButton)
+              ItemTileAction(
+                icon: IconUtils.copy(context),
+                onPressed: (_) {
+                  Clipboard.setData(ClipboardData(text: item.fullName()));
+                },
+              ),
             if (onDelete != null)
               ItemTileAction(
                 icon: IconUtils.trashCan(context),

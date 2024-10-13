@@ -39,6 +39,7 @@ class TimeInputField extends StatefulWidget {
     required this.controller,
     this.focusNode,
     this.autoFocus = false,
+    this.decoration,
     this.onSubmitted,
     super.key,
   });
@@ -46,6 +47,7 @@ class TimeInputField extends StatefulWidget {
   final TextEditingController controller;
   final FocusNode? focusNode;
   final bool autoFocus;
+  final InputDecoration? decoration;
   final ValueChanged<TimeOfDay>? onSubmitted;
 
   @override
@@ -57,11 +59,13 @@ class TimeInputFieldState extends State<TimeInputField> {
   Widget build(BuildContext context) {
     final onSubmitted = widget.onSubmitted;
 
+    final baseDecoration = widget.decoration ?? textInputDecoration(context);
+
     return TextFormField(
       controller: widget.controller,
       focusNode: widget.focusNode,
       keyboardType: const TextInputType.numberWithOptions(decimal: false),
-      decoration: textInputDecoration(context).copyWith(hintText: '00:00'),
+      decoration: baseDecoration.copyWith(hintText: '00:00'),
       textAlign: TextAlign.center,
       inputFormatters: <TextInputFormatter>[
         FilteringTextInputFormatter.digitsOnly,

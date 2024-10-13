@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_task_mate/extensions/context.dart';
+import 'package:simple_task_mate/extensions/object_extension.dart';
 import 'package:simple_task_mate/models/task_model.dart';
 import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
@@ -41,6 +42,9 @@ class EditTaskPanelState extends State<EditTaskPanel> {
   late final _taskInfoController = TextEditingController.fromValue(
     TextEditingValue(text: widget.task?.info ?? ''),
   );
+  late final _taskHRefController = TextEditingController.fromValue(
+    TextEditingValue(text: widget.task?.hRef ?? ''),
+  );
 
   @override
   Widget build(BuildContext context) {
@@ -77,10 +81,19 @@ class EditTaskPanelState extends State<EditTaskPanel> {
                 decoration: textInputDecoration(
                   context,
                   labelText: context.texts.labelTaskTitle,
+                  suffixLabelText: '*',
                 ),
               ),
             ),
           ],
+        ),
+        const SizedBox(height: 15),
+        TextField(
+          controller: _taskHRefController,
+          decoration: textInputDecoration(
+            context,
+            labelText: context.texts.labelTaskHRef,
+          ),
         ),
         const SizedBox(height: 15),
         TextField(
@@ -113,19 +126,30 @@ class EditTaskPanelState extends State<EditTaskPanel> {
                           : context.texts.buttonSave,
                     ),
                     onPressed: () async {
-                      final refId = _taskRefIdController.text;
                       final title = _taskTitleController.text;
-                      final info = _taskInfoController.text;
                       if (title.isEmpty) {
                         return;
                       }
+
+                      final refId = _taskRefIdController.text
+                          .mapTo((e) => e.isNotEmpty ? e : null);
+                      final info = _taskInfoController.text
+                          .mapTo((e) => e.isNotEmpty ? e : null);
+                      final hRef = _taskHRefController.text
+                          .mapTo((e) => e.isNotEmpty ? e : null);
 
                       final result = task?.copyWith(
                             refId: refId,
                             name: title,
                             info: info,
+                            hRef: hRef,
                           ) ??
-                          Task(refId: refId, name: title, info: info);
+                          Task(
+                            refId: refId,
+                            name: title,
+                            info: info,
+                            hRef: hRef,
+                          );
 
                       await widget.onApply(result);
 
