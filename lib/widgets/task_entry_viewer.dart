@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:simple_task_mate/extensions/context.dart';
 import 'package:simple_task_mate/extensions/duration.dart';
+import 'package:simple_task_mate/models/config_model.dart';
 import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/date_time_utils.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
@@ -31,6 +33,9 @@ class TaskEntryViewer extends StatelessWidget {
     final onEdit = this.onEdit;
     final onDelete = this.onDelete;
 
+    final config = context.watch<ConfigModel>();
+    final languageCode = config.getValue<Locale>(settingLanguage).languageCode;
+
     return ItemListViewer<TaskEntry>(
       items: taskEntries,
       title: title,
@@ -40,9 +45,9 @@ class TaskEntryViewer extends StatelessWidget {
           item: item,
           subTitle: item.info,
           footNote:
-              '${showDate ? '${DateFormat.yMd().format(item.date)} |  ' : ''}'
-              '${showDate ? 'KW ${getWeekNumber(item.date)} |  ' : ''}'
-              'Duration: ${item.time().asHHMM}',
+              '${showDate ? '${CustomDateFormats.yMMdd(item.date, languageCode)} |  ' : ''}'
+              '${showDate ? '${languageCode == 'de' ? 'KW' : 'CW'} ${getWeekNumber(item.date)} |  ' : ''}'
+              '${context.texts.labelDuration(item.time().asHHMM)}',
           onSelect: onSelect,
           actions: [
             ItemTileAction(
