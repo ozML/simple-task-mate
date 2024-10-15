@@ -9,6 +9,7 @@ import 'package:simple_task_mate/extensions/context.dart';
 import 'package:simple_task_mate/models/config_model.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
+import 'package:simple_task_mate/utils/tuple.dart';
 import 'package:simple_task_mate/widgets/controller_provider.dart';
 import 'package:simple_task_mate/widgets/editable_table.dart';
 import 'package:simple_task_mate/widgets/views/config_view.dart';
@@ -245,7 +246,7 @@ class BinaryStateConfigTile extends ConfigEntryTile<bool> {
         );
 }
 
-class TableConfigTile extends ConfigEntryTile<Map<String, String>> {
+class TableConfigTile extends ConfigEntryTile<List<Tuple<String, String>>> {
   const TableConfigTile({
     required super.configKey,
     super.key,
@@ -253,7 +254,7 @@ class TableConfigTile extends ConfigEntryTile<Map<String, String>> {
 
   static Widget buildContent(
     BuildContext context,
-    ConfigEntryTileState<Map<String, String>> state,
+    ConfigEntryTileState<List<Tuple<String, String>>> state,
   ) {
     final data = state.currentValue;
 
@@ -262,137 +263,203 @@ class TableConfigTile extends ConfigEntryTile<Map<String, String>> {
         border: Border.all(width: 0.5),
         borderRadius: BorderRadius.circular(8),
       ),
-      child: EditableTable(
-        header: TableRow(
-          children: [
-            Container(
-              height: 50,
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(context.texts.labelPattern),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          EditableTable(
+            header: TableRow(
+              children: [
+                Container(
+                  height: 50,
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    context.texts.labelPattern,
+                    style: primaryTextStyleFrom(context),
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    context.texts.labelLink,
+                    style: primaryTextStyleFrom(context),
+                  ),
+                ),
+                const SizedBox(),
+              ],
             ),
-            Container(
-              height: 50,
-              alignment: Alignment.centerLeft,
-              padding: const EdgeInsets.all(8.0),
-              child: Text(context.texts.labelLink),
-            ),
-            const SizedBox(),
-          ],
-        ),
-        columnWidths: const {
-          0: FlexColumnWidth(),
-          1: FlexColumnWidth(),
-          2: IntrinsicColumnWidth()
-        },
-        rowHeight: const TableRowHeightConstraints.min(50),
-        defaultVerticalAlignment: TableCellVerticalAlignment.middle,
-        items: data.entries.toList(),
-        rowBuilder: (context, item, isEditMode, toggleEditMode) {
-          final config = context.read<ConfigModel>();
-          final changeModel = context.read<ConfigChangeModel>();
+            columnWidths: const {
+              0: FlexColumnWidth(),
+              1: FlexColumnWidth(),
+              2: IntrinsicColumnWidth()
+            },
+            rowHeight: const TableRowHeightConstraints.min(50),
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            items: data,
+            rowBuilder: (context, index, item, isEditMode, toggleEditMode) {
+              final config = context.read<ConfigModel>();
+              final changeModel = context.read<ConfigChangeModel>();
 
-          final List<Widget> content;
-          if (isEditMode) {
-            content = [
-              TextEditingControllerProvider(
-                builder: (context, controller) => Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    decoration: textInputDecoration(context),
-                    controller: controller..text = item.key,
-                    onChanged: (value) {
-                      changeModel[state.configKey] = Map.of(data)
-                        ..[item.key] = value;
-                    },
-                  ),
-                ),
-              ),
-              TextEditingControllerProvider(
-                builder: (context, controller) => Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: TextField(
-                    decoration: textInputDecoration(context),
-                    controller: controller..text = item.value,
-                    onChanged: (value) {
-                      changeModel[state.configKey] = Map.of(data)
-                        ..[item.key] = value;
-                    },
-                  ),
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    if (changeModel.hasChanges(key: state.configKey))
-                      IconButton(
-                        icon: IconUtils.check(context),
-                        onPressed: () {
-                          config.update(state.configKey, data);
-                          changeModel.clear();
-                          toggleEditMode();
+              final List<Widget> content;
+              if (isEditMode) {
+                content = [
+                  TextEditingControllerProvider(
+                    initialText: item.value0,
+                    builder: (context, controller) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        decoration: textInputDecoration(context),
+                        controller: controller,
+                        onChanged: (value) {
+                          changeModel[state.configKey] = data.toList()
+                            ..[index] = item.copyWith(value0: value);
                         },
-                      )
-                    else
-                      const SizedBox(width: 40),
-                    IconButton(
-                      icon: IconUtils.squareClose(context),
-                      onPressed: () {
-                        changeModel.clear(key: state.configKey);
-                        toggleEditMode();
-                      },
+                      ),
                     ),
-                  ],
-                ),
-              ),
-            ];
-          } else {
-            content = [
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                alignment: Alignment.centerLeft,
-                child: Text(item.key),
-              ),
-              Container(
-                padding: const EdgeInsets.all(8.0),
-                alignment: Alignment.centerLeft,
-                child: Text(item.value),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    IconButton(
-                      icon: IconUtils.edit(context),
-                      onPressed: toggleEditMode,
+                  ),
+                  TextEditingControllerProvider(
+                    initialText: item.value1,
+                    builder: (context, controller) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        decoration: textInputDecoration(context),
+                        controller: controller,
+                        onChanged: (value) {
+                          changeModel[state.configKey] = data.toList()
+                            ..[index] = item.copyWith(value1: value);
+                        },
+                      ),
                     ),
-                    IconButton(
-                      icon: IconUtils.trashCan(context),
-                      onPressed: () {
-                        config.update(
-                          state.configKey,
-                          Map.of(data)..remove(item.key),
-                        );
-                      },
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (changeModel.hasChanges(key: state.configKey))
+                          IconButton(
+                            icon: IconUtils.check(context),
+                            onPressed: () {
+                              config.update(state.configKey, data);
+                              changeModel.clear();
+                              toggleEditMode();
+                            },
+                          )
+                        else
+                          const SizedBox(width: 40),
+                        IconButton(
+                          icon: IconUtils.squareClose(context),
+                          onPressed: () {
+                            changeModel.clear(key: state.configKey);
+                            toggleEditMode();
+                          },
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
-            ];
-          }
+                  ),
+                ];
+              } else {
+                content = [
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    alignment: Alignment.centerLeft,
+                    child: Text(item.value0),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    alignment: Alignment.centerLeft,
+                    child: Text(item.value1),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: IconUtils.edit(context),
+                          onPressed: toggleEditMode,
+                        ),
+                        IconButton(
+                          icon: IconUtils.trashCan(context),
+                          onPressed: () {
+                            config.update(
+                              state.configKey,
+                              data.toList()..removeAt(index),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ];
+              }
 
-          return TableRow(
-            decoration: const BoxDecoration(
-              border: Border(top: BorderSide(width: 0.5)),
-            ),
-            children: content,
-          );
-        },
+              return TableRow(
+                decoration: const BoxDecoration(
+                  border: Border(top: BorderSide(width: 0.5)),
+                ),
+                children: content,
+              );
+            },
+          ),
+          TextEditingControllerListProvider(
+            count: 2,
+            builder: (context, controllers) {
+              return Container(
+                decoration: const BoxDecoration(
+                  border: Border(top: BorderSide(width: 0.5)),
+                ),
+                constraints: const BoxConstraints(minHeight: 50),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          decoration: textInputDecoration(context),
+                          controller: controllers[0],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          decoration: textInputDecoration(context),
+                          controller: controllers[1],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(48, 8, 8, 8),
+                      child: IconButton(
+                        icon: IconUtils.add(context),
+                        onPressed: () {
+                          final pattern = controllers[0].text;
+                          final link = controllers[1].text;
+
+                          if (pattern.isNotEmpty && link.isNotEmpty) {
+                            context.read<ConfigModel>().update(
+                                  state.configKey,
+                                  state.value.toList()
+                                    ..add(Tuple(pattern, link)),
+                                );
+                            controllers[0].clear();
+                            controllers[1].clear();
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

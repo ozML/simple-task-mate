@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:properties/properties.dart';
 import 'package:simple_task_mate/utils/conversion_utils.dart';
+import 'package:simple_task_mate/utils/tuple.dart';
 
 String get workDirectory =>
     '${Platform.environment['APPDATA']}\\ozml\\SimpleTaskMate';
@@ -93,19 +94,26 @@ class ConfigModel extends ChangeNotifier {
       fromText: (text) => bool.tryParse(text) ?? false,
       toText: (value) => value.toString(),
     ),
-    ConfigEntry<Map<String, String>>(
+    ConfigEntry<List<Tuple<String, String>>>(
       key: settingAutoLinkGroups,
-      defaultText: '{}',
+      defaultText: '{"groups":[]}',
       fromText: (text) =>
-          tryDecodeJson(
+          tryDecodeJson<List<Tuple<String, String>>>(
             text,
-            convert: (data) => (data as Map).map<String, String>(
-              (key, value) => MapEntry(key, value),
-            ),
+            convert: (data) => data['groups']
+                .map((e) => Tuple(
+                      e.entries.first.key as String,
+                      e.entries.first.value as String,
+                    ))
+                .whereType<Tuple<String, String>>()
+                .toList(),
           ) ??
-          {},
-      toText: (value) => jsonEncode(value),
-      isValid: (value) => value.runtimeType == <String, String>{}.runtimeType,
+          [],
+      toText: (value) => jsonEncode({
+        'groups': value.map((e) => {e.value0: e.value1}).toList(),
+      }),
+      isValid: (value) =>
+          value.runtimeType == <Tuple<String, String>>[].runtimeType,
     ),
   ];
 

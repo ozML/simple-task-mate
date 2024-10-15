@@ -7,6 +7,7 @@ import 'package:simple_task_mate/models/config_model.dart';
 import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
+import 'package:simple_task_mate/utils/tuple.dart';
 import 'package:simple_task_mate/widgets/content_box.dart';
 import 'package:simple_task_mate/widgets/item_viewer.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -55,13 +56,13 @@ class TaskViewer extends StatelessWidget {
           hRef = item.hRef;
         } else if (item.refId case String refId) {
           if (config.getValue(settingAutoLinks)) {
-            final map = config.getValue<Map<String, String>>(
+            final groups = config.getValue<List<Tuple<String, String>>>(
               settingAutoLinkGroups,
             );
 
-            for (final entry in map.entries) {
-              if (refId.startsWith(entry.key)) {
-                hRef = '${entry.value}$refId';
+            for (final group in groups) {
+              if (refId.startsWith(group.value0)) {
+                hRef = '${group.value1}$refId';
                 isAutoRef = true;
                 break;
               }

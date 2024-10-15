@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 typedef EditableRowBuider<T> = TableRow Function(
   BuildContext context,
+  int index,
   T item,
   bool isEditMode,
   void Function() toggleEditMode,
@@ -31,6 +32,7 @@ class EditableTable<T extends Object> extends StatefulWidget {
     required this.items,
     required this.header,
     required this.rowBuilder,
+    this.footer,
     this.columnWidths,
     this.defaultColumnWidth = const FlexColumnWidth(),
     this.rowHeight,
@@ -43,6 +45,7 @@ class EditableTable<T extends Object> extends StatefulWidget {
 
   final List<T> items;
   final TableRow header;
+  final TableRow? footer;
   final Map<int, TableColumnWidth>? columnWidths;
   final TableColumnWidth defaultColumnWidth;
   final TableRowHeightConstraints? rowHeight;
@@ -62,6 +65,7 @@ class _EditableTableState<T extends Object> extends State<EditableTable<T>> {
   @override
   Widget build(BuildContext context) {
     final rowHeight = widget.rowHeight;
+    final footer = widget.footer;
 
     return Table(
       columnWidths: widget.columnWidths,
@@ -76,6 +80,7 @@ class _EditableTableState<T extends Object> extends State<EditableTable<T>> {
           (i, e) {
             final row = widget.rowBuilder(
               context,
+              i,
               e,
               i == editIndex,
               () => setState(() {
@@ -109,6 +114,7 @@ class _EditableTableState<T extends Object> extends State<EditableTable<T>> {
             return row;
           },
         ),
+        if (footer != null) footer,
       ],
     );
   }
