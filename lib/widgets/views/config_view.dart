@@ -19,6 +19,9 @@ class ConfigChangeModel extends ChangeNotifier {
   bool get isEmpty => _changes.isEmpty;
   bool get isNotEmpty => _changes.isNotEmpty;
 
+  bool hasChanges({String? key}) =>
+      key != null ? _changes.containsKey(key) : isNotEmpty;
+
   List<(String, Object)> getChanges() =>
       _changes.entries.map((e) => (e.key, e.value)).toList();
 
@@ -44,6 +47,7 @@ class ConfigViewState extends State<ConfigView> {
 
   @override
   Widget build(BuildContext context) {
+    final configModel = context.watch<ConfigModel>();
     final primaryColor = primaryColorFrom(context);
 
     var body = ChangeNotifierProvider.value(
@@ -160,6 +164,9 @@ class ConfigViewState extends State<ConfigView> {
                           return items ?? [];
                         },
                       ),
+                      BinaryStateConfigTile(configKey: settingAutoLinks),
+                      if (configModel.getValue(settingAutoLinks))
+                        const TableConfigTile(configKey: settingAutoLinkGroups),
                     ],
                   ),
                 ),

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_task_mate/extensions/context.dart';
 import 'package:simple_task_mate/extensions/duration.dart';
+import 'package:simple_task_mate/models/config_model.dart';
 import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
@@ -33,6 +35,8 @@ class TaskViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final config = context.watch<ConfigModel>();
+
     final onDelete = this.onDelete;
     final onAdd = this.onAdd;
 
@@ -45,6 +49,26 @@ class TaskViewer extends StatelessWidget {
       onSelect: onSelect,
       onSearchTextChanged: onSearchTextChanged,
       tileBuilder: (context, item, onSelect) {
+        bool isAutoRef = false;
+        String? hRef;
+        if (item.hRef != null) {
+          hRef = item.hRef;
+        } else if (item.refId case String refId) {
+          if (config.getValue(settingAutoLinks)) {
+            final map = config.getValue<Map<String, String>>(
+              settingAutoLinkGroups,
+            );
+
+            for (final entry in map.entries) {
+              if (refId.startsWith(entry.key)) {
+                hRef = '${entry.value}$refId';
+                isAutoRef = true;
+                break;
+              }
+            }
+          }
+        }
+
         return ItemTile(
           item: item,
           title: item.refId,
@@ -59,14 +83,18 @@ class TaskViewer extends StatelessWidget {
                       color: inversePrimaryColorFrom(context), size: 20),
                 )
               : null,
-          linkIcon: item.hRef != null
+          linkIcon: hRef != null
               ? Tooltip(
-                  message: item.hRef,
+                  message: hRef,
                   child: MouseRegion(
                     cursor: SystemMouseCursors.click,
                     child: GestureDetector(
-                      onTap: () => launchUrl(Uri.parse(item.hRef ?? '')),
-                      child: IconUtils.link(context, size: 16),
+                      onTap: () => launchUrl(Uri.parse(hRef ?? '')),
+                      child: IconUtils.link(
+                        context,
+                        size: 16,
+                        color: isAutoRef ? Colors.purple : null,
+                      ),
                     ),
                   ),
                 )

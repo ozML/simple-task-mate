@@ -1,7 +1,9 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:properties/properties.dart';
+import 'package:simple_task_mate/utils/conversion_utils.dart';
 
 String get workDirectory =>
     '${Platform.environment['APPDATA']}\\ozml\\SimpleTaskMate';
@@ -14,22 +16,27 @@ class ConfigEntry<T extends Object> {
     required this.defaultText,
     required this.fromText,
     required String Function(T value) toText,
+    bool Function(Object value)? isValid,
     this.options,
     this.isActive = true,
     this.needsRestart = false,
-  }) : _toText = toText;
+  })  : _toText = toText,
+        _isValid = isValid;
 
   final String key;
   final String defaultText;
   final List<String>? options;
   final bool isActive;
   final bool needsRestart;
+  final bool Function(Object value)? _isValid;
   final T Function(String text) fromText;
   final String Function(T value) _toText;
 
   Type get type => T;
 
   String toText(Object value) => _toText(value as T);
+
+  bool isValid(Object value) => _isValid?.call(value) ?? value.runtimeType == T;
 
   List<ConfigEntryOption<T>>? optionValues() =>
       options?.map((e) => ConfigEntryOption(e, fromText(e))).toList();
@@ -46,6 +53,8 @@ const String settingDbFilePath = 'dbfilepath';
 const String settingStyle = 'style';
 const String settingLanguage = 'language';
 const String settingStartView = 'startview';
+const String settingAutoLinks = 'autolinks';
+const String settingAutoLinkGroups = 'autolinkgroups';
 
 class ConfigModel extends ChangeNotifier {
   static final defs = <ConfigEntry>[
@@ -77,6 +86,26 @@ class ConfigModel extends ChangeNotifier {
       options: ['stamp', 'task'],
       fromText: (text) => switch (text) { 'task' => 1, _ => 0 },
       toText: (value) => switch (value) { 1 => 'task', _ => 'stamp' },
+    ),
+    ConfigEntry<bool>(
+      key: settingAutoLinks,
+      defaultText: 'false',
+      fromText: (text) => bool.tryParse(text) ?? false,
+      toText: (value) => value.toString(),
+    ),
+    ConfigEntry<Map<String, String>>(
+      key: settingAutoLinkGroups,
+      defaultText: '{}',
+      fromText: (text) =>
+          tryDecodeJson(
+            text,
+            convert: (data) => (data as Map).map<String, String>(
+              (key, value) => MapEntry(key, value),
+            ),
+          ) ??
+          {},
+      toText: (value) => jsonEncode(value),
+      isValid: (value) => value.runtimeType == <String, String>{}.runtimeType,
     ),
   ];
 
@@ -136,7 +165,7 @@ class ConfigModel extends ChangeNotifier {
   bool _update(String key, Object change) {
     if (defs.firstWhere((element) => element.key == key) case ConfigEntry def
         when def.isActive) {
-      if (change.runtimeType != def.type) {
+      if (!def.isValid(change)) {
         throw Exception();
       }
 
