@@ -41,6 +41,7 @@ class EditTaskEntryPanelState extends State<EditTaskEntryPanel> {
   late final _taskTitleController = TextEditingController();
   late final _taskRefIdController = TextEditingController();
   late final _taskInfoController = TextEditingController();
+  late final _taskHRefController = TextEditingController();
   late final _entryInfoController = TextEditingController.fromValue(
     TextEditingValue(text: widget.taskEntry?.info ?? ''),
   );
@@ -104,10 +105,19 @@ class EditTaskEntryPanelState extends State<EditTaskEntryPanel> {
                     decoration: textInputDecoration(
                       context,
                       labelText: context.texts.labelTaskTitle,
+                      suffixLabelText: '*',
                     ),
                   ),
                 ),
               ],
+            ),
+            const SizedBox(height: 15),
+            TextField(
+              controller: _taskHRefController,
+              decoration: textInputDecoration(
+                context,
+                labelText: context.texts.labelTaskHRef,
+              ),
             ),
             const SizedBox(height: 15),
             TextField(
@@ -141,7 +151,14 @@ class EditTaskEntryPanelState extends State<EditTaskEntryPanel> {
             ),
           ),
           const SizedBox(height: 15),
-          TimeInputField(controller: _timeController),
+          TimeInputField(
+            controller: _timeController,
+            decoration: textInputDecoration(
+              context,
+              labelText: context.texts.labelTaskEntryDuration,
+              suffixLabelText: '*',
+            ),
+          ),
         ],
       );
     } else {
@@ -166,7 +183,14 @@ class EditTaskEntryPanelState extends State<EditTaskEntryPanel> {
             ),
           ),
           const SizedBox(height: 15),
-          TimeInputField(controller: _timeController),
+          TimeInputField(
+            controller: _timeController,
+            decoration: textInputDecoration(
+              context,
+              labelText: context.texts.labelTaskEntryDuration,
+              suffixLabelText: '*',
+            ),
+          ),
         ],
       );
     }
@@ -186,6 +210,7 @@ class EditTaskEntryPanelState extends State<EditTaskEntryPanel> {
                         tasks: model.tasks,
                         titleStyle: TitleStyle.none,
                         hideDurations: true,
+                        hideCopyButton: true,
                         onSelect: (task) {
                           setState(() => _selectedTask = task);
                         },
@@ -257,9 +282,16 @@ class EditTaskEntryPanelState extends State<EditTaskEntryPanel> {
                                 .mapTo((e) => e.isNotEmpty ? e : null);
                             final info = _taskInfoController.text
                                 .mapTo((e) => e.isNotEmpty ? e : null);
+                            final hRef = _taskHRefController.text
+                                .mapTo((e) => e.isNotEmpty ? e : null);
 
                             final result = await model.addTask(
-                              Task(name: title, refId: refId, info: info),
+                              Task(
+                                name: title,
+                                refId: refId,
+                                info: info,
+                                hRef: hRef,
+                              ),
                             );
 
                             if (!result.$1) {
@@ -315,7 +347,7 @@ class EditTaskEntryPanelState extends State<EditTaskEntryPanel> {
         ? Dialog(
             child: SizedBox(
               width: 900,
-              height: isCreateDialog ? 600 : 350,
+              height: isCreateDialog ? 650 : 350,
               child: Stack(
                 children: [
                   Padding(padding: const EdgeInsets.all(10), child: content),

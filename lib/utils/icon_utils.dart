@@ -304,4 +304,16 @@ class IconUtils {
         color: color,
         size: size,
       );
+
+  static Widget link(
+    BuildContext context, {
+    Color? color,
+    double? size,
+  }) =>
+      _getIcon(
+        context: context,
+        icon: FontAwesomeIcons.link,
+        color: color,
+        size: size,
+      );
 }

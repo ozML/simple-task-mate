@@ -9,7 +9,9 @@ import 'package:simple_task_mate/extensions/context.dart';
 import 'package:simple_task_mate/models/config_model.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
+import 'package:simple_task_mate/utils/tuple.dart';
 import 'package:simple_task_mate/widgets/controller_provider.dart';
+import 'package:simple_task_mate/widgets/editable_table.dart';
 import 'package:simple_task_mate/widgets/views/config_view.dart';
 
 class ConfigEntryTileState<T> with EquatableMixin {
@@ -67,6 +69,8 @@ class ConfigEntryTile<T extends Object> extends StatelessWidget {
             settingStyle => context.texts.labelSettingStyle,
             settingLanguage => context.texts.labelSettingLanguage,
             settingStartView => context.texts.labelSettingStartView,
+            settingAutoLinks => context.texts.labelSettingAutoLinks,
+            settingAutoLinkGroups => context.texts.labelSettingAutoLinkGoups,
             _ => ''
           };
 
@@ -219,6 +223,244 @@ class FileSelectionConfigTile extends ConfigEntryTile<String> {
           ],
         );
       },
+    );
+  }
+}
+
+class BinaryStateConfigTile extends ConfigEntryTile<bool> {
+  BinaryStateConfigTile({
+    required super.configKey,
+    super.key,
+  }) : super(
+          builder: (context, state) => Align(
+            alignment: Alignment.centerLeft,
+            child: Checkbox(
+              value: state.currentValue,
+              onChanged: (value) {
+                if (value != null) {
+                  context.read<ConfigChangeModel>()[state.configKey] = value;
+                }
+              },
+            ),
+          ),
+        );
+}
+
+class TableConfigTile extends ConfigEntryTile<List<Tuple<String, String>>> {
+  const TableConfigTile({
+    required super.configKey,
+    super.key,
+  }) : super(builder: buildContent);
+
+  static Widget buildContent(
+    BuildContext context,
+    ConfigEntryTileState<List<Tuple<String, String>>> state,
+  ) {
+    final data = state.currentValue;
+
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(width: 0.5),
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          EditableTable(
+            header: TableRow(
+              children: [
+                Container(
+                  height: 50,
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    context.texts.labelPattern,
+                    style: primaryTextStyleFrom(context),
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  alignment: Alignment.centerLeft,
+                  padding: const EdgeInsets.all(8.0),
+                  child: Text(
+                    context.texts.labelLink,
+                    style: primaryTextStyleFrom(context),
+                  ),
+                ),
+                const SizedBox(),
+              ],
+            ),
+            columnWidths: const {
+              0: FlexColumnWidth(),
+              1: FlexColumnWidth(),
+              2: IntrinsicColumnWidth()
+            },
+            rowHeight: const TableRowHeightConstraints.min(50),
+            defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+            items: data,
+            rowBuilder: (context, index, item, isEditMode, toggleEditMode) {
+              final config = context.read<ConfigModel>();
+              final changeModel = context.read<ConfigChangeModel>();
+
+              final List<Widget> content;
+              if (isEditMode) {
+                content = [
+                  TextEditingControllerProvider(
+                    initialText: item.value0,
+                    builder: (context, controller) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        decoration: textInputDecoration(context),
+                        controller: controller,
+                        onChanged: (value) {
+                          changeModel[state.configKey] = data.toList()
+                            ..[index] = item.copyWith(value0: value);
+                        },
+                      ),
+                    ),
+                  ),
+                  TextEditingControllerProvider(
+                    initialText: item.value1,
+                    builder: (context, controller) => Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: TextField(
+                        decoration: textInputDecoration(context),
+                        controller: controller,
+                        onChanged: (value) {
+                          changeModel[state.configKey] = data.toList()
+                            ..[index] = item.copyWith(value1: value);
+                        },
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (changeModel.hasChanges(key: state.configKey))
+                          IconButton(
+                            icon: IconUtils.check(context),
+                            onPressed: () {
+                              config.update(state.configKey, data);
+                              changeModel.clear();
+                              toggleEditMode();
+                            },
+                          )
+                        else
+                          const SizedBox(width: 40),
+                        IconButton(
+                          icon: IconUtils.squareClose(context),
+                          onPressed: () {
+                            changeModel.clear(key: state.configKey);
+                            toggleEditMode();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ];
+              } else {
+                content = [
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    alignment: Alignment.centerLeft,
+                    child: Text(item.value0),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.all(8.0),
+                    alignment: Alignment.centerLeft,
+                    child: Text(item.value1),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        IconButton(
+                          icon: IconUtils.edit(context),
+                          onPressed: toggleEditMode,
+                        ),
+                        IconButton(
+                          icon: IconUtils.trashCan(context),
+                          onPressed: () {
+                            config.update(
+                              state.configKey,
+                              data.toList()..removeAt(index),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ];
+              }
+
+              return TableRow(
+                decoration: const BoxDecoration(
+                  border: Border(top: BorderSide(width: 0.5)),
+                ),
+                children: content,
+              );
+            },
+          ),
+          TextEditingControllerListProvider(
+            count: 2,
+            builder: (context, controllers) {
+              return Container(
+                decoration: const BoxDecoration(
+                  border: Border(top: BorderSide(width: 0.5)),
+                ),
+                constraints: const BoxConstraints(minHeight: 50),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          decoration: textInputDecoration(context),
+                          controller: controllers[0],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: TextField(
+                          decoration: textInputDecoration(context),
+                          controller: controllers[1],
+                        ),
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(48, 8, 8, 8),
+                      child: IconButton(
+                        icon: IconUtils.add(context),
+                        onPressed: () {
+                          final pattern = controllers[0].text;
+                          final link = controllers[1].text;
+
+                          if (pattern.isNotEmpty && link.isNotEmpty) {
+                            context.read<ConfigModel>().update(
+                                  state.configKey,
+                                  state.value.toList()
+                                    ..add(Tuple(pattern, link)),
+                                );
+                            controllers[0].clear();
+                            controllers[1].clear();
+                          }
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
+      ),
     );
   }
 }

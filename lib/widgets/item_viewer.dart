@@ -12,6 +12,7 @@ class ItemTile<T> extends StatefulWidget {
     this.content,
     this.footNote,
     this.infoIcon,
+    this.linkIcon,
     this.onSelect,
     this.actions = const [],
     super.key,
@@ -23,6 +24,7 @@ class ItemTile<T> extends StatefulWidget {
   final Widget? content;
   final String? footNote;
   final Widget? infoIcon;
+  final Widget? linkIcon;
   final void Function(T item)? onSelect;
   final List<ItemTileAction<T>> actions;
 
@@ -51,6 +53,7 @@ class ItemTileState<T> extends State<ItemTile<T>> {
     final content = widget.content;
     final footNode = widget.footNote;
     final infoIcon = widget.infoIcon;
+    final linkIcon = widget.linkIcon;
 
     return GestureDetector(
       onTap: () => widget.onSelect?.call(widget.item),
@@ -72,13 +75,18 @@ class ItemTileState<T> extends State<ItemTile<T>> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (infoIcon != null || title != null)
+                  if (infoIcon != null || title != null || linkIcon != null)
                     Row(
                       children: [
                         if (infoIcon != null)
                           Padding(
                             padding: const EdgeInsets.only(right: 5),
                             child: infoIcon,
+                          ),
+                        if (linkIcon != null)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 5),
+                            child: linkIcon,
                           ),
                         Expanded(
                           child: Text(
