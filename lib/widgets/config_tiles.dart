@@ -35,12 +35,14 @@ class ConfigEntryTile<T extends Object> extends StatelessWidget {
   const ConfigEntryTile({
     required this.configKey,
     required this.builder,
+    this.disableReset = false,
     super.key,
   });
 
   final String configKey;
   final Widget Function(BuildContext context, ConfigEntryTileState<T> state)
       builder;
+  final bool disableReset;
 
   @nonVirtual
   @override
@@ -93,7 +95,7 @@ class ConfigEntryTile<T extends Object> extends StatelessWidget {
                   height: 50,
                   padding: const EdgeInsets.only(right: 20),
                   alignment: Alignment.centerRight,
-                  child: state.change != null
+                  child: !disableReset && state.change != null
                       ? IconButton(
                           icon: IconUtils.replay(context),
                           onPressed: () => context
@@ -250,7 +252,7 @@ class TableConfigTile extends ConfigEntryTile<List<Tuple<String, String>>> {
   const TableConfigTile({
     required super.configKey,
     super.key,
-  }) : super(builder: buildContent);
+  }) : super(builder: buildContent, disableReset: true);
 
   static Widget buildContent(
     BuildContext context,
