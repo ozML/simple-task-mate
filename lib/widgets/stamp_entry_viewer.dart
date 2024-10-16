@@ -90,6 +90,7 @@ class StampEntryViewer extends StatefulWidget {
     required this.stamps,
     this.titleStyle = TitleStyle.header,
     this.isManualMode = true,
+    this.canChangeMode = true,
     this.isLoading = false,
     this.onModeChanged,
     this.onSaveStamp,
@@ -100,6 +101,7 @@ class StampEntryViewer extends StatefulWidget {
   final List<Stamp> stamps;
   final TitleStyle titleStyle;
   final bool isManualMode;
+  final bool canChangeMode;
   final bool isLoading;
   final ValueChanged<bool>? onModeChanged;
   final void Function(Stamp stamp)? onSaveStamp;
@@ -290,17 +292,18 @@ class StampEntryViewerState extends State<StampEntryViewer> {
                   ),
                 ],
               ),
-              Align(
-                alignment: Alignment.centerRight,
-                child: IconButton(
-                  icon: widget.isManualMode
-                      ? IconUtils.squareClose(context)
-                      : IconUtils.edit(context),
-                  onPressed: onModeChanged != null
-                      ? () => onModeChanged(!widget.isManualMode)
-                      : null,
+              if (widget.canChangeMode)
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: IconButton(
+                    icon: widget.isManualMode
+                        ? IconUtils.squareClose(context)
+                        : IconUtils.edit(context),
+                    onPressed: onModeChanged != null
+                        ? () => onModeChanged(!widget.isManualMode)
+                        : null,
+                  ),
                 ),
-              ),
             ],
           ),
         ),

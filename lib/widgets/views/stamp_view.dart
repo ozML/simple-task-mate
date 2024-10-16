@@ -178,9 +178,14 @@ class StampViewState extends State<StampView> {
                   padding: const EdgeInsets.only(left: 5),
                   child: Consumer<StampModel>(
                     builder: (context, value, child) {
+                      final isCurrentDate = context.select<DateTimeModel, bool>(
+                        (value) => value.selectedDate == value.date,
+                      );
+
                       return StampEntryViewer(
                         stamps: value.stamps.reversed.toList(),
-                        isManualMode: _manualStampMode,
+                        isManualMode: !isCurrentDate || _manualStampMode,
+                        canChangeMode: isCurrentDate,
                         isLoading: value.isLoading,
                         onSaveStamp: (stamp) => value
                             .addStamp(stamp)
