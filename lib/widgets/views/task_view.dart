@@ -180,6 +180,7 @@ class TaskViewState extends State<TaskView> {
 
                     return DateSelector(
                       date: date,
+                      currentDate: value.date,
                       minDate: minDate,
                       maxDate: maxDate,
                       onSelectDate: (date) {
@@ -209,7 +210,6 @@ class TaskViewState extends State<TaskView> {
                         _clearSelectedTask();
                         _refresh();
                       },
-                      showResetButton: date != value.date,
                     );
                   },
                 ),

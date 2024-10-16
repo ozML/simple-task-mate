@@ -10,9 +10,9 @@ import 'package:simple_task_mate/utils/date_time_utils.dart';
 class DateSelector extends StatelessWidget {
   const DateSelector({
     required this.date,
+    required this.currentDate,
     required this.minDate,
     required this.maxDate,
-    this.showResetButton = false,
     this.onSelectDate,
     this.onPreviousDate,
     this.onNextDate,
@@ -21,9 +21,9 @@ class DateSelector extends StatelessWidget {
   });
 
   final DateTime date;
+  final DateTime currentDate;
   final DateTime minDate;
   final DateTime maxDate;
-  final bool showResetButton;
   final ValueChanged<DateTime>? onSelectDate;
   final VoidCallback? onPreviousDate;
   final VoidCallback? onNextDate;
@@ -37,6 +37,8 @@ class DateSelector extends StatelessWidget {
 
     final config = context.watch<ConfigModel>();
     final languageCode = config.getValue<Locale>(settingLanguage).languageCode;
+
+    final showResetButton = date != currentDate;
 
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -91,7 +93,9 @@ class DateSelector extends StatelessWidget {
         if (showResetButton) ...[
           const SizedBox(width: 10),
           IconButton(
-            icon: IconUtils.doubleLeftArrow(context),
+            icon: date.isBefore(currentDate)
+                ? IconUtils.doubleRightArrow(context)
+                : IconUtils.doubleLeftArrow(context),
             onPressed: onReset,
           ),
         ],

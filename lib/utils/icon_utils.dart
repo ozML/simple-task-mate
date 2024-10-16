@@ -281,6 +281,18 @@ class IconUtils {
         size: size,
       );
 
+  static Widget doubleRightArrow(
+    BuildContext context, {
+    Color? color,
+    double? size,
+  }) =>
+      _getIcon(
+        context: context,
+        icon: FontAwesomeIcons.anglesRight,
+        color: color,
+        size: size,
+      );
+
   static Widget caretRight(
     BuildContext context, {
     Color? color,

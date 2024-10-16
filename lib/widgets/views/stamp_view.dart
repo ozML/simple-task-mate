@@ -89,6 +89,7 @@ class StampViewState extends State<StampView> {
 
                     return DateSelector(
                       date: date,
+                      currentDate: value.date,
                       minDate: minDate,
                       maxDate: maxDate,
                       onSelectDate: (date) {
@@ -115,7 +116,6 @@ class StampViewState extends State<StampView> {
                         value.clearDateSelection();
                         _refresh();
                       },
-                      showResetButton: date != value.date,
                     );
                   },
                 ),
