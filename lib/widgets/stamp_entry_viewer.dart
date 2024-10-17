@@ -292,18 +292,19 @@ class StampEntryViewerState extends State<StampEntryViewer> {
                   ),
                 ],
               ),
-              if (widget.canChangeMode)
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: IconButton(
-                    icon: widget.isManualMode
-                        ? IconUtils.squareClose(context)
-                        : IconUtils.edit(context),
-                    onPressed: onModeChanged != null
-                        ? () => onModeChanged(!widget.isManualMode)
-                        : null,
-                  ),
-                ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: widget.canChangeMode
+                    ? IconButton(
+                        icon: widget.isManualMode
+                            ? IconUtils.squareClose(context)
+                            : IconUtils.edit(context),
+                        onPressed: onModeChanged != null
+                            ? () => onModeChanged(!widget.isManualMode)
+                            : null,
+                      )
+                    : const SizedBox(width: 40),
+              ),
             ],
           ),
         ),
