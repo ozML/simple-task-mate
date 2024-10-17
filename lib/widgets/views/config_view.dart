@@ -164,6 +164,32 @@ class ConfigViewState extends State<ConfigView> {
                           return items ?? [];
                         },
                       ),
+                      DropdownConfigTile<ClockTimeFormat, ClockTimeFormat>(
+                        configKey: settingClockTimeFormat,
+                        itemsBuilder: (state) {
+                          final options = ConfigModel.getDef(state.configKey)
+                              .optionValues()
+                              ?.whereType<ConfigEntryOption<ClockTimeFormat>>();
+
+                          final items = options?.map(
+                            (e) {
+                              final label = switch (e.value) {
+                                ClockTimeFormat.twentyFourHours =>
+                                  context.texts.label24Hours,
+                                ClockTimeFormat.twelveHours =>
+                                  context.texts.label12Hours,
+                              };
+
+                              return DropdownMenuItem(
+                                value: e.value,
+                                child: Text(label),
+                              );
+                            },
+                          ).toList();
+
+                          return items ?? [];
+                        },
+                      ),
                       BinaryStateConfigTile(configKey: settingAutoLinks),
                       if (configModel.getValue(settingAutoLinks))
                         const TableConfigTile(configKey: settingAutoLinkGroups),

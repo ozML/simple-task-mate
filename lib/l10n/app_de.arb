@@ -30,6 +30,15 @@
 	"labelSundayShort" : "So",
 	"labelWeek" : "Woche",
 	"labelStamps" : "Stempelungen",
+	"labelTasks" : "Aufgaben",
+	"labelDuration" : "Dauer: {time}",
+	"@labelDuration" : {
+		"placeholders" : {
+			"time" : {
+				"type" : "String"
+			}
+		}
+	},
 	"labelSearch" : "Suche",
 	"labelSelectedTask" : "Selektierte Aufgabe",
 	"labelDescription" : "Beschreibung",
@@ -48,6 +57,8 @@
 	"labelLanguageEnglish" : "Englisch",
 	"labelViewStamp" : "Stempeln",
 	"labelViewTask" : "Aufgaben",
+	"label24Hours" : "24 Stunden",
+	"label12Hours" : "12 Stunden",
 	"labelPattern" : "Pattern",
 	"labelLink" : "Link",
 	"labelSettingDatabasePath" : "Datenbankpfad",
@@ -56,6 +67,7 @@
 	"labelSettingStartView" : "Startansicht",
 	"labelSettingAutoLinks" : "Automatische Links",
 	"labelSettingAutoLinkGoups" : "Automatische Link Gruppen",
+	"labelSettingClockTimeFormat" : "Uhrzeitformat",
 	"dialogTitleStampDelete": "Stempelung löschen",
 	"dialogInfoStampDelete" : "Die \"{type}\" Stempelung um {time} wird gelöscht",
 	"@dialogInfoStampDelete" : {
@@ -63,15 +75,6 @@
 			"type" : {
 				"type" : "String"
 			},
-			"time" : {
-				"type" : "String"
-			}
-		}
-	},
-	"labelTasks" : "Aufgaben",
-	"labelDuration" : "Dauer: {time}",
-	"@labelDuration" : {
-		"placeholders" : {
 			"time" : {
 				"type" : "String"
 			}

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:simple_task_mate/extensions/context.dart';
+import 'package:simple_task_mate/models/config_model.dart';
 import 'package:simple_task_mate/models/date_time_model.dart';
 import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
@@ -36,6 +37,14 @@ class StampEntryTileState extends State<StampEntryTile> {
 
     final onDeleteStamp = widget.onDeleteStamp;
 
+    final config = context.watch<ConfigModel>();
+    final clockTimeFormat =
+        switch (config.getValue<ClockTimeFormat>(settingClockTimeFormat)) {
+      ClockTimeFormat.twelveHours => 'hh:mm a',
+      _ => 'HH:mm',
+    };
+    final languageCode = config.getValue<Locale>(settingLanguage).languageCode;
+
     var content = Container(
       height: 50,
       width: 200,
@@ -59,7 +68,7 @@ class StampEntryTileState extends State<StampEntryTile> {
           ),
           const SizedBox(width: 20),
           Text(
-            DateFormat('HH:mm').format(widget.stamp.time),
+            DateFormat(clockTimeFormat, languageCode).format(widget.stamp.time),
             style: primaryTextStyle,
           ),
           if (widget.isEditable && isHovering) ...[
