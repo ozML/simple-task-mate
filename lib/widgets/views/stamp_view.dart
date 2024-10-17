@@ -184,8 +184,8 @@ class StampViewState extends State<StampView> {
 
                       return StampEntryViewer(
                         stamps: value.stamps.reversed.toList(),
-                        isManualMode: !isCurrentDate || _manualStampMode,
-                        canChangeMode: isCurrentDate,
+                        isManualMode: _manualStampMode,
+                        isStampDisabled: !isCurrentDate,
                         isLoading: value.isLoading,
                         onSaveStamp: (stamp) => value
                             .addStamp(stamp)

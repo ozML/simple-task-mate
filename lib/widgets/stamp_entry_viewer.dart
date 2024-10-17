@@ -90,7 +90,7 @@ class StampEntryViewer extends StatefulWidget {
     required this.stamps,
     this.titleStyle = TitleStyle.header,
     this.isManualMode = true,
-    this.canChangeMode = true,
+    this.isStampDisabled = false,
     this.isLoading = false,
     this.onModeChanged,
     this.onSaveStamp,
@@ -101,7 +101,7 @@ class StampEntryViewer extends StatefulWidget {
   final List<Stamp> stamps;
   final TitleStyle titleStyle;
   final bool isManualMode;
-  final bool canChangeMode;
+  final bool isStampDisabled;
   final bool isLoading;
   final ValueChanged<bool>? onModeChanged;
   final void Function(Stamp stamp)? onSaveStamp;
@@ -257,53 +257,54 @@ class StampEntryViewerState extends State<StampEntryViewer> {
                     ),
                   ),
                 ),
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  FilledButton.icon(
-                    icon: IconUtils.leave(
-                      context,
-                      color: inversePrimaryColor,
-                      size: 20,
+              if (!widget.isStampDisabled || widget.isManualMode)
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    FilledButton.icon(
+                      icon: IconUtils.leave(
+                        context,
+                        color: inversePrimaryColor,
+                        size: 20,
+                      ),
+                      label: Text(context.texts.buttonStampArrive),
+                      onPressed: onSaveStamp != null
+                          ? () => onSaveStampType(StampType.arrival)
+                          : null,
+                      style: widget.isManualMode && !_isManualStampDeparture
+                          ? primaryStampButtonStyle
+                          : null,
                     ),
-                    label: Text(context.texts.buttonStampArrive),
-                    onPressed: onSaveStamp != null
-                        ? () => onSaveStampType(StampType.arrival)
-                        : null,
-                    style: widget.isManualMode && !_isManualStampDeparture
-                        ? primaryStampButtonStyle
-                        : null,
-                  ),
-                  const SizedBox(width: 20),
-                  FilledButton.icon(
-                    icon: IconUtils.come(
-                      context,
-                      color: inversePrimaryColor,
-                      size: 20,
+                    const SizedBox(width: 20),
+                    FilledButton.icon(
+                      icon: IconUtils.come(
+                        context,
+                        color: inversePrimaryColor,
+                        size: 20,
+                      ),
+                      label: Text(context.texts.buttonStampLeave),
+                      onPressed: onSaveStamp != null
+                          ? () => onSaveStampType(StampType.departure)
+                          : null,
+                      style: widget.isManualMode && _isManualStampDeparture
+                          ? primaryStampButtonStyle
+                          : null,
                     ),
-                    label: Text(context.texts.buttonStampLeave),
-                    onPressed: onSaveStamp != null
-                        ? () => onSaveStampType(StampType.departure)
-                        : null,
-                    style: widget.isManualMode && _isManualStampDeparture
-                        ? primaryStampButtonStyle
-                        : null,
-                  ),
-                ],
-              ),
+                  ],
+                )
+              else
+                const SizedBox(),
               Align(
                 alignment: Alignment.centerRight,
-                child: widget.canChangeMode
-                    ? IconButton(
-                        icon: widget.isManualMode
-                            ? IconUtils.squareClose(context)
-                            : IconUtils.edit(context),
-                        onPressed: onModeChanged != null
-                            ? () => onModeChanged(!widget.isManualMode)
-                            : null,
-                      )
-                    : const SizedBox(width: 40),
+                child: IconButton(
+                  icon: widget.isManualMode
+                      ? IconUtils.squareClose(context)
+                      : IconUtils.edit(context),
+                  onPressed: onModeChanged != null
+                      ? () => onModeChanged(!widget.isManualMode)
+                      : null,
+                ),
               ),
             ],
           ),
