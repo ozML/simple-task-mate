@@ -5,20 +5,65 @@ import 'package:provider/provider.dart';
 import 'package:simple_task_mate/extensions/date_time.dart';
 import 'package:simple_task_mate/extensions/duration.dart';
 import 'package:simple_task_mate/models/config_model.dart';
+import 'package:simple_task_mate/models/date_time_model.dart';
+import 'package:simple_task_mate/models/stamp_summary_model.dart';
 import 'package:simple_task_mate/services/api.dart';
+import 'package:simple_task_mate/utils/date_time_utils.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
 
 class WeekSummaryPanel extends StatelessWidget {
   const WeekSummaryPanel({
     required this.summaries,
     this.date,
+    this.locale = const Locale('en'),
     this.isLoading = false,
     super.key,
   });
 
+  static Key get keyContentRow => Key('$WeekSummaryPanel/content');
+  static Key get keyTile => Key('$WeekSummaryPanel/tile');
+  static Key get keyTileAvatar => Key('$WeekSummaryPanel/avatar');
+  static Key get keyTileTitle => Key('$WeekSummaryPanel/title');
+  static Key get keyTileDate => Key('$WeekSummaryPanel/date');
+  static Key get keyTileDuration => Key('$WeekSummaryPanel/duration');
+
   final Map<int, StampSummary> summaries;
   final DateTime? date;
+  final Locale locale;
   final bool isLoading;
+
+  static Widget fromProvider({required BuildContext context, Key? key}) {
+    final locale = context.select<ConfigModel, Locale>(
+      (value) => value.getValue<Locale>(settingLanguage),
+    );
+
+    final date = context.select<DateTimeModel, DateTime>(
+      (value) => value.selectedDate,
+    );
+    final weekDates = getWeekDates(date);
+
+    final summaryModel = context.watch<StampSummaryModel>();
+    final summaries = <int, StampSummary>{};
+    for (int i = 0; i < 7; i++) {
+      final weekDate = weekDates[i];
+      final summary = summaryModel.summaries.singleWhereOrNull(
+        (element) => element.date == weekDate,
+      );
+      summaries[i] = summary ??
+          StampSummary(
+            date: weekDate,
+            duration: Duration.zero,
+          );
+    }
+
+    return WeekSummaryPanel(
+      summaries: summaries,
+      date: date,
+      isLoading: summaryModel.isLoading,
+      locale: locale,
+      key: key,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,12 +71,10 @@ class WeekSummaryPanel extends StatelessWidget {
     final primaryTextStyle = primaryTextStyleFrom(context);
     final secondaryTextStyle = secondaryTextStyleFrom(context);
 
-    final config = context.watch<ConfigModel>();
-
     final weekDayShortNames = () {
-      final result = DateFormat.EEEE(
-        config.getValue<Locale>(settingLanguage).languageCode,
-      ).dateSymbols.STANDALONESHORTWEEKDAYS;
+      final result = DateFormat.EEEE(locale.languageCode)
+          .dateSymbols
+          .STANDALONESHORTWEEKDAYS;
 
       return [for (int i = 0; i < result.length; i++) result[(i + 1) % 7]];
     }();
@@ -51,6 +94,7 @@ class WeekSummaryPanel extends StatelessWidget {
               child: const CircularProgressIndicator(),
             )
           : Row(
+              key: keyContentRow,
               children: [
                 ...List.generate(7, (index) => index).expandIndexed(
                   (i, e) {
@@ -64,13 +108,16 @@ class WeekSummaryPanel extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.only(top: 50, bottom: 50),
                           child: Column(
+                            key: keyTile,
                             children: [
                               CircleAvatar(
+                                key: keyTileAvatar,
                                 radius: 40,
                                 backgroundColor: isCurrentDate
                                     ? inversePrimaryColorFrom(context)
                                     : null,
                                 child: Text(
+                                  key: keyTileTitle,
                                   weekDayShortNames[i],
                                   style: primaryTextStyle?.copyWith(
                                     fontWeight:
@@ -80,6 +127,7 @@ class WeekSummaryPanel extends StatelessWidget {
                               ),
                               if (summary != null)
                                 Text(
+                                  key: keyTileDate,
                                   DateFormat('dd.MM').format(summary.date),
                                   style: secondaryTextStyle,
                                 ),
@@ -87,6 +135,7 @@ class WeekSummaryPanel extends StatelessWidget {
                                 child: Align(
                                   alignment: Alignment.bottomCenter,
                                   child: Text(
+                                    key: keyTileDuration,
                                     time != null && time != Duration.zero
                                         ? time.asHHMM
                                         : '',

@@ -1,13 +1,9 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_task_mate/extensions/date_time.dart';
 import 'package:simple_task_mate/models/date_time_model.dart';
 import 'package:simple_task_mate/models/stamp_model.dart';
 import 'package:simple_task_mate/models/stamp_summary_model.dart';
-import 'package:simple_task_mate/services/api.dart';
-import 'package:simple_task_mate/utils/date_time_utils.dart';
 import 'package:simple_task_mate/utils/dialog_utils.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/widgets/date_selector.dart';
@@ -143,33 +139,7 @@ class StampViewState extends State<StampView> {
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.only(right: 5),
-                    child: Consumer<StampSummaryModel>(
-                      builder: (context, value, _) {
-                        final date = context.select<DateTimeModel, DateTime>(
-                          (value) => value.selectedDate,
-                        );
-                        final weekDates = getWeekDates(date);
-
-                        final summaries = <int, StampSummary>{};
-                        for (int i = 0; i < 7; i++) {
-                          final weekDate = weekDates[i];
-                          final summary = value.summaries.singleWhereOrNull(
-                            (element) => element.date == weekDate,
-                          );
-                          summaries[i] = summary ??
-                              StampSummary(
-                                date: weekDate,
-                                duration: Duration.zero,
-                              );
-                        }
-
-                        return WeekSummaryPanel(
-                          summaries: summaries,
-                          date: date.date,
-                          isLoading: value.isLoading,
-                        );
-                      },
-                    ),
+                    child: WeekSummaryPanel.fromProvider(context: context),
                   ),
                 ),
               ),
