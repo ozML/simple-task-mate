@@ -1,4 +1,7 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_test/flutter_test.dart';
 import 'package:simple_task_mate/services/api.dart';
 
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -50,7 +53,9 @@ final testStamps = [
 final testFullTasks = [
   Task(
     id: 0,
-    name: 'task',
+    name: 'task0',
+    refId: 'ref0',
+    info: 'First task',
     entries: [
       TaskEntry(
         taskId: 0,
@@ -65,4 +70,26 @@ final testFullTasks = [
       ),
     ],
   ),
+  Task(
+    id: 1,
+    name: 'task1',
+    entries: [
+      TaskEntry(
+        taskId: 1,
+        date: testWeek.first,
+        duration: const Duration(minutes: 15),
+      ),
+    ],
+  ),
 ];
+
+extension WidgetTesterExtension on WidgetTester {
+  Future<void> hoverOver(Finder finder) async {
+    final gesture = await createGesture(kind: PointerDeviceKind.mouse);
+    await gesture.addPointer(location: Offset.zero);
+    addTearDown(gesture.removePointer);
+    await pump();
+    await gesture.moveTo(getCenter(finder));
+    await pumpAndSettle();
+  }
+}

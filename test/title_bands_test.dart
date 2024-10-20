@@ -60,7 +60,7 @@ void main() {
         TestApp(
           child: BookedTimeSummaryBand(
             workTime: const Duration(hours: 8),
-            tasks: testFullTasks,
+            tasks: testFullTasks.sublist(0, 1),
           ),
         ),
       );
