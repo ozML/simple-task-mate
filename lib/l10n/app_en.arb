@@ -9,7 +9,7 @@
 	"buttonReset" : "Reset",
 	"labelArrive": "Arrive",
 	"labelLeave": "Leave",
-	"labelPresentnessTime" : "Presentness time",
+	"labelPresentnessTime" : "Working day",
 	"labelWorkingTime" : "Working time",
 	"labelPauseTime" : "Pause time",
 	"labelBookedTime" : "Booked time",
