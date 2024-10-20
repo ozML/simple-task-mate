@@ -216,12 +216,7 @@ class TaskViewState extends State<TaskView> {
               ),
             ),
             Expanded(
-              child: Center(
-                child: Consumer<DateTimeModel>(
-                  builder: (context, value, child) =>
-                      TimeTicker(time: value.dateTime),
-                ),
-              ),
+              child: Center(child: TimeTicker.fromProvider(context: context)),
             ),
             Expanded(child: Container()),
           ],

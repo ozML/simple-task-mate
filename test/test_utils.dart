@@ -32,6 +32,8 @@ final testWeek = [
   DateTime(2024, 10, 20),
 ];
 
+final testDateTime = testWeek.last.copyWith(hour: 20, minute: 30);
+
 final testStamps = [
   Stamp(type: StampType.arrival, time: testWeek.first.copyWith(hour: 8)),
   Stamp(
