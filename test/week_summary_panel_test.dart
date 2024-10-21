@@ -5,7 +5,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/widgets/week_summary_panel.dart';
 
-import 'test_utils.dart';
+import '_test_utils.dart';
 
 void main() {
   initializeDateFormatting('en', null);

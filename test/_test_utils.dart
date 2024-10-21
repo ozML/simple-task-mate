@@ -83,6 +83,20 @@ final testFullTasks = [
   ),
 ];
 
+final testTaskSummaries = [
+  TaskSummary(
+    taskId: 0,
+    refId: 'ref0',
+    name: 'task0',
+    time: const Duration(hours: 6, minutes: 30),
+  ),
+  TaskSummary(
+    taskId: 1,
+    name: 'task1',
+    time: const Duration(minutes: 15),
+  ),
+];
+
 extension WidgetTesterExtension on WidgetTester {
   Future<void> hoverOver(Finder finder) async {
     final gesture = await createGesture(kind: PointerDeviceKind.mouse);

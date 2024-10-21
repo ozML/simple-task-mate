@@ -269,9 +269,9 @@ class StampSummary with EquatableMixin {
 class TaskSummary with EquatableMixin {
   TaskSummary({
     required this.taskId,
-    required this.refId,
     required this.name,
     required this.time,
+    this.refId,
   });
 
   final int taskId;

@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:simple_task_mate/models/config_model.dart';
 import 'package:simple_task_mate/widgets/time_ticker.dart';
 
-import 'test_utils.dart';
+import '_test_utils.dart';
 
 void main() {
   group('TimeTicker -', () {

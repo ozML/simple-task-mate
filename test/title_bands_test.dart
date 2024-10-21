@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:simple_task_mate/widgets/title_bands.dart';
 
-import 'test_utils.dart';
+import '_test_utils.dart';
 
 void main() {
   group('PlainTitleBand -', () {

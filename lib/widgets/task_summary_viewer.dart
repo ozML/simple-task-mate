@@ -19,6 +19,12 @@ class TaskSummaryViewer extends StatelessWidget {
     super.key,
   });
 
+  static Key get keyItemTile => Key('$TaskSummaryViewer/itemTile');
+  static Key get keyItemActionCopy => Key('$TaskSummaryViewer/itemActionCopy');
+  static Key get keyItemActionDelete =>
+      Key('$TaskSummaryViewer/itemActionDelete');
+  static Key get keyItemActionEdit => Key('$TaskSummaryViewer/itemActionEdit');
+
   final List<TaskSummary> summaries;
   final TitleStyle titleStyle;
   final String? searchText;
@@ -43,6 +49,7 @@ class TaskSummaryViewer extends StatelessWidget {
       onSearchTextChanged: onSearchTextChanged,
       tileBuilder: (context, item, onSelect) {
         return ItemTile(
+          key: keyItemTile,
           item: item,
           title: item.refId,
           subTitle: item.name,
@@ -50,6 +57,7 @@ class TaskSummaryViewer extends StatelessWidget {
           onSelect: onSelect,
           actions: [
             ItemTileAction(
+              key: keyItemActionCopy,
               icon: IconUtils.copy(context),
               onPressed: (_) {
                 Clipboard.setData(ClipboardData(text: item.fullName()));
@@ -57,11 +65,13 @@ class TaskSummaryViewer extends StatelessWidget {
             ),
             if (onDelete != null)
               ItemTileAction(
+                key: keyItemActionDelete,
                 icon: IconUtils.trashCan(context),
                 onPressed: onDelete,
               ),
             if (onEdit != null)
               ItemTileAction(
+                key: keyItemActionEdit,
                 icon: IconUtils.edit(context),
                 onPressed: onEdit,
               ),

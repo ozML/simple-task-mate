@@ -5,7 +5,7 @@ import 'package:simple_task_mate/utils/tuple.dart';
 import 'package:simple_task_mate/widgets/item_viewer.dart';
 import 'package:simple_task_mate/widgets/task_viewer.dart';
 
-import 'test_utils.dart';
+import '_test_utils.dart';
 
 void main() {
   group('TaskViewer -', () {
