@@ -15,26 +15,57 @@ class TaskEntryViewer extends StatelessWidget {
     required this.title,
     required this.taskEntries,
     this.titleStyle = TitleStyle.header,
+    this.locale = const Locale('en'),
     this.showDate = false,
     this.onDelete,
     this.onEdit,
     super.key,
   });
 
+  static Key get keyItemTile => Key('$TaskEntryViewer/itemTile');
+  static Key get keyItemActionCopy => Key('$TaskEntryViewer/itemActionCopy');
+  static Key get keyItemActionDelete =>
+      Key('$TaskEntryViewer/itemActionDelete');
+  static Key get keyItemActionEdit => Key('$TaskEntryViewer/itemActionEdit');
+
   final String title;
   final List<TaskEntry> taskEntries;
   final TitleStyle titleStyle;
+  final Locale locale;
   final bool showDate;
   final void Function(TaskEntry taskEntry)? onDelete;
   final void Function(TaskEntry taskEntry)? onEdit;
+
+  static Widget fromProvider({
+    required BuildContext context,
+    required String title,
+    required List<TaskEntry> taskEntries,
+    TitleStyle titleStyle = TitleStyle.header,
+    final bool showDate = false,
+    final void Function(TaskEntry taskEntry)? onDelete,
+    final void Function(TaskEntry taskEntry)? onEdit,
+    Key? key,
+  }) {
+    final config = context.watch<ConfigModel>();
+
+    return TaskEntryViewer(
+      title: title,
+      taskEntries: taskEntries,
+      titleStyle: titleStyle,
+      locale: config.getValue<Locale>(settingLanguage),
+      showDate: showDate,
+      onDelete: onDelete,
+      onEdit: onEdit,
+      key: key,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     final onEdit = this.onEdit;
     final onDelete = this.onDelete;
 
-    final config = context.watch<ConfigModel>();
-    final languageCode = config.getValue<Locale>(settingLanguage).languageCode;
+    final languageCode = locale.languageCode;
 
     return ItemListViewer<TaskEntry>(
       items: taskEntries,
@@ -42,15 +73,17 @@ class TaskEntryViewer extends StatelessWidget {
       titleStyle: titleStyle,
       tileBuilder: (context, item, onSelect) {
         return ItemTile(
+          key: keyItemTile,
           item: item,
           subTitle: item.info,
           footNote:
-              '${showDate ? '${CustomDateFormats.yMMdd(item.date, languageCode)} |  ' : ''}'
-              '${showDate ? '${languageCode == 'de' ? 'KW' : 'CW'} ${getWeekNumber(item.date)} |  ' : ''}'
+              '${showDate ? '${CustomDateFormats.yMMdd(item.date, languageCode)} | ' : ''}'
+              '${showDate ? '${languageCode == 'de' ? 'KW' : 'CW'} ${getWeekNumber(item.date)} | ' : ''}'
               '${context.texts.labelDuration(item.time().asHHMM)}',
           onSelect: onSelect,
           actions: [
             ItemTileAction(
+              key: keyItemActionCopy,
               icon: IconUtils.copy(context),
               onPressed: (_) {
                 Clipboard.setData(ClipboardData(text: item.info ?? ''));
@@ -58,11 +91,13 @@ class TaskEntryViewer extends StatelessWidget {
             ),
             if (onDelete != null)
               ItemTileAction(
+                key: keyItemActionDelete,
                 icon: IconUtils.trashCan(context),
                 onPressed: onDelete,
               ),
             if (onEdit != null)
               ItemTileAction(
+                key: keyItemActionEdit,
                 icon: IconUtils.edit(context),
                 onPressed: onEdit,
               ),

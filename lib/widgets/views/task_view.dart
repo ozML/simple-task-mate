@@ -297,7 +297,8 @@ class TaskViewState extends State<TaskView> {
                             ),
                             child: Stack(
                               children: [
-                                TaskEntryViewer(
+                                TaskEntryViewer.fromProvider(
+                                  context: context,
                                   title:
                                       selectedTask.refId ?? selectedTask.name,
                                   taskEntries: selectedTask.entries ?? [],

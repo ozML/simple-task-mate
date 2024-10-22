@@ -58,12 +58,14 @@ final testFullTasks = [
     info: 'First task',
     entries: [
       TaskEntry(
+        id: 0,
         taskId: 0,
         date: testWeek.first,
         duration: const Duration(hours: 4),
         info: 'First entry',
       ),
       TaskEntry(
+        id: 1,
         taskId: 0,
         date: testWeek.first,
         duration: const Duration(hours: 2, minutes: 30),
@@ -75,6 +77,7 @@ final testFullTasks = [
     name: 'task1',
     entries: [
       TaskEntry(
+        id: 2,
         taskId: 1,
         date: testWeek.first,
         duration: const Duration(minutes: 15),
