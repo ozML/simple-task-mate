@@ -141,30 +141,24 @@ class StampViewState extends State<StampView> {
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 5),
-                  child: Consumer<StampModel>(
-                    builder: (context, value, child) {
-                      final isCurrentDate = context.select<DateTimeModel, bool>(
-                        (value) => value.selectedDate == value.date,
-                      );
-
-                      return StampEntryViewer(
-                        stamps: value.stamps.reversed.toList(),
-                        isManualMode: _manualStampMode,
-                        isStampDisabled: !isCurrentDate,
-                        isLoading: value.isLoading,
-                        onSaveStamp: (stamp) => value
-                            .addStamp(stamp)
-                            .then((value) => _refresh(value.$1)),
-                        onDeleteStamp: (stamp) => confirmDeleteStamp(
-                          context: context,
-                          stamp: stamp,
-                          action: () => value.deleteStamp(stamp).then(_refresh),
-                        ),
-                        onModeChanged: (value) => setState(() {
-                          _manualStampMode = value;
-                        }),
-                      );
-                    },
+                  child: StampEntryViewer.fromProvider(
+                    context: context,
+                    isManualMode: _manualStampMode,
+                    onSaveStamp: (stamp) => context
+                        .read<StampModel>()
+                        .addStamp(stamp)
+                        .then((value) => _refresh(value.$1)),
+                    onDeleteStamp: (stamp) => confirmDeleteStamp(
+                      context: context,
+                      stamp: stamp,
+                      action: () => context
+                          .read<StampModel>()
+                          .deleteStamp(stamp)
+                          .then(_refresh),
+                    ),
+                    onModeChanged: (value) => setState(() {
+                      _manualStampMode = value;
+                    }),
                   ),
                 ),
               ),

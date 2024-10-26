@@ -7,9 +7,14 @@ import 'package:simple_task_mate/services/api.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class TestApp extends StatelessWidget {
-  const TestApp({required this.child, super.key});
+  const TestApp({
+    required this.child,
+    this.wrapChildInScaffold = true,
+    super.key,
+  });
 
   final Widget child;
+  final bool wrapChildInScaffold;
 
   @override
   Widget build(BuildContext context) => MaterialApp(
@@ -20,7 +25,7 @@ class TestApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
           useMaterial3: true,
         ),
-        home: child,
+        home: wrapChildInScaffold ? Scaffold(body: child) : child,
       );
 }
 
@@ -101,12 +106,16 @@ final testTaskSummaries = [
 ];
 
 extension WidgetTesterExtension on WidgetTester {
-  Future<void> hoverOver(Finder finder) async {
+  Future<TestGesture> hoverOver(Finder finder, {bool tearDown = true}) async {
     final gesture = await createGesture(kind: PointerDeviceKind.mouse);
     await gesture.addPointer(location: Offset.zero);
-    addTearDown(gesture.removePointer);
+    if (tearDown) {
+      addTearDown(gesture.removePointer);
+    }
     await pump();
     await gesture.moveTo(getCenter(finder));
     await pumpAndSettle();
+
+    return gesture;
   }
 }

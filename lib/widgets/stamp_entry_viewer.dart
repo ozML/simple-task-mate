@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:simple_task_mate/extensions/context.dart';
 import 'package:simple_task_mate/models/config_model.dart';
 import 'package:simple_task_mate/models/date_time_model.dart';
+import 'package:simple_task_mate/models/stamp_model.dart';
 import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
@@ -14,12 +15,20 @@ import 'package:simple_task_mate/widgets/content_box.dart';
 class StampEntryTile extends StatefulWidget {
   const StampEntryTile({
     required this.stamp,
+    this.clockTimeFormat = ClockTimeFormat.twentyFourHours,
+    this.locale = const Locale('en'),
     this.isEditable = false,
     this.onDeleteStamp,
     super.key,
   });
 
+  static Key get keyTypeText => Key('$StampEntryTile/typeText');
+  static Key get keyTimeText => Key('$StampEntryTile/timeText');
+  static Key get keyActionDelete => Key('$StampEntryTile/actionDelete');
+
   final Stamp stamp;
+  final ClockTimeFormat clockTimeFormat;
+  final Locale locale;
   final bool isEditable;
   final void Function(Stamp stamp)? onDeleteStamp;
 
@@ -37,13 +46,11 @@ class StampEntryTileState extends State<StampEntryTile> {
 
     final onDeleteStamp = widget.onDeleteStamp;
 
-    final config = context.watch<ConfigModel>();
-    final clockTimeFormat =
-        switch (config.getValue<ClockTimeFormat>(settingClockTimeFormat)) {
+    final clockTimeFormat = switch (widget.clockTimeFormat) {
       ClockTimeFormat.twelveHours => 'hh:mm a',
       _ => 'HH:mm',
     };
-    final languageCode = config.getValue<Locale>(settingLanguage).languageCode;
+    final languageCode = widget.locale.languageCode;
 
     var content = Container(
       height: 50,
@@ -59,6 +66,7 @@ class StampEntryTileState extends State<StampEntryTile> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
+            key: StampEntryTile.keyTypeText,
             switch (widget.stamp.type) {
               StampType.arrival => context.texts.labelArrive,
               StampType.departure => context.texts.labelLeave,
@@ -68,12 +76,14 @@ class StampEntryTileState extends State<StampEntryTile> {
           ),
           const SizedBox(width: 20),
           Text(
+            key: StampEntryTile.keyTimeText,
             DateFormat(clockTimeFormat, languageCode).format(widget.stamp.time),
             style: primaryTextStyle,
           ),
           if (widget.isEditable && isHovering) ...[
             const SizedBox(width: 50),
             IconButton(
+              key: StampEntryTile.keyActionDelete,
               icon: IconUtils.trashCan(context),
               onPressed: onDeleteStamp != null
                   ? () => onDeleteStamp(widget.stamp)
@@ -97,7 +107,11 @@ class StampEntryTileState extends State<StampEntryTile> {
 class StampEntryViewer extends StatefulWidget {
   const StampEntryViewer({
     required this.stamps,
+    required this.date,
+    required this.getTime,
     this.titleStyle = TitleStyle.header,
+    this.clockTimeFormat = ClockTimeFormat.twentyFourHours,
+    this.locale = const Locale('en'),
     this.isManualMode = true,
     this.isStampDisabled = false,
     this.isLoading = false,
@@ -107,14 +121,71 @@ class StampEntryViewer extends StatefulWidget {
     super.key,
   });
 
+  static Key get keyLoadingIndicator =>
+      Key('$StampEntryViewer/loadingIndicator');
+  static Key get keyItemTile => Key('$StampEntryViewer/itemTile');
+  static Key get keyManualTimeInput => Key('$StampEntryViewer/manualTimeInput');
+  static Key get keyButtonArrive => Key('$StampEntryViewer/buttonArrive');
+  static Key get keyButtonLeave => Key('$StampEntryViewer/buttonLeave');
+  static Key get keyToggleStampMode => Key('$StampEntryViewer/togglStampMode');
+
   final List<Stamp> stamps;
+  final DateTime date;
   final TitleStyle titleStyle;
+  final ClockTimeFormat clockTimeFormat;
+  final Locale locale;
   final bool isManualMode;
   final bool isStampDisabled;
   final bool isLoading;
+  final DateTime Function() getTime;
   final ValueChanged<bool>? onModeChanged;
   final void Function(Stamp stamp)? onSaveStamp;
   final void Function(Stamp stamp)? onDeleteStamp;
+
+  static Widget fromProvider({
+    required BuildContext context,
+    TitleStyle titleStyle = TitleStyle.header,
+    bool isManualMode = true,
+    ValueChanged<bool>? onModeChanged,
+    void Function(Stamp stamp)? onSaveStamp,
+    void Function(Stamp stamp)? onDeleteStamp,
+    Key? key,
+  }) {
+    final locale = context.select<ConfigModel, Locale>(
+      (value) => value.getValue(settingLanguage),
+    );
+    final clockTimeFormat = context.select<ConfigModel, ClockTimeFormat>(
+      (value) => value.getValue(settingClockTimeFormat),
+    );
+
+    final selectedDate = context.select<DateTimeModel, DateTime>(
+      (value) => value.selectedDate,
+    );
+    final currentDate = context.select<DateTimeModel, DateTime>(
+      (value) => value.date,
+    );
+    final isCurrentDate = selectedDate == currentDate;
+
+    final stampModel = context.watch<StampModel>();
+    final stamps = stampModel.stamps;
+    final isLoading = stampModel.isLoading;
+
+    return StampEntryViewer(
+      stamps: stamps,
+      date: selectedDate,
+      getTime: () => context.read<DateTimeModel>().dateTime,
+      titleStyle: titleStyle,
+      clockTimeFormat: clockTimeFormat,
+      locale: locale,
+      isManualMode: isManualMode,
+      isStampDisabled: !isCurrentDate,
+      isLoading: isLoading,
+      onModeChanged: onModeChanged,
+      onSaveStamp: onSaveStamp,
+      onDeleteStamp: onDeleteStamp,
+      key: key,
+    );
+  }
 
   @override
   State<StatefulWidget> createState() => StampEntryViewerState();
@@ -180,10 +251,7 @@ class StampEntryViewerState extends State<StampEntryViewer> {
           onSaveStamp?.call(
             Stamp(
               type: type,
-              time: context
-                  .read<DateTimeModel>()
-                  .selectedDate
-                  .copyWith(hour: time.hour, minute: time.minute),
+              time: widget.date.copyWith(hour: time.hour, minute: time.minute),
             ),
           );
 
@@ -194,17 +262,17 @@ class StampEntryViewerState extends State<StampEntryViewer> {
         onSaveStamp?.call(
           Stamp(
             type: type,
-            time: context.read<DateTimeModel>().dateTime,
+            time: widget.getTime(),
           ),
         );
       }
     }
 
     void submitTime(TimeOfDay time) {
-      final stampTime = context.read<DateTimeModel>().selectedDate.copyWith(
-            hour: time.hour,
-            minute: time.minute,
-          );
+      final stampTime = widget.date.copyWith(
+        hour: time.hour,
+        minute: time.minute,
+      );
 
       final type = HardwareKeyboard.instance.isControlPressed
           ? StampType.departure
@@ -221,6 +289,8 @@ class StampEntryViewerState extends State<StampEntryViewer> {
       _focusNode.requestFocus();
     }
 
+    final stamps = widget.stamps.reversed.toList();
+
     return Column(
       children: [
         Expanded(
@@ -229,15 +299,19 @@ class StampEntryViewerState extends State<StampEntryViewer> {
             titleStyle: widget.titleStyle,
             child: widget.isLoading
                 ? Container(
+                    key: StampEntryViewer.keyLoadingIndicator,
                     width: 100,
                     height: 100,
                     alignment: Alignment.center,
                     child: const CircularProgressIndicator(),
                   )
                 : ListView.builder(
-                    itemCount: widget.stamps.length,
+                    itemCount: stamps.length,
                     itemBuilder: (context, index) => StampEntryTile(
-                      stamp: widget.stamps[index],
+                      key: StampEntryViewer.keyItemTile,
+                      stamp: stamps[index],
+                      locale: widget.locale,
+                      clockTimeFormat: widget.clockTimeFormat,
                       isEditable: widget.isManualMode,
                       onDeleteStamp: onDeleteStamp,
                     ),
@@ -259,6 +333,7 @@ class StampEntryViewerState extends State<StampEntryViewer> {
                     margin: const EdgeInsets.only(right: 10),
                     alignment: Alignment.centerLeft,
                     child: TimeInputField(
+                      key: StampEntryViewer.keyManualTimeInput,
                       controller: _textEditingController,
                       focusNode: _focusNode,
                       autoFocus: true,
@@ -272,7 +347,8 @@ class StampEntryViewerState extends State<StampEntryViewer> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     FilledButton.icon(
-                      icon: IconUtils.leave(
+                      key: StampEntryViewer.keyButtonArrive,
+                      icon: IconUtils.come(
                         context,
                         color: inversePrimaryColor,
                         size: 20,
@@ -287,7 +363,8 @@ class StampEntryViewerState extends State<StampEntryViewer> {
                     ),
                     const SizedBox(width: 20),
                     FilledButton.icon(
-                      icon: IconUtils.come(
+                      key: StampEntryViewer.keyButtonLeave,
+                      icon: IconUtils.leave(
                         context,
                         color: inversePrimaryColor,
                         size: 20,
@@ -307,6 +384,7 @@ class StampEntryViewerState extends State<StampEntryViewer> {
               Align(
                 alignment: Alignment.centerRight,
                 child: IconButton(
+                  key: StampEntryViewer.keyToggleStampMode,
                   icon: widget.isManualMode
                       ? IconUtils.squareClose(context)
                       : IconUtils.edit(context),

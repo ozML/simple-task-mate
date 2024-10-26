@@ -204,7 +204,7 @@ class IconUtils {
   }) =>
       _getIcon(
         context: context,
-        icon: FontAwesomeIcons.rightFromBracket,
+        icon: FontAwesomeIcons.rightToBracket,
         color: color,
         size: size,
       );
@@ -216,7 +216,7 @@ class IconUtils {
   }) =>
       _getIcon(
         context: context,
-        icon: FontAwesomeIcons.rightToBracket,
+        icon: FontAwesomeIcons.rightFromBracket,
         color: color,
         size: size,
       );
