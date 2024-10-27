@@ -79,6 +79,7 @@ class ItemTileState<T> extends State<ItemTile<T>> {
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   if (infoIcon != null || title != null || linkIcon != null)
                     Row(
@@ -110,7 +111,7 @@ class ItemTileState<T> extends State<ItemTile<T>> {
                       subTitle,
                       style: secondaryTextStyle,
                     ),
-                  if (content != null) Expanded(child: content),
+                  if (content != null) content,
                   if (footNote != null) ...[
                     const SizedBox(height: 20),
                     Text(
@@ -156,6 +157,8 @@ class ItemListViewer<T> extends StatefulWidget {
     this.onSearchTextChanged,
     super.key,
   });
+
+  static Key get keySearchField => Key('$ItemListViewer/search<field');
 
   final List<T> items;
   final ItemTile<T> Function(
@@ -203,6 +206,7 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
                   child: Stack(
                     children: [
                       TextField(
+                        key: ItemListViewer.keySearchField,
                         controller: _searchTextController,
                         decoration: textInputDecoration(
                           context,
