@@ -100,6 +100,7 @@ class StampDataBaseHelper extends DataBaseHelper {
   Future<List<StampSummary>> loadSummaries({
     required DateTime start,
     required DateTime end,
+    OrderBy orderBy = const OrderBy.none(),
   }) =>
       dbAction<List<StampSummary>>(
         (db) async {
@@ -125,6 +126,7 @@ class StampDataBaseHelper extends DataBaseHelper {
               FROM $tableName
               WHERE $columnTime >= ${currentStartDate.secondsSinceEpoch}
               AND $columnTime < ${currentEndDate.secondsSinceEpoch}
+              ${orderBy.statement}
             ''';
 
             batch.rawQuery(query);
@@ -145,11 +147,13 @@ class StampDataBaseHelper extends DataBaseHelper {
         },
       ).then((value) => value ?? []);
 
-  Future<List<StampSummary>> loadSummariesForDate(
-    DateTime date,
-  ) =>
+  Future<List<StampSummary>> loadSummariesForDate({
+    required DateTime date,
+    OrderBy orderBy = const OrderBy.none(),
+  }) =>
       loadSummaries(
         start: date,
         end: date.add(const Duration(days: 1)),
+        orderBy: orderBy,
       );
 }
