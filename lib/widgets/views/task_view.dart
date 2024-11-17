@@ -170,58 +170,18 @@ class TaskViewState extends State<TaskView> {
             Expanded(
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Consumer<DateTimeModel>(
-                  builder: (context, value, child) {
-                    final date = value.selectedDate;
-                    final minDate = DateTime(1900);
-                    final maxDate = value.date.add(
-                      const Duration(days: 365 * 5),
-                    );
-
-                    return DateSelector(
-                      date: date,
-                      currentDate: value.date,
-                      minDate: minDate,
-                      maxDate: maxDate,
-                      onSelectDate: (date) {
-                        value.selectDate(date);
-                        _refresh();
-                      },
-                      onPreviousDate: date != minDate
-                          ? () {
-                              value.selectDate(
-                                date.subtract(const Duration(days: 1)),
-                              );
-                              _clearSelectedTask();
-                              _refresh();
-                            }
-                          : null,
-                      onNextDate: date != maxDate
-                          ? () {
-                              value.selectDate(
-                                date.add(const Duration(days: 1)),
-                              );
-                              _clearSelectedTask();
-                              _refresh();
-                            }
-                          : null,
-                      onReset: () {
-                        value.clearDateSelection();
-                        _clearSelectedTask();
-                        _refresh();
-                      },
-                    );
+                child: DateSelector.buildFromModels(
+                  context: context,
+                  onUpdate: () {
+                    _clearSelectedTask();
+                    _refresh();
                   },
                 ),
               ),
             ),
             Expanded(
-              child: Center(
-                child: Consumer<DateTimeModel>(
-                  builder: (context, value, child) =>
-                      TimeTicker(time: value.dateTime),
-                ),
-              ),
+              child:
+                  Center(child: TimeTicker.buildFromModels(context: context)),
             ),
             Expanded(child: Container()),
           ],
@@ -302,7 +262,8 @@ class TaskViewState extends State<TaskView> {
                             ),
                             child: Stack(
                               children: [
-                                TaskEntryViewer(
+                                TaskEntryViewer.buildFromModels(
+                                  context: context,
                                   title:
                                       selectedTask.refId ?? selectedTask.name,
                                   taskEntries: selectedTask.entries ?? [],

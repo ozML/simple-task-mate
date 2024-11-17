@@ -18,6 +18,10 @@ class ItemTile<T> extends StatefulWidget {
     super.key,
   });
 
+  static Key get keyTitle => Key('$ItemTile/title');
+  static Key get keySubTitle => Key('$ItemTile/subTitle');
+  static Key get keyFootNote => Key('$ItemTile/footNote');
+
   final T item;
   final String? title;
   final String? subTitle;
@@ -33,9 +37,10 @@ class ItemTile<T> extends StatefulWidget {
 }
 
 class ItemTileAction<T> {
-  ItemTileAction({required this.icon, required this.onPressed});
+  ItemTileAction({required this.icon, required this.onPressed, this.key});
 
   final Widget icon;
+  final Key? key;
   final void Function(T item) onPressed;
 }
 
@@ -51,7 +56,7 @@ class ItemTileState<T> extends State<ItemTile<T>> {
     final title = widget.title;
     final subTitle = widget.subTitle;
     final content = widget.content;
-    final footNode = widget.footNote;
+    final footNote = widget.footNote;
     final infoIcon = widget.infoIcon;
     final linkIcon = widget.linkIcon;
 
@@ -74,6 +79,7 @@ class ItemTileState<T> extends State<ItemTile<T>> {
             children: [
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   if (infoIcon != null || title != null || linkIcon != null)
                     Row(
@@ -90,6 +96,7 @@ class ItemTileState<T> extends State<ItemTile<T>> {
                           ),
                         Expanded(
                           child: Text(
+                            key: ItemTile.keyTitle,
                             title ?? '',
                             style: primaryTextStyle?.copyWith(
                               fontWeight: FontWeight.bold,
@@ -100,13 +107,18 @@ class ItemTileState<T> extends State<ItemTile<T>> {
                     ),
                   if (subTitle != null)
                     Text(
+                      key: ItemTile.keySubTitle,
                       subTitle,
                       style: secondaryTextStyle,
                     ),
-                  if (content != null) Expanded(child: content),
-                  if (footNode != null) ...[
+                  if (content != null) content,
+                  if (footNote != null) ...[
                     const SizedBox(height: 20),
-                    Text(footNode, style: secondaryTextStyle),
+                    Text(
+                      key: ItemTile.keyFootNote,
+                      footNote,
+                      style: secondaryTextStyle,
+                    ),
                   ],
                 ],
               ),
@@ -117,6 +129,7 @@ class ItemTileState<T> extends State<ItemTile<T>> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: widget.actions
                         .map((e) => IconButton(
+                              key: e.key,
                               icon: e.icon,
                               onPressed: () => e.onPressed(widget.item),
                             ))
@@ -144,6 +157,8 @@ class ItemListViewer<T> extends StatefulWidget {
     this.onSearchTextChanged,
     super.key,
   });
+
+  static Key get keySearchField => Key('$ItemListViewer/search<field');
 
   final List<T> items;
   final ItemTile<T> Function(
@@ -191,6 +206,7 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
                   child: Stack(
                     children: [
                       TextField(
+                        key: ItemListViewer.keySearchField,
                         controller: _searchTextController,
                         decoration: textInputDecoration(
                           context,

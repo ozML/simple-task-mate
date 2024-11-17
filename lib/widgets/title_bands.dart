@@ -8,6 +8,9 @@ import 'package:simple_task_mate/utils/time_summary_utils.dart';
 class PlainTitleBand extends StatelessWidget {
   const PlainTitleBand({required this.title, this.subTitle, super.key});
 
+  static get keyTitle => Key('$PlainTitleBand/title');
+  static get keySubTitle => Key('$PlainTitleBand/subTitle');
+
   final String title;
   final String? subTitle;
 
@@ -28,12 +31,14 @@ class PlainTitleBand extends StatelessWidget {
             child: Divider(height: 1, color: primaryColor),
           ),
           Text(
+            key: keyTitle,
             title,
             style: primaryTextStyleFrom(context, bold: true),
             textAlign: TextAlign.center,
           ),
           if (subTitle != null)
             Text(
+              key: keySubTitle,
               subTitle,
               style: primaryTextStyleFrom(context),
               textAlign: TextAlign.center,
@@ -50,6 +55,10 @@ class PlainTitleBand extends StatelessWidget {
 
 class WorkTimeSummaryBand extends StatelessWidget {
   const WorkTimeSummaryBand({required this.stamps, super.key});
+
+  static Key get keyWorkingTime => Key('$WorkTimeSummaryBand/workingTime');
+  static Key get keyPauseTime => Key('$WorkTimeSummaryBand/pauseTime');
+  static Key get keyPresentnessTime => Key('$WorkTimeSummaryBand/presentTime');
 
   final List<Stamp> stamps;
 
@@ -80,23 +89,14 @@ class WorkTimeSummaryBand extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      context.texts.labelPresentnessTime,
-                      style: primaryTextStyle,
-                    ),
-                    Text(presentnessTime.asHHMM, style: secondaryTextStyle),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
                       context.texts.labelWorkingTime,
                       style: primaryTextStyle,
                     ),
-                    Text(workTime.asHHMM, style: secondaryTextStyle),
+                    Text(
+                      key: keyWorkingTime,
+                      workTime.asHHMM,
+                      style: secondaryTextStyle,
+                    ),
                   ],
                 ),
               ),
@@ -106,7 +106,28 @@ class WorkTimeSummaryBand extends StatelessWidget {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(context.texts.labelPauseTime, style: primaryTextStyle),
-                    Text(pauseTime.asHHMM, style: secondaryTextStyle),
+                    Text(
+                      key: keyPauseTime,
+                      pauseTime.asHHMM,
+                      style: secondaryTextStyle,
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      context.texts.labelPresentnessTime,
+                      style: primaryTextStyle,
+                    ),
+                    Text(
+                      key: keyPresentnessTime,
+                      presentnessTime.asHHMM,
+                      style: secondaryTextStyle,
+                    ),
                   ],
                 ),
               ),
@@ -128,6 +149,10 @@ class BookedTimeSummaryBand extends StatelessWidget {
     required this.tasks,
     super.key,
   });
+
+  static Key get keyWorkingTime => Key('$BookedTimeSummaryBand/workingTime');
+  static Key get keyBookedTime => Key('$BookedTimeSummaryBand/bookedTime');
+  static Key get keyLeftTime => Key('$BookedTimeSummaryBand/leftTime');
 
   final Duration workTime;
   final List<Task> tasks;
@@ -163,7 +188,11 @@ class BookedTimeSummaryBand extends StatelessWidget {
                       context.texts.labelWorkingTime,
                       style: primaryTextStyle,
                     ),
-                    Text(workTime.asHHMM, style: secondaryTextStyle),
+                    Text(
+                      key: keyWorkingTime,
+                      workTime.asHHMM,
+                      style: secondaryTextStyle,
+                    ),
                   ],
                 ),
               ),
@@ -176,7 +205,11 @@ class BookedTimeSummaryBand extends StatelessWidget {
                       context.texts.labelBookedTime,
                       style: primaryTextStyle,
                     ),
-                    Text(bookedTime.asHHMM, style: secondaryTextStyle),
+                    Text(
+                      key: keyBookedTime,
+                      bookedTime.asHHMM,
+                      style: secondaryTextStyle,
+                    ),
                   ],
                 ),
               ),
@@ -190,6 +223,7 @@ class BookedTimeSummaryBand extends StatelessWidget {
                       style: primaryTextStyle,
                     ),
                     Text(
+                      key: keyLeftTime,
                       (workTime - bookedTime).asHHMM,
                       style: secondaryTextStyle,
                     ),

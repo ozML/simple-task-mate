@@ -9,7 +9,7 @@
 	"buttonReset" : "Zurücksetzen",
 	"labelArrive": "Kommt",
 	"labelLeave": "Geht",
-	"labelPresentnessTime" : "Präsenszeit",
+	"labelPresentnessTime" : "Arbeitstag",
 	"labelWorkingTime" : "Arbeitszeit",
 	"labelPauseTime" : "Pause",
 	"labelBookedTime" : "Gebuchte Zeit",

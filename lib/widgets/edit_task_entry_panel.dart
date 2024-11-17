@@ -195,153 +195,152 @@ class EditTaskEntryPanelState extends State<EditTaskEntryPanel> {
       );
     }
 
-    final content = Consumer<TaskModel>(builder: (context, model, _) {
-      return Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          children: [
-            Expanded(
-              child: Row(
-                children: [
-                  if (isCreateDialog && !_addNewTask) ...[
-                    Expanded(
-                      flex: 2,
-                      child: TaskViewer(
-                        tasks: model.tasks,
-                        titleStyle: TitleStyle.none,
-                        hideDurations: true,
-                        hideCopyButton: true,
-                        onSelect: (task) {
-                          setState(() => _selectedTask = task);
-                        },
-                        onSearchTextChanged: (value) {
-                          model.loadTasks(searchText: value);
-                        },
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: VerticalDivider(
-                        width: 0.5,
-                        indent: 30,
-                        endIndent: 30,
-                      ),
-                    ),
-                  ],
+    final content = Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          Expanded(
+            child: Row(
+              children: [
+                if (isCreateDialog && !_addNewTask) ...[
                   Expanded(
-                    flex: isCreateDialog && !_addNewTask ? 3 : 1,
-                    child: details,
+                    flex: 2,
+                    child: TaskViewer.buildFromModels(
+                      context: context,
+                      titleStyle: TitleStyle.none,
+                      hideDurations: true,
+                      hideCopyButton: true,
+                      onSelect: (task) {
+                        setState(() => _selectedTask = task);
+                      },
+                      onSearchTextChanged: (value) {
+                        context.read<TaskModel>().loadTasks(searchText: value);
+                      },
+                    ),
+                  ),
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20),
+                    child: VerticalDivider(
+                      width: 0.5,
+                      indent: 30,
+                      endIndent: 30,
+                    ),
                   ),
                 ],
-              ),
+                Expanded(
+                  flex: isCreateDialog && !_addNewTask ? 3 : 1,
+                  child: details,
+                ),
+              ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(top: 15),
-                  child: FilledButton.icon(
-                    label: Text(
-                      taskEntry == null
-                          ? context.texts.buttonAdd
-                          : context.texts.buttonSave,
-                    ),
-                    onPressed: () async {
-                      final date = context.read<DateTimeModel>().selectedDate;
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 15),
+                child: FilledButton.icon(
+                  label: Text(
+                    taskEntry == null
+                        ? context.texts.buttonAdd
+                        : context.texts.buttonSave,
+                  ),
+                  onPressed: () async {
+                    final taskModel = context.read<TaskModel>();
+                    final date = context.read<DateTimeModel>().selectedDate;
 
-                      final time = _timeController.text.mapTo((e) {
-                        final regex = RegExp(r'^\d{2}:\d{2}$');
-                        if (regex.hasMatch(e)) {
-                          final parts = e.split(':');
+                    final time = _timeController.text.mapTo((e) {
+                      final regex = RegExp(r'^\d{2}:\d{2}$');
+                      if (regex.hasMatch(e)) {
+                        final parts = e.split(':');
 
-                          return Duration(
-                            hours: parts[0].mapTo(int.parse),
-                            minutes: parts[1].mapTo(int.parse),
-                          );
-                        }
-
-                        return null;
-                      });
-                      if (time == null) {
-                        return;
+                        return Duration(
+                          hours: parts[0].mapTo(int.parse),
+                          minutes: parts[1].mapTo(int.parse),
+                        );
                       }
 
-                      final infoText = _entryInfoController.text
-                          .mapTo((e) => e.isNotEmpty ? e : null);
+                      return null;
+                    });
+                    if (time == null) {
+                      return;
+                    }
 
-                      if (taskEntry == null) {
-                        final int taskId;
-                        if (task == null) {
-                          if (_addNewTask) {
-                            final title = _taskTitleController.text;
-                            if (title.isEmpty) {
-                              return;
-                            }
+                    final infoText = _entryInfoController.text
+                        .mapTo((e) => e.isNotEmpty ? e : null);
 
-                            final refId = _taskRefIdController.text
-                                .mapTo((e) => e.isNotEmpty ? e : null);
-                            final info = _taskInfoController.text
-                                .mapTo((e) => e.isNotEmpty ? e : null);
-                            final hRef = _taskHRefController.text
-                                .mapTo((e) => e.isNotEmpty ? e : null);
-
-                            final result = await model.addTask(
-                              Task(
-                                name: title,
-                                refId: refId,
-                                info: info,
-                                hRef: hRef,
-                              ),
-                            );
-
-                            if (!result.$1) {
-                              return;
-                            }
-
-                            taskId = result.$2;
-                          } else {
-                            final selectedTaskId = selectedTask?.id;
-                            if (selectedTaskId == null) {
-                              return;
-                            }
-
-                            taskId = selectedTaskId;
-                          }
-                        } else {
-                          final givenTaskId = task.id;
-                          if (givenTaskId == null) {
+                    if (taskEntry == null) {
+                      final int taskId;
+                      if (task == null) {
+                        if (_addNewTask) {
+                          final title = _taskTitleController.text;
+                          if (title.isEmpty) {
                             return;
                           }
 
-                          taskId = givenTaskId;
+                          final refId = _taskRefIdController.text
+                              .mapTo((e) => e.isNotEmpty ? e : null);
+                          final info = _taskInfoController.text
+                              .mapTo((e) => e.isNotEmpty ? e : null);
+                          final hRef = _taskHRefController.text
+                              .mapTo((e) => e.isNotEmpty ? e : null);
+
+                          final result = await taskModel.addTask(
+                            Task(
+                              name: title,
+                              refId: refId,
+                              info: info,
+                              hRef: hRef,
+                            ),
+                          );
+
+                          if (!result.$1) {
+                            return;
+                          }
+
+                          taskId = result.$2;
+                        } else {
+                          final selectedTaskId = selectedTask?.id;
+                          if (selectedTaskId == null) {
+                            return;
+                          }
+
+                          taskId = selectedTaskId;
+                        }
+                      } else {
+                        final givenTaskId = task.id;
+                        if (givenTaskId == null) {
+                          return;
                         }
 
-                        await model.addTaskEntry(
-                          TaskEntry(
-                            taskId: taskId,
-                            info: infoText,
-                            date: date,
-                            duration: time,
-                          ),
-                        );
-                      } else {
-                        await model.updateTaskEntry(
-                          taskEntry.copyWith(info: infoText, duration: time),
-                        );
+                        taskId = givenTaskId;
                       }
 
-                      if (widget.isDialog) {
-                        widget.onClose?.call();
-                      }
-                    },
-                  ),
+                      await taskModel.addTaskEntry(
+                        TaskEntry(
+                          taskId: taskId,
+                          info: infoText,
+                          date: date,
+                          duration: time,
+                        ),
+                      );
+                    } else {
+                      await taskModel.updateTaskEntry(
+                        taskEntry.copyWith(info: infoText, duration: time),
+                      );
+                    }
+
+                    if (widget.isDialog) {
+                      widget.onClose?.call();
+                    }
+                  },
                 ),
-              ],
-            )
-          ],
-        ),
-      );
-    });
+              ),
+            ],
+          )
+        ],
+      ),
+    );
 
     return widget.isDialog
         ? Dialog(
