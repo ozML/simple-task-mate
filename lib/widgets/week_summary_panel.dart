@@ -32,7 +32,7 @@ class WeekSummaryPanel extends StatelessWidget {
   final Locale locale;
   final bool isLoading;
 
-  static Widget fromProvider({required BuildContext context, Key? key}) {
+  static Widget buildFromModels({required BuildContext context, Key? key}) {
     final locale = context.select<ConfigModel, Locale>(
       (value) => value.getValue<Locale>(settingLanguage),
     );

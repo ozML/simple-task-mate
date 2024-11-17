@@ -40,7 +40,7 @@ class DateSelector extends StatelessWidget {
   final VoidCallback? onNextDate;
   final VoidCallback? onReset;
 
-  static Widget fromProvider({
+  static Widget buildFromModels({
     required BuildContext context,
     VoidCallback? onUpdate,
   }) {

@@ -205,7 +205,7 @@ class EditTaskEntryPanelState extends State<EditTaskEntryPanel> {
                 if (isCreateDialog && !_addNewTask) ...[
                   Expanded(
                     flex: 2,
-                    child: TaskViewer.fromProvider(
+                    child: TaskViewer.buildFromModels(
                       context: context,
                       titleStyle: TitleStyle.none,
                       hideDurations: true,

@@ -20,7 +20,7 @@ class TimeTicker extends StatelessWidget {
   final ClockTimeFormat clockTimeFormat;
   final Locale locale;
 
-  static Widget fromProvider({required BuildContext context, Key? key}) {
+  static Widget buildFromModels({required BuildContext context, Key? key}) {
     final config = context.watch<ConfigModel>();
     final clockTimeFormatConfigValue = config.getValue(settingClockTimeFormat);
     final locale = config.getValue<Locale>(settingLanguage);

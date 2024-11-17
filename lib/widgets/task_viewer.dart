@@ -44,7 +44,7 @@ class TaskViewer extends StatelessWidget {
   final void Function(Task task)? onAdd;
   final void Function(String value)? onSearchTextChanged;
 
-  static Widget fromProvider({
+  static Widget buildFromModels({
     required BuildContext context,
     TitleStyle titleStyle = TitleStyle.header,
     bool hideCopyButton = false,

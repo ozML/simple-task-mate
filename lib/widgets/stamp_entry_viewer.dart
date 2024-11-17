@@ -142,7 +142,7 @@ class StampEntryViewer extends StatefulWidget {
   final void Function(Stamp stamp)? onSaveStamp;
   final void Function(Stamp stamp)? onDeleteStamp;
 
-  static Widget fromProvider({
+  static Widget buildFromModels({
     required BuildContext context,
     TitleStyle titleStyle = TitleStyle.header,
     bool isManualMode = true,

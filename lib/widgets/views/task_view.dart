@@ -170,7 +170,7 @@ class TaskViewState extends State<TaskView> {
             Expanded(
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: DateSelector.fromProvider(
+                child: DateSelector.buildFromModels(
                   context: context,
                   onUpdate: () {
                     _clearSelectedTask();
@@ -180,7 +180,8 @@ class TaskViewState extends State<TaskView> {
               ),
             ),
             Expanded(
-              child: Center(child: TimeTicker.fromProvider(context: context)),
+              child:
+                  Center(child: TimeTicker.buildFromModels(context: context)),
             ),
             Expanded(child: Container()),
           ],
@@ -261,7 +262,7 @@ class TaskViewState extends State<TaskView> {
                             ),
                             child: Stack(
                               children: [
-                                TaskEntryViewer.fromProvider(
+                                TaskEntryViewer.buildFromModels(
                                   context: context,
                                   title:
                                       selectedTask.refId ?? selectedTask.name,

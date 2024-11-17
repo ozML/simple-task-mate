@@ -36,7 +36,7 @@ class TaskEntryViewer extends StatelessWidget {
   final void Function(TaskEntry taskEntry)? onDelete;
   final void Function(TaskEntry taskEntry)? onEdit;
 
-  static Widget fromProvider({
+  static Widget buildFromModels({
     required BuildContext context,
     required String title,
     required List<TaskEntry> taskEntries,

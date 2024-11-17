@@ -75,14 +75,15 @@ class StampViewState extends State<StampView> {
             Expanded(
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: DateSelector.fromProvider(
+                child: DateSelector.buildFromModels(
                   context: context,
                   onUpdate: _refresh,
                 ),
               ),
             ),
             Expanded(
-              child: Center(child: TimeTicker.fromProvider(context: context)),
+              child:
+                  Center(child: TimeTicker.buildFromModels(context: context)),
             ),
             Expanded(child: Container()),
           ],
@@ -98,14 +99,14 @@ class StampViewState extends State<StampView> {
                 child: Center(
                   child: Padding(
                     padding: const EdgeInsets.only(right: 5),
-                    child: WeekSummaryPanel.fromProvider(context: context),
+                    child: WeekSummaryPanel.buildFromModels(context: context),
                   ),
                 ),
               ),
               Expanded(
                 child: Padding(
                   padding: const EdgeInsets.only(left: 5),
-                  child: StampEntryViewer.fromProvider(
+                  child: StampEntryViewer.buildFromModels(
                     context: context,
                     isManualMode: _manualStampMode,
                     onSaveStamp: (stamp) => context

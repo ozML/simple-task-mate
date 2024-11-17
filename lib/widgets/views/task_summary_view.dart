@@ -205,7 +205,7 @@ class TaskSummaryViewState extends State<TaskSummaryView> {
                           onBack: () => value.clearTask(),
                         ),
                         Expanded(
-                          child: TaskEntryViewer.fromProvider(
+                          child: TaskEntryViewer.buildFromModels(
                             context: context,
                             title: '',
                             titleStyle: TitleStyle.none,
