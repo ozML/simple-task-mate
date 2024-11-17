@@ -75,45 +75,9 @@ class StampViewState extends State<StampView> {
             Expanded(
               child: Align(
                 alignment: Alignment.centerLeft,
-                child: Consumer<DateTimeModel>(
-                  builder: (context, value, child) {
-                    final date = value.selectedDate;
-                    final minDate = DateTime(1900);
-                    final maxDate = value.date.add(
-                      const Duration(days: 365 * 5),
-                    );
-
-                    return DateSelector(
-                      date: date,
-                      currentDate: value.date,
-                      minDate: minDate,
-                      maxDate: maxDate,
-                      onSelectDate: (date) {
-                        value.selectDate(date);
-                        _refresh();
-                      },
-                      onPreviousDate: date != minDate
-                          ? () {
-                              value.selectDate(
-                                date.subtract(const Duration(days: 1)),
-                              );
-                              _refresh();
-                            }
-                          : null,
-                      onNextDate: date != maxDate
-                          ? () {
-                              value.selectDate(
-                                date.add(const Duration(days: 1)),
-                              );
-                              _refresh();
-                            }
-                          : null,
-                      onReset: () {
-                        value.clearDateSelection();
-                        _refresh();
-                      },
-                    );
-                  },
+                child: DateSelector.fromProvider(
+                  context: context,
+                  onUpdate: _refresh,
                 ),
               ),
             ),
