@@ -6,6 +6,9 @@ Color primaryColorFrom(BuildContext context) =>
 Color inversePrimaryColorFrom(BuildContext context) =>
     Theme.of(context).colorScheme.inversePrimary;
 
+Color surfaceColorFrom(BuildContext context) =>
+    Theme.of(context).colorScheme.surface;
+
 TextStyle? primaryTextStyleFrom(BuildContext context, {bool bold = false}) {
   final theme = Theme.of(context);
 

@@ -2,6 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
 
+typedef IconBuilder = Widget Function(
+  BuildContext context, {
+  Color? color,
+  double? size,
+});
+
 class IconUtils {
   IconUtils._();
 

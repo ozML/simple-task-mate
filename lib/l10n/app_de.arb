@@ -7,6 +7,8 @@
 	"buttonSave" : "Speichern",
 	"buttonApply" : "Anwenden",
 	"buttonReset" : "Zurücksetzen",
+	"buttonCopy" : "Kopieren",
+	"buttonCopyAll" : "Alles kopieren",
 	"labelArrive": "Kommt",
 	"labelLeave": "Geht",
 	"labelPresentnessTime" : "Arbeitstag",

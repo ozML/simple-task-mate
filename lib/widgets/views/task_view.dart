@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_task_mate/extensions/context.dart';
 import 'package:simple_task_mate/models/date_time_model.dart';
 import 'package:simple_task_mate/models/stamp_model.dart';
 import 'package:simple_task_mate/models/task_model.dart';
@@ -12,6 +13,7 @@ import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/page_navigation_utils.dart';
 import 'package:simple_task_mate/utils/time_summary_utils.dart';
 import 'package:simple_task_mate/widgets/content_box.dart';
+import 'package:simple_task_mate/widgets/context_menu_button.dart';
 import 'package:simple_task_mate/widgets/date_selector.dart';
 import 'package:simple_task_mate/widgets/edit_task_entry_panel.dart';
 import 'package:simple_task_mate/widgets/page_scaffold.dart';
@@ -233,18 +235,24 @@ class TaskViewState extends State<TaskView> {
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
                                   IconButton(
-                                    icon: IconUtils.copyAll(context),
-                                    onPressed: () => _copyTaskInfos(
-                                      fullCopy: true,
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: IconUtils.copy(context),
-                                    onPressed: _copyTaskInfos,
-                                  ),
-                                  IconButton(
                                     icon: IconUtils.add(context),
                                     onPressed: openEntryDialog,
+                                  ),
+                                  ContextMenuButton(
+                                    items: [
+                                      ContextMenuItem(
+                                        title: context.texts.buttonCopy,
+                                        iconBuilder: IconUtils.copy,
+                                        onPressed: _copyTaskInfos,
+                                      ),
+                                      ContextMenuItem(
+                                        title: context.texts.buttonCopyAll,
+                                        iconBuilder: IconUtils.copyAll,
+                                        onPressed: () => _copyTaskInfos(
+                                          fullCopy: true,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ],
                               ),

@@ -7,6 +7,8 @@
 	"buttonSave" : "Save",
 	"buttonApply" : "Apply",
 	"buttonReset" : "Reset",
+	"buttonCopy" : "Copy",
+	"buttonCopyAll" : "Copy all",
 	"labelArrive": "Arrive",
 	"labelLeave": "Leave",
 	"labelPresentnessTime" : "Working day",
