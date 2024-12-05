@@ -220,14 +220,14 @@ class TaskSummaryViewState extends State<TaskSummaryView> {
                       summaries: value.summaries,
                       titleStyle: TitleStyle.none,
                       searchText: _searchText,
-                      onSelect: (summary) =>
-                          value.loadFilledTask(summary.taskId),
-                      onDelete: (summary) => confirmDeleteTask(
+                      onTapItem: (summary) =>
+                          value.loadFilledTask(summary.item.taskId),
+                      onDeleteItem: (summary) => confirmDeleteTask(
                         context: context,
-                        task: summary.toRef(),
+                        task: summary.item.toRef(),
                         action: () => context
                             .read<TaskSummaryModel>()
-                            .deleteTask(summary.toRef())
+                            .deleteTask(summary.item.toRef())
                             .then(_refresh),
                       ),
                       onSearchTextChanged: (value) {

@@ -20,9 +20,12 @@ class TaskViewer extends StatelessWidget {
     this.hideCopyButton = false,
     this.hideDurations = false,
     this.autoLinkGroups,
-    this.onSelect,
-    this.onDelete,
-    this.onAdd,
+    this.onAddItem,
+    this.onCopy,
+    this.onCopyAll,
+    this.onTapItem,
+    this.onDeleteItem,
+    this.onAddItemEntry,
     this.onSearchTextChanged,
     super.key,
   });
@@ -39,9 +42,12 @@ class TaskViewer extends StatelessWidget {
   final bool hideCopyButton;
   final bool hideDurations;
   final List<Tuple<String, String>>? autoLinkGroups;
-  final void Function(Task task)? onSelect;
-  final void Function(Task task)? onDelete;
-  final void Function(Task task)? onAdd;
+  final void Function()? onAddItem;
+  final void Function()? onCopy;
+  final void Function()? onCopyAll;
+  final void Function(ItemRef<Task> ref)? onTapItem;
+  final void Function(ItemRef<Task> ref)? onDeleteItem;
+  final void Function(ItemRef<Task> ref)? onAddItemEntry;
   final void Function(String value)? onSearchTextChanged;
 
   static Widget buildFromModels({
@@ -50,9 +56,12 @@ class TaskViewer extends StatelessWidget {
     bool hideCopyButton = false,
     bool hideDurations = false,
     List<Tuple<String, String>>? autoLinkGroups,
-    void Function(Task task)? onSelect,
-    void Function(Task task)? onDelete,
-    void Function(Task task)? onAdd,
+    void Function()? onAddItem,
+    void Function()? onCopy,
+    void Function()? onCopyAll,
+    void Function(ItemRef<Task> ref)? onTapItem,
+    void Function(ItemRef<Task> ref)? onDeleteItem,
+    void Function(ItemRef<Task> ref)? onAddItemEntry,
     void Function(String value)? onSearchTextChanged,
   }) {
     final config = context.watch<ConfigModel>();
@@ -68,29 +77,55 @@ class TaskViewer extends StatelessWidget {
       autoLinkGroups: autoLinksEnabled
           ? config.getValue<List<Tuple<String, String>>>(settingAutoLinkGroups)
           : null,
-      onSelect: onSelect,
-      onDelete: onDelete,
-      onAdd: onAdd,
+      onTapItem: onTapItem,
+      onDeleteItem: onDeleteItem,
+      onAddItemEntry: onAddItemEntry,
       onSearchTextChanged: onSearchTextChanged,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final onDelete = this.onDelete;
-    final onAdd = this.onAdd;
+    final onAddItem = this.onAddItem;
+    final onCopy = this.onCopy;
+    final onCopyAll = this.onCopyAll;
+    final onDeleteItem = this.onDeleteItem;
+    final onAddItemEntry = this.onAddItemEntry;
 
     final autoLinkGroups = this.autoLinkGroups;
 
     return ItemListViewer<Task>(
       items: tasks,
+      getItemId: (item) => item.id!,
       title: context.texts.labelTasks,
       titleStyle: titleStyle,
       showSearchField: onSearchTextChanged != null,
       searchFieldHintText: context.texts.labelSearchPlaceholderTaskEntry,
-      onSelect: onSelect,
+      onTapItem: onTapItem,
       onSearchTextChanged: onSearchTextChanged,
-      tileBuilder: (context, item, onSelect) {
+      actions: [
+        if (onAddItem != null)
+          GlobalItemsAction(
+            icon: IconUtils.add(context),
+            label: context.texts.buttonAdd,
+            onPressed: (_) => onAddItem(),
+          ),
+        if (onCopy != null)
+          GlobalItemsAction(
+            icon: IconUtils.copy(context),
+            label: context.texts.buttonCopy,
+            onPressed: (_) => onCopy(),
+          ),
+        if (onCopyAll != null)
+          GlobalItemsAction(
+            icon: IconUtils.copyAll(context),
+            label: context.texts.buttonCopyAll,
+            onPressed: (_) => onCopyAll(),
+          ),
+      ],
+      tileBuilder: (context, ref, onTap) {
+        final item = ref.item;
+
         bool isAutoRef = false;
         String? hRef;
         if (item.hRef != null) {
@@ -109,7 +144,7 @@ class TaskViewer extends StatelessWidget {
 
         return ItemTile(
           key: keyItemTile,
-          item: item,
+          ref: ref,
           title: item.refId,
           subTitle: item.name,
           footNote: hideDurations
@@ -140,27 +175,27 @@ class TaskViewer extends StatelessWidget {
                   ),
                 )
               : null,
-          onSelect: onSelect,
+          onTap: onTap,
           actions: [
             if (!hideCopyButton)
-              ItemTileAction(
+              LocalItemAction(
                 key: keyItemActionCopy,
                 icon: IconUtils.copy(context),
                 onPressed: (_) {
                   Clipboard.setData(ClipboardData(text: item.fullName()));
                 },
               ),
-            if (onDelete != null)
-              ItemTileAction(
+            if (onDeleteItem != null)
+              LocalItemAction(
                 key: keyItemActionDelete,
                 icon: IconUtils.trashCan(context),
-                onPressed: onDelete,
+                onPressed: onDeleteItem,
               ),
-            if (onAdd != null)
-              ItemTileAction(
+            if (onAddItemEntry != null)
+              LocalItemAction(
                 key: keyItemActionAdd,
                 icon: IconUtils.add(context),
-                onPressed: onAdd,
+                onPressed: onAddItemEntry,
               ),
           ],
         );

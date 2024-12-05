@@ -210,8 +210,8 @@ class EditTaskEntryPanelState extends State<EditTaskEntryPanel> {
                       titleStyle: TitleStyle.none,
                       hideDurations: true,
                       hideCopyButton: true,
-                      onSelect: (task) {
-                        setState(() => _selectedTask = task);
+                      onTapItem: (task) {
+                        setState(() => _selectedTask = task.item);
                       },
                       onSearchTextChanged: (value) {
                         context.read<TaskModel>().loadTasks(searchText: value);

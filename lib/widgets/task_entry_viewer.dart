@@ -17,8 +17,8 @@ class TaskEntryViewer extends StatelessWidget {
     this.titleStyle = TitleStyle.header,
     this.locale = const Locale('en'),
     this.showDate = false,
-    this.onDelete,
-    this.onEdit,
+    this.onDeleteItem,
+    this.onEditItem,
     super.key,
   });
 
@@ -33,8 +33,8 @@ class TaskEntryViewer extends StatelessWidget {
   final TitleStyle titleStyle;
   final Locale locale;
   final bool showDate;
-  final void Function(TaskEntry taskEntry)? onDelete;
-  final void Function(TaskEntry taskEntry)? onEdit;
+  final void Function(ItemRef<TaskEntry> ref)? onDeleteItem;
+  final void Function(ItemRef<TaskEntry> ref)? onEditItem;
 
   static Widget buildFromModels({
     required BuildContext context,
@@ -42,8 +42,8 @@ class TaskEntryViewer extends StatelessWidget {
     required List<TaskEntry> taskEntries,
     TitleStyle titleStyle = TitleStyle.header,
     final bool showDate = false,
-    final void Function(TaskEntry taskEntry)? onDelete,
-    final void Function(TaskEntry taskEntry)? onEdit,
+    final void Function(ItemRef<TaskEntry> ref)? onDeleteItem,
+    final void Function(ItemRef<TaskEntry> ref)? onEditItem,
     Key? key,
   }) {
     final config = context.watch<ConfigModel>();
@@ -54,53 +54,63 @@ class TaskEntryViewer extends StatelessWidget {
       titleStyle: titleStyle,
       locale: config.getValue<Locale>(settingLanguage),
       showDate: showDate,
-      onDelete: onDelete,
-      onEdit: onEdit,
+      onDeleteItem: onDeleteItem,
+      onEditItem: onEditItem,
       key: key,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final onEdit = this.onEdit;
-    final onDelete = this.onDelete;
+    final onEditItem = this.onEditItem;
+    final onDeleteItem = this.onDeleteItem;
 
     final languageCode = locale.languageCode;
 
     return ItemListViewer<TaskEntry>(
       items: taskEntries,
+      getItemId: (item) => item.id!,
       title: title,
       titleStyle: titleStyle,
-      tileBuilder: (context, item, onSelect) {
+      tileBuilder: (context, ref, onTap) {
+        final item = ref.item;
+
         return ItemTile(
           key: keyItemTile,
-          item: item,
+          ref: ref,
           subTitle: item.info,
           footNote:
               '${showDate ? '${CustomDateFormats.yMMdd(item.date, languageCode)} | ' : ''}'
               '${showDate ? '${languageCode == 'de' ? 'KW' : 'CW'} ${getWeekNumber(item.date)} | ' : ''}'
               '${context.texts.labelDuration(item.time().asHHMM)}',
-          onSelect: onSelect,
+          onTap: onTap,
           actions: [
-            ItemTileAction(
+            LocalItemAction(
               key: keyItemActionCopy,
               icon: IconUtils.copy(context),
               onPressed: (_) {
                 Clipboard.setData(ClipboardData(text: item.info ?? ''));
               },
             ),
-            if (onDelete != null)
-              ItemTileAction(
-                key: keyItemActionDelete,
-                icon: IconUtils.trashCan(context),
-                onPressed: onDelete,
-              ),
-            if (onEdit != null)
-              ItemTileAction(
-                key: keyItemActionEdit,
-                icon: IconUtils.edit(context),
-                onPressed: onEdit,
-              ),
+            LocalItemsGroup(
+              icon: IconUtils.ellipsisVertical(context),
+              items: [
+                if (onEditItem != null)
+                  LocalItemAction(
+                    key: keyItemActionEdit,
+                    icon: IconUtils.edit(context),
+                    label: context.texts.buttonEdit,
+                    onPressed: onEditItem,
+                  ),
+                if (onDeleteItem != null)
+                  LocalItemAction(
+                    key: keyItemActionDelete,
+                    icon: IconUtils.trashCan(context),
+                    label: context.texts.buttonDelete,
+                    onPressed: onDeleteItem,
+                  ),
+              ],
+            ),
           ],
         );
       },

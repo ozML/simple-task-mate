@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:package_info_plus/package_info_plus.dart';
 import 'package:provider/provider.dart';
-import 'package:simple_task_mate/extensions/context.dart';
 import 'package:simple_task_mate/models/date_time_model.dart';
 import 'package:simple_task_mate/models/stamp_model.dart';
 import 'package:simple_task_mate/models/task_model.dart';
@@ -13,7 +12,6 @@ import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/page_navigation_utils.dart';
 import 'package:simple_task_mate/utils/time_summary_utils.dart';
 import 'package:simple_task_mate/widgets/content_box.dart';
-import 'package:simple_task_mate/widgets/context_menu_button.dart';
 import 'package:simple_task_mate/widgets/date_selector.dart';
 import 'package:simple_task_mate/widgets/edit_task_entry_panel.dart';
 import 'package:simple_task_mate/widgets/page_scaffold.dart';
@@ -206,58 +204,26 @@ class TaskViewState extends State<TaskView> {
                         : Axis.vertical,
                     children: [
                       Expanded(
-                        child: Stack(
-                          children: [
-                            TaskViewer(
-                              tasks: value.tasks,
-                              onSelect: (task) {
-                                setState(() => _selectedTask = task);
-                              },
-                              onDelete: (task) => confirmDeleteTaskEntries(
-                                context: context,
-                                task: task,
-                                action: () => value
-                                    .deleteTaskEntriesForDate(
-                                      task,
-                                      context
-                                          .read<DateTimeModel>()
-                                          .selectedDate,
-                                    )
-                                    .then(_refresh),
-                              ),
-                              onAdd: (task) => openEntryDialog(task: task),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.only(top: 2, right: 5),
-                              alignment: Alignment.topRight,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    icon: IconUtils.add(context),
-                                    onPressed: openEntryDialog,
-                                  ),
-                                  ContextMenuButton(
-                                    items: [
-                                      ContextMenuItem(
-                                        title: context.texts.buttonCopy,
-                                        iconBuilder: IconUtils.copy,
-                                        onPressed: _copyTaskInfos,
-                                      ),
-                                      ContextMenuItem(
-                                        title: context.texts.buttonCopyAll,
-                                        iconBuilder: IconUtils.copyAll,
-                                        onPressed: () => _copyTaskInfos(
-                                          fullCopy: true,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            )
-                          ],
+                        child: TaskViewer(
+                          tasks: value.tasks,
+                          onAddItem: openEntryDialog,
+                          onCopy: _copyTaskInfos,
+                          onCopyAll: () => _copyTaskInfos(fullCopy: true),
+                          onTapItem: (task) {
+                            setState(() => _selectedTask = task.item);
+                          },
+                          onDeleteItem: (task) => confirmDeleteTaskEntries(
+                            context: context,
+                            task: task.item,
+                            action: () => value
+                                .deleteTaskEntriesForDate(
+                                  task.item,
+                                  context.read<DateTimeModel>().selectedDate,
+                                )
+                                .then(_refresh),
+                          ),
+                          onAddItemEntry: (task) =>
+                              openEntryDialog(task: task.item),
                         ),
                       ),
                       if (selectedTask != null)
@@ -276,14 +242,14 @@ class TaskViewState extends State<TaskView> {
                                       selectedTask.refId ?? selectedTask.name,
                                   taskEntries: selectedTask.entries ?? [],
                                   titleStyle: TitleStyle.floating,
-                                  onEdit: (taskEntry) =>
-                                      openEntryDialog(taskEntry: taskEntry),
-                                  onDelete: (taskEntry) =>
+                                  onEditItem: (taskEntry) => openEntryDialog(
+                                      taskEntry: taskEntry.item),
+                                  onDeleteItem: (taskEntry) =>
                                       confirmDeleteTaskEntry(
                                     context: context,
-                                    taskEntry: taskEntry,
+                                    taskEntry: taskEntry.item,
                                     action: () => value
-                                        .deleteTaskEntry(taskEntry)
+                                        .deleteTaskEntry(taskEntry.item)
                                         .then(_refresh),
                                   ),
                                 ),

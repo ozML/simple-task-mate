@@ -9,6 +9,8 @@
 	"buttonReset" : "Reset",
 	"buttonCopy" : "Copy",
 	"buttonCopyAll" : "Copy all",
+	"buttonEdit" : "Edit",
+	"buttonDelete" : "Delete",
 	"labelArrive": "Arrive",
 	"labelLeave": "Leave",
 	"labelPresentnessTime" : "Working day",

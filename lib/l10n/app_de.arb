@@ -9,6 +9,8 @@
 	"buttonReset" : "Zurücksetzen",
 	"buttonCopy" : "Kopieren",
 	"buttonCopyAll" : "Alles kopieren",
+	"buttonEdit" : "Bearbeiten",
+	"buttonDelete" : "Löschen",
 	"labelArrive": "Kommt",
 	"labelLeave": "Geht",
 	"labelPresentnessTime" : "Arbeitstag",

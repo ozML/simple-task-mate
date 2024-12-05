@@ -12,9 +12,9 @@ class TaskSummaryViewer extends StatelessWidget {
     required this.summaries,
     this.titleStyle = TitleStyle.header,
     this.searchText,
-    this.onSelect,
-    this.onDelete,
-    this.onEdit,
+    this.onTapItem,
+    this.onDeleteItem,
+    this.onEditItem,
     this.onSearchTextChanged,
     super.key,
   });
@@ -28,52 +28,55 @@ class TaskSummaryViewer extends StatelessWidget {
   final List<TaskSummary> summaries;
   final TitleStyle titleStyle;
   final String? searchText;
-  final void Function(TaskSummary summary)? onSelect;
-  final void Function(TaskSummary summary)? onDelete;
-  final void Function(TaskSummary summary)? onEdit;
+  final void Function(ItemRef<TaskSummary> ref)? onTapItem;
+  final void Function(ItemRef<TaskSummary> ref)? onDeleteItem;
+  final void Function(ItemRef<TaskSummary> ref)? onEditItem;
   final void Function(String value)? onSearchTextChanged;
 
   @override
   Widget build(BuildContext context) {
-    final onDelete = this.onDelete;
-    final onEdit = this.onEdit;
+    final onDeleteItem = this.onDeleteItem;
+    final onEditItem = this.onEditItem;
 
     return ItemListViewer<TaskSummary>(
       items: summaries,
+      getItemId: (item) => item.taskId,
       title: context.texts.labelTasks,
       titleStyle: titleStyle,
       showSearchField: onSearchTextChanged != null,
       searchText: searchText,
       searchFieldHintText: context.texts.labelSearchPlaceholderTaskEntry,
-      onSelect: onSelect,
+      onTapItem: onTapItem,
       onSearchTextChanged: onSearchTextChanged,
-      tileBuilder: (context, item, onSelect) {
+      tileBuilder: (context, ref, onTap) {
+        final item = ref.item;
+
         return ItemTile(
           key: keyItemTile,
-          item: item,
+          ref: ref,
           title: item.refId,
           subTitle: item.name,
           footNote: context.texts.labelDuration(item.time.asHHMM),
-          onSelect: onSelect,
+          onTap: onTap,
           actions: [
-            ItemTileAction(
+            LocalItemAction(
               key: keyItemActionCopy,
               icon: IconUtils.copy(context),
               onPressed: (_) {
                 Clipboard.setData(ClipboardData(text: item.fullName()));
               },
             ),
-            if (onDelete != null)
-              ItemTileAction(
+            if (onDeleteItem != null)
+              LocalItemAction(
                 key: keyItemActionDelete,
                 icon: IconUtils.trashCan(context),
-                onPressed: onDelete,
+                onPressed: onDeleteItem,
               ),
-            if (onEdit != null)
-              ItemTileAction(
+            if (onEditItem != null)
+              LocalItemAction(
                 key: keyItemActionEdit,
                 icon: IconUtils.edit(context),
-                onPressed: onEdit,
+                onPressed: onEditItem,
               ),
           ],
         );

@@ -23,7 +23,7 @@ void main() {
             items: items,
             tileBuilder: (context, item, onSelect) => ItemTile(
               key: keyItemTile,
-              item: item,
+              ref: item,
               title: item,
               subTitle: 'subtitle',
               footNote: 'footnote',
@@ -31,7 +31,7 @@ void main() {
               infoIcon: Container(key: keyIcon),
               linkIcon: Container(key: keyLink),
               actions: [
-                ItemTileAction(
+                LocalItemAction(
                   key: keyAction,
                   icon: Container(key: keyActionIcon),
                   onPressed: (item) => triggeredAction = true,
@@ -81,12 +81,12 @@ void main() {
               child: ItemListViewer(
                 items: items,
                 tileBuilder: (context, item, onSelect) => ItemTile(
-                  item: item,
+                  ref: item,
                   title: item,
                   subTitle: 'subtitle',
                   footNote: 'footnote',
                   actions: [
-                    ItemTileAction(
+                    LocalItemAction(
                       icon: Container(),
                       onPressed: (item) {},
                     ),

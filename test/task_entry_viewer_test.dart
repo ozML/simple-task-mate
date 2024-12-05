@@ -30,8 +30,8 @@ void main() {
           child: TaskEntryViewer(
             title: testFullTasks.first.hRef ?? '',
             taskEntries: testFullTasks.first.entries?.toList() ?? [],
-            onDelete: (taskEntry) => deletedTaskEntryId = taskEntry.id,
-            onEdit: (taskEntry) => editTaskEntryId = taskEntry.id,
+            onDeleteItem: (taskEntry) => deletedTaskEntryId = taskEntry.id,
+            onEditItem: (taskEntry) => editTaskEntryId = taskEntry.id,
           ),
         ),
       );
