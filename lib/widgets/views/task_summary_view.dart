@@ -5,7 +5,6 @@ import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/dialog_utils.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
-import 'package:simple_task_mate/widgets/content_box.dart';
 import 'package:simple_task_mate/widgets/task_entry_viewer.dart';
 import 'package:simple_task_mate/widgets/task_summary_viewer.dart';
 import 'package:simple_task_mate/widgets/task_edit_panel.dart';
@@ -208,7 +207,7 @@ class TaskSummaryViewState extends State<TaskSummaryView> {
                           child: TaskEntryViewer.buildFromModels(
                             context: context,
                             title: '',
-                            titleStyle: TitleStyle.none,
+                            hideHeader: true,
                             showDate: true,
                             taskEntries: task.entries ?? [],
                           ),
@@ -218,16 +217,16 @@ class TaskSummaryViewState extends State<TaskSummaryView> {
                   } else {
                     content = TaskSummaryViewer(
                       summaries: value.summaries,
-                      titleStyle: TitleStyle.none,
+                      hideHeader: true,
                       searchText: _searchText,
-                      onSelect: (summary) =>
-                          value.loadFilledTask(summary.taskId),
-                      onDelete: (summary) => confirmDeleteTask(
+                      onTapItem: (summary) =>
+                          value.loadFilledTask(summary.item.taskId),
+                      onDeleteItem: (summary) => confirmDeleteTask(
                         context: context,
-                        task: summary.toRef(),
+                        task: summary.item.toRef(),
                         action: () => context
                             .read<TaskSummaryModel>()
-                            .deleteTask(summary.toRef())
+                            .deleteTask(summary.item.toRef())
                             .then(_refresh),
                       ),
                       onSearchTextChanged: (value) {

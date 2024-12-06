@@ -19,14 +19,17 @@ class ContextMenuItem {
 class ContextMenuButton extends StatelessWidget {
   const ContextMenuButton({
     required this.items,
+    this.icon,
     super.key,
   });
 
   final List<ContextMenuItem> items;
+  final Widget? icon;
 
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
+      icon: icon,
       tooltip: '',
       position: PopupMenuPosition.under,
       color: surfaceColorFrom(context),
@@ -37,6 +40,7 @@ class ContextMenuButton extends StatelessWidget {
           final title = e.title;
 
           return PopupMenuItem(
+            key: e.key,
             onTap: e.onPressed,
             child: Row(
               children: [

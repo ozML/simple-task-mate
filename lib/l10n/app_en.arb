@@ -9,6 +9,8 @@
 	"buttonReset" : "Reset",
 	"buttonCopy" : "Copy",
 	"buttonCopyAll" : "Copy all",
+	"buttonEdit" : "Edit",
+	"buttonDelete" : "Delete",
 	"labelArrive": "Arrive",
 	"labelLeave": "Leave",
 	"labelPresentnessTime" : "Working day",
@@ -33,6 +35,8 @@
 	"labelWeek" : "Week",
 	"labelStamps" : "Stamps",
 	"labelTasks" : "Tasks",
+	"labelDetails" : "Details",
+	"labelEntries" : "Entries",
 	"labelDuration" : "Duration: {time}",
 	"@labelDuration" : {
 		"placeholders" : {

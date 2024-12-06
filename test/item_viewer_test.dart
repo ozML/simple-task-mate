@@ -21,17 +21,18 @@ void main() {
         TestApp(
           child: ItemListViewer(
             items: items,
-            tileBuilder: (context, item, onSelect) => ItemTile(
+            getItemId: (item) => items.indexOf(item),
+            tileBuilder: (context, ref, onSelect) => ItemTile(
               key: keyItemTile,
-              item: item,
-              title: item,
+              ref: ref,
+              title: ref.item,
               subTitle: 'subtitle',
               footNote: 'footnote',
               content: Container(key: keyContent),
               infoIcon: Container(key: keyIcon),
               linkIcon: Container(key: keyLink),
               actions: [
-                ItemTileAction(
+                LocalItemAction(
                   key: keyAction,
                   icon: Container(key: keyActionIcon),
                   onPressed: (item) => triggeredAction = true,
@@ -80,13 +81,14 @@ void main() {
             TestApp(
               child: ItemListViewer(
                 items: items,
-                tileBuilder: (context, item, onSelect) => ItemTile(
-                  item: item,
-                  title: item,
+                getItemId: (item) => items.indexOf(item),
+                tileBuilder: (context, ref, onSelect) => ItemTile(
+                  ref: ref,
+                  title: ref.item,
                   subTitle: 'subtitle',
                   footNote: 'footnote',
                   actions: [
-                    ItemTileAction(
+                    LocalItemAction(
                       icon: Container(),
                       onPressed: (item) {},
                     ),

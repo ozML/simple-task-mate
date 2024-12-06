@@ -30,9 +30,9 @@ void main() {
         TestApp(
           child: TaskSummaryViewer(
             summaries: testTaskSummaries,
-            onSelect: (summary) => selectedTaskId = summary.taskId,
-            onDelete: (summary) => deletedTaskId = summary.taskId,
-            onEdit: (summary) => editTaskId = summary.taskId,
+            onTapItem: (ref) => selectedTaskId = ref.item.taskId,
+            onDeleteItem: (ref) => deletedTaskId = ref.item.taskId,
+            onEditItem: (ref) => editTaskId = ref.item.taskId,
           ),
         ),
       );

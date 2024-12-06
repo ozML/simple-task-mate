@@ -30,8 +30,8 @@ void main() {
           child: TaskEntryViewer(
             title: testFullTasks.first.hRef ?? '',
             taskEntries: testFullTasks.first.entries?.toList() ?? [],
-            onDelete: (taskEntry) => deletedTaskEntryId = taskEntry.id,
-            onEdit: (taskEntry) => editTaskEntryId = taskEntry.id,
+            onDeleteItem: (ref) => deletedTaskEntryId = ref.item.id,
+            onEditItem: (ref) => editTaskEntryId = ref.item.id,
           ),
         ),
       );
@@ -55,22 +55,36 @@ void main() {
       );
 
       expect(find.byKey(TaskEntryViewer.keyItemActionCopy), findsNothing);
-      expect(find.byKey(TaskEntryViewer.keyItemActionDelete), findsNothing);
-      expect(find.byKey(TaskEntryViewer.keyItemActionEdit), findsNothing);
+      expect(
+        find.byKey(TaskEntryViewer.keyItemActionGroupAdditional),
+        findsNothing,
+      );
 
       await tester.hoverOver(find.byKey(TaskEntryViewer.keyItemTile).first);
 
       expect(find.byKey(TaskEntryViewer.keyItemActionCopy), findsOneWidget);
-      expect(find.byKey(TaskEntryViewer.keyItemActionDelete), findsOneWidget);
-      expect(find.byKey(TaskEntryViewer.keyItemActionEdit), findsOneWidget);
+      expect(
+        find.byKey(TaskEntryViewer.keyItemActionGroupAdditional),
+        findsOneWidget,
+      );
 
       await tester.tap(find.byKey(TaskEntryViewer.keyItemActionCopy));
       expect(copiedTaskEntryData, 'First entry');
 
+      await tester.tap(
+        find.byKey(TaskEntryViewer.keyItemActionGroupAdditional),
+      );
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(TaskEntryViewer.keyItemActionDelete));
+      await tester.pumpAndSettle();
       expect(deletedTaskEntryId, 0);
 
+      await tester.tap(
+        find.byKey(TaskEntryViewer.keyItemActionGroupAdditional),
+      );
+      await tester.pumpAndSettle();
       await tester.tap(find.byKey(TaskEntryViewer.keyItemActionEdit));
+      await tester.pumpAndSettle();
       expect(editTaskEntryId, 0);
     });
 

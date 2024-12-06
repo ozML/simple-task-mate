@@ -334,4 +334,16 @@ class IconUtils {
         color: color,
         size: size,
       );
+
+  static Widget ellipsisVertical(
+    BuildContext context, {
+    Color? color,
+    double? size,
+  }) =>
+      _getIcon(
+        context: context,
+        icon: FontAwesomeIcons.ellipsisVertical,
+        color: color,
+        size: size,
+      );
 }

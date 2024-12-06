@@ -109,7 +109,7 @@ class StampEntryViewer extends StatefulWidget {
     required this.stamps,
     required this.date,
     required this.getTime,
-    this.titleStyle = TitleStyle.header,
+    this.hideHeader = false,
     this.clockTimeFormat = ClockTimeFormat.twentyFourHours,
     this.locale = const Locale('en'),
     this.isManualMode = true,
@@ -131,7 +131,7 @@ class StampEntryViewer extends StatefulWidget {
 
   final List<Stamp> stamps;
   final DateTime date;
-  final TitleStyle titleStyle;
+  final bool hideHeader;
   final ClockTimeFormat clockTimeFormat;
   final Locale locale;
   final bool isManualMode;
@@ -144,7 +144,7 @@ class StampEntryViewer extends StatefulWidget {
 
   static Widget buildFromModels({
     required BuildContext context,
-    TitleStyle titleStyle = TitleStyle.header,
+    bool hideHeader = false,
     bool isManualMode = true,
     ValueChanged<bool>? onModeChanged,
     void Function(Stamp stamp)? onSaveStamp,
@@ -174,7 +174,7 @@ class StampEntryViewer extends StatefulWidget {
       stamps: stamps,
       date: selectedDate,
       getTime: () => context.read<DateTimeModel>().dateTime,
-      titleStyle: titleStyle,
+      hideHeader: hideHeader,
       clockTimeFormat: clockTimeFormat,
       locale: locale,
       isManualMode: isManualMode,
@@ -295,8 +295,9 @@ class StampEntryViewerState extends State<StampEntryViewer> {
       children: [
         Expanded(
           child: ContentBox(
-            title: context.texts.labelStamps,
-            titleStyle: widget.titleStyle,
+            header: !widget.hideHeader
+                ? ContentBoxHeader.title(title: context.texts.labelStamps)
+                : null,
             child: widget.isLoading
                 ? Container(
                     key: StampEntryViewer.keyLoadingIndicator,
