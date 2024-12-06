@@ -35,6 +35,8 @@
 	"labelWeek" : "Week",
 	"labelStamps" : "Stamps",
 	"labelTasks" : "Tasks",
+	"labelDetails" : "Details",
+	"labelEntries" : "Entries",
 	"labelDuration" : "Duration: {time}",
 	"@labelDuration" : {
 		"placeholders" : {

@@ -8,7 +8,6 @@ import 'package:simple_task_mate/models/task_model.dart';
 import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
-import 'package:simple_task_mate/widgets/content_box.dart';
 import 'package:simple_task_mate/widgets/task_viewer.dart';
 import 'package:simple_task_mate/widgets/time_input_field.dart';
 
@@ -207,7 +206,7 @@ class EditTaskEntryPanelState extends State<EditTaskEntryPanel> {
                     flex: 2,
                     child: TaskViewer.buildFromModels(
                       context: context,
-                      titleStyle: TitleStyle.none,
+                      hideHeader: true,
                       hideDurations: true,
                       hideCopyButton: true,
                       onTapItem: (task) {

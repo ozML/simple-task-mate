@@ -6,6 +6,9 @@ Color primaryColorFrom(BuildContext context) =>
 Color inversePrimaryColorFrom(BuildContext context) =>
     Theme.of(context).colorScheme.inversePrimary;
 
+Color primaryFixedColorFrom(BuildContext context) =>
+    Theme.of(context).colorScheme.primaryFixed;
+
 Color surfaceColorFrom(BuildContext context) =>
     Theme.of(context).colorScheme.surface;
 

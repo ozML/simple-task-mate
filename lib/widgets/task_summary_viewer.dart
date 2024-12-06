@@ -4,13 +4,12 @@ import 'package:simple_task_mate/extensions/context.dart';
 import 'package:simple_task_mate/extensions/duration.dart';
 import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
-import 'package:simple_task_mate/widgets/content_box.dart';
 import 'package:simple_task_mate/widgets/item_viewer.dart';
 
 class TaskSummaryViewer extends StatelessWidget {
   const TaskSummaryViewer({
     required this.summaries,
-    this.titleStyle = TitleStyle.header,
+    this.hideHeader = false,
     this.searchText,
     this.onTapItem,
     this.onDeleteItem,
@@ -26,7 +25,7 @@ class TaskSummaryViewer extends StatelessWidget {
   static Key get keyItemActionEdit => Key('$TaskSummaryViewer/itemActionEdit');
 
   final List<TaskSummary> summaries;
-  final TitleStyle titleStyle;
+  final bool hideHeader;
   final String? searchText;
   final void Function(ItemRef<TaskSummary> ref)? onTapItem;
   final void Function(ItemRef<TaskSummary> ref)? onDeleteItem;
@@ -42,7 +41,7 @@ class TaskSummaryViewer extends StatelessWidget {
       items: summaries,
       getItemId: (item) => item.taskId,
       title: context.texts.labelTasks,
-      titleStyle: titleStyle,
+      hideHeader: hideHeader,
       showSearchField: onSearchTextChanged != null,
       searchText: searchText,
       searchFieldHintText: context.texts.labelSearchPlaceholderTaskEntry,

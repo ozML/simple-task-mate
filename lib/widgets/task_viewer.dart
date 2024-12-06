@@ -9,14 +9,13 @@ import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
 import 'package:simple_task_mate/utils/tuple.dart';
-import 'package:simple_task_mate/widgets/content_box.dart';
 import 'package:simple_task_mate/widgets/item_viewer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TaskViewer extends StatelessWidget {
   const TaskViewer({
     required this.tasks,
-    this.titleStyle = TitleStyle.header,
+    this.hideHeader = false,
     this.hideCopyButton = false,
     this.hideDurations = false,
     this.autoLinkGroups,
@@ -38,7 +37,7 @@ class TaskViewer extends StatelessWidget {
   static Key get keyItemActionAdd => Key('$TaskViewer/itemActionAdd');
 
   final List<Task> tasks;
-  final TitleStyle titleStyle;
+  final bool hideHeader;
   final bool hideCopyButton;
   final bool hideDurations;
   final List<Tuple<String, String>>? autoLinkGroups;
@@ -52,7 +51,7 @@ class TaskViewer extends StatelessWidget {
 
   static Widget buildFromModels({
     required BuildContext context,
-    TitleStyle titleStyle = TitleStyle.header,
+    bool hideHeader = false,
     bool hideCopyButton = false,
     bool hideDurations = false,
     List<Tuple<String, String>>? autoLinkGroups,
@@ -71,7 +70,7 @@ class TaskViewer extends StatelessWidget {
 
     return TaskViewer(
       tasks: tasks,
-      titleStyle: titleStyle,
+      hideHeader: hideHeader,
       hideCopyButton: hideCopyButton,
       hideDurations: hideDurations,
       autoLinkGroups: autoLinksEnabled
@@ -98,7 +97,7 @@ class TaskViewer extends StatelessWidget {
       items: tasks,
       getItemId: (item) => item.id!,
       title: context.texts.labelTasks,
-      titleStyle: titleStyle,
+      hideHeader: hideHeader,
       showSearchField: onSearchTextChanged != null,
       searchFieldHintText: context.texts.labelSearchPlaceholderTaskEntry,
       onTapItem: onTapItem,

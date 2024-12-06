@@ -251,7 +251,9 @@ class ItemListViewer<T> extends StatefulWidget {
     required this.getItemId,
     required this.tileBuilder,
     required this.title,
-    this.titleStyle = TitleStyle.header,
+    this.subTitle,
+    this.headerColor,
+    this.hideHeader = false,
     this.showSearchField = false,
     this.searchText,
     this.searchFieldHintText,
@@ -271,7 +273,9 @@ class ItemListViewer<T> extends StatefulWidget {
     void Function(ItemRef<T> ref)? onTap,
   ) tileBuilder;
   final String title;
-  final TitleStyle titleStyle;
+  final String? subTitle;
+  final Color? headerColor;
+  final bool hideHeader;
   final bool showSearchField;
   final String? searchText;
   final String? searchFieldHintText;
@@ -412,8 +416,13 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
           ),
         Expanded(
           child: ContentBox(
-            title: widget.title,
-            titleStyle: widget.titleStyle,
+            header: !widget.hideHeader
+                ? ContentBoxHeader.title(
+                    title: widget.title,
+                    subTitle: widget.subTitle,
+                    color: widget.headerColor,
+                  )
+                : null,
             child: Column(
               children: [
                 if (widget.actions.isNotEmpty)

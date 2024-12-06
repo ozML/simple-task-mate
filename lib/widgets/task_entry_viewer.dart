@@ -7,14 +7,15 @@ import 'package:simple_task_mate/models/config_model.dart';
 import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/date_time_utils.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
-import 'package:simple_task_mate/widgets/content_box.dart';
+import 'package:simple_task_mate/utils/theme_utils.dart';
 import 'package:simple_task_mate/widgets/item_viewer.dart';
 
 class TaskEntryViewer extends StatelessWidget {
   const TaskEntryViewer({
     required this.title,
     required this.taskEntries,
-    this.titleStyle = TitleStyle.header,
+    this.subTitle,
+    this.hideHeader = false,
     this.locale = const Locale('en'),
     this.showDate = false,
     this.onDeleteItem,
@@ -29,8 +30,9 @@ class TaskEntryViewer extends StatelessWidget {
   static Key get keyItemActionEdit => Key('$TaskEntryViewer/itemActionEdit');
 
   final String title;
+  final String? subTitle;
   final List<TaskEntry> taskEntries;
-  final TitleStyle titleStyle;
+  final bool hideHeader;
   final Locale locale;
   final bool showDate;
   final void Function(ItemRef<TaskEntry> ref)? onDeleteItem;
@@ -40,7 +42,8 @@ class TaskEntryViewer extends StatelessWidget {
     required BuildContext context,
     required String title,
     required List<TaskEntry> taskEntries,
-    TitleStyle titleStyle = TitleStyle.header,
+    String? subTitle,
+    bool hideHeader = false,
     final bool showDate = false,
     final void Function(ItemRef<TaskEntry> ref)? onDeleteItem,
     final void Function(ItemRef<TaskEntry> ref)? onEditItem,
@@ -50,8 +53,9 @@ class TaskEntryViewer extends StatelessWidget {
 
     return TaskEntryViewer(
       title: title,
+      subTitle: subTitle,
       taskEntries: taskEntries,
-      titleStyle: titleStyle,
+      hideHeader: hideHeader,
       locale: config.getValue<Locale>(settingLanguage),
       showDate: showDate,
       onDeleteItem: onDeleteItem,
@@ -71,7 +75,9 @@ class TaskEntryViewer extends StatelessWidget {
       items: taskEntries,
       getItemId: (item) => item.id!,
       title: title,
-      titleStyle: titleStyle,
+      subTitle: subTitle,
+      headerColor: primaryFixedColorFrom(context),
+      hideHeader: hideHeader,
       tileBuilder: (context, ref, onTap) {
         final item = ref.item;
 
