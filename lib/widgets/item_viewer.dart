@@ -127,12 +127,14 @@ class ItemTileState<T> extends State<ItemTile<T>> {
       if (element is LocalItemAction<T>) {
         if (icon != null && label != null) {
           return TextButton.icon(
+            key: key,
             label: Text(label, style: secondaryTextStyle),
             icon: icon,
             onPressed: () => element.onPressed(widget.ref),
           );
         } else {
           return TextButton(
+            key: key,
             child: label != null
                 ? Text(label, style: secondaryTextStyle)
                 : icon ?? Container(),
@@ -335,12 +337,14 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
       if (element is GlobalItemsAction<T>) {
         if (icon != null && label != null) {
           return TextButton.icon(
+            key: key,
             label: Text(label, style: secondaryTextStyle),
             icon: icon,
             onPressed: () => element.onPressed(refs),
           );
         } else {
           return TextButton(
+            key: key,
             child: label != null
                 ? Text(label, style: secondaryTextStyle)
                 : icon ?? Container(),

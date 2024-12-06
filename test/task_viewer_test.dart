@@ -31,9 +31,9 @@ void main() {
         TestApp(
           child: TaskViewer(
             tasks: testFullTasks,
-            onTapItem: (task) => selectedTaskId = task.id,
-            onDeleteItem: (task) => deletedTaskId = task.id,
-            onAddItemEntry: (task) => addedTaskId = task.id,
+            onTapItem: (ref) => selectedTaskId = ref.item.id,
+            onDeleteItem: (ref) => deletedTaskId = ref.item.id,
+            onAddItemEntry: (ref) => addedTaskId = ref.item.id,
           ),
         ),
       );

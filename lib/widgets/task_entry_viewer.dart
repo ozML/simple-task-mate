@@ -28,6 +28,8 @@ class TaskEntryViewer extends StatelessWidget {
 
   static Key get keyItemTile => Key('$TaskEntryViewer/itemTile');
   static Key get keyItemActionCopy => Key('$TaskEntryViewer/itemActionCopy');
+  static Key get keyItemActionGroupAdditional =>
+      Key('$TaskEntryViewer/groupAdditional');
   static Key get keyItemActionDelete =>
       Key('$TaskEntryViewer/itemActionDelete');
   static Key get keyItemActionEdit => Key('$TaskEntryViewer/itemActionEdit');
@@ -134,6 +136,7 @@ class TaskEntryViewer extends StatelessWidget {
               },
             ),
             LocalItemsGroup(
+              key: keyItemActionGroupAdditional,
               icon: IconUtils.ellipsisVertical(context),
               items: [
                 if (onEditItem != null)

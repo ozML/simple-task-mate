@@ -21,10 +21,11 @@ void main() {
         TestApp(
           child: ItemListViewer(
             items: items,
-            tileBuilder: (context, item, onSelect) => ItemTile(
+            getItemId: (item) => items.indexOf(item),
+            tileBuilder: (context, ref, onSelect) => ItemTile(
               key: keyItemTile,
-              ref: item,
-              title: item,
+              ref: ref,
+              title: ref.item,
               subTitle: 'subtitle',
               footNote: 'footnote',
               content: Container(key: keyContent),
@@ -80,9 +81,10 @@ void main() {
             TestApp(
               child: ItemListViewer(
                 items: items,
-                tileBuilder: (context, item, onSelect) => ItemTile(
-                  ref: item,
-                  title: item,
+                getItemId: (item) => items.indexOf(item),
+                tileBuilder: (context, ref, onSelect) => ItemTile(
+                  ref: ref,
+                  title: ref.item,
                   subTitle: 'subtitle',
                   footNote: 'footnote',
                   actions: [

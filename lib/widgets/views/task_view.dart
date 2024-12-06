@@ -116,6 +116,7 @@ class TaskViewState extends State<TaskView> {
           ),
           ChangeNotifierProvider(
             create: (context) => TaskModel()..loadTasks(),
+            lazy: false,
           ),
         ],
         builder: (context, _) {

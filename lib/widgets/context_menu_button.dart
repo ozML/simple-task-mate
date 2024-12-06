@@ -40,6 +40,7 @@ class ContextMenuButton extends StatelessWidget {
           final title = e.title;
 
           return PopupMenuItem(
+            key: e.key,
             onTap: e.onPressed,
             child: Row(
               children: [
