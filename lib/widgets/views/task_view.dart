@@ -199,78 +199,84 @@ class TaskViewState extends State<TaskView> {
             child: Consumer<TaskModel>(builder: (context, value, _) {
               return LayoutBuilder(
                 builder: (context, constraints) {
+                  final alignVertical = constraints.maxWidth < 960;
+
+                  final showGlobalTaskActions = value.tasks.isNotEmpty;
+
                   return Flex(
-                    direction: constraints.maxWidth >= 960
-                        ? Axis.horizontal
-                        : Axis.vertical,
+                    direction: alignVertical ? Axis.vertical : Axis.horizontal,
                     children: [
                       Expanded(
                         child: TaskViewer(
                           tasks: value.tasks,
                           onAddItem: openEntryDialog,
-                          onCopy: _copyTaskInfos,
-                          onCopyAll: () => _copyTaskInfos(fullCopy: true),
+                          onCopy: showGlobalTaskActions ? _copyTaskInfos : null,
+                          onCopyAll: showGlobalTaskActions
+                              ? () => _copyTaskInfos(fullCopy: true)
+                              : null,
                           onTapItem: (task) {
                             setState(() => _selectedTask = task.item);
                           },
-                          onDeleteItem: (task) => confirmDeleteTaskEntries(
-                            context: context,
-                            task: task.item,
-                            action: () => value
-                                .deleteTaskEntriesForDate(
-                                  task.item,
-                                  context.read<DateTimeModel>().selectedDate,
-                                )
-                                .then(_refresh),
-                          ),
-                          onAddItemEntry: (task) =>
-                              openEntryDialog(task: task.item),
                         ),
                       ),
                       if (selectedTask != null)
+                        const SizedBox.square(dimension: 15),
+                      if (selectedTask != null)
                         Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 15, right: 15),
-                            child: Stack(
-                              children: [
-                                TaskEntryViewer.buildFromModels(
-                                  context: context,
-                                  title: context.texts.labelEntries,
-                                  subTitle: StringUtils.join(
-                                    [selectedTask.refId, selectedTask.name],
-                                  ),
-                                  taskEntries: selectedTask.entries ?? [],
-                                  onEditItem: (taskEntry) => openEntryDialog(
-                                      taskEntry: taskEntry.item),
-                                  onDeleteItem: (taskEntry) =>
-                                      confirmDeleteTaskEntry(
-                                    context: context,
-                                    taskEntry: taskEntry.item,
-                                    action: () => value
-                                        .deleteTaskEntry(taskEntry.item)
-                                        .then(_refresh),
-                                  ),
+                          child: Stack(
+                            children: [
+                              TaskEntryViewer.buildFromModels(
+                                context: context,
+                                title: context.texts.labelEntries,
+                                subTitle: StringUtils.join(
+                                  [selectedTask.refId, selectedTask.name],
                                 ),
-                                Align(
-                                  alignment: Alignment.topRight,
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      IconButton(
-                                        icon: IconUtils.copy(context),
-                                        onPressed: _copyEntryInfos,
-                                      ),
-                                      const SizedBox(width: 5),
-                                      IconButton(
-                                        icon: IconUtils.close(context),
-                                        onPressed: _clearSelectedTask,
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
+                                taskEntries: selectedTask.entries ?? [],
+                                onAddItem: () =>
+                                    openEntryDialog(task: selectedTask),
+                                onCopy: _copyEntryInfos,
+                                onDelete: () => confirmDeleteTaskEntries(
+                                  context: context,
+                                  task: selectedTask,
+                                  action: () => value
+                                      .deleteTaskEntriesForDate(
+                                        selectedTask,
+                                        context
+                                            .read<DateTimeModel>()
+                                            .selectedDate,
+                                      )
+                                      .then(_refresh),
+                                ),
+                                onEditItem: (taskEntry) =>
+                                    openEntryDialog(taskEntry: taskEntry.item),
+                                onDeleteItem: (taskEntry) =>
+                                    confirmDeleteTaskEntry(
+                                  context: context,
+                                  taskEntry: taskEntry.item,
+                                  action: () => value
+                                      .deleteTaskEntry(taskEntry.item)
+                                      .then(_refresh),
+                                ),
+                              ),
+                              Container(
+                                alignment: Alignment.topRight,
+                                margin: const EdgeInsets.only(
+                                  top: 5,
+                                  right: 5,
+                                ),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const SizedBox(width: 5),
+                                    IconButton(
+                                      icon: IconUtils.close(context),
+                                      onPressed: _clearSelectedTask,
+                                    ),
+                                  ],
+                                ),
+                              )
+                            ],
                           ),
                         )
                     ],

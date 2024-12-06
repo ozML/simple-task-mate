@@ -18,6 +18,9 @@ class TaskEntryViewer extends StatelessWidget {
     this.hideHeader = false,
     this.locale = const Locale('en'),
     this.showDate = false,
+    this.onAddItem,
+    this.onCopy,
+    this.onDelete,
     this.onDeleteItem,
     this.onEditItem,
     super.key,
@@ -35,6 +38,9 @@ class TaskEntryViewer extends StatelessWidget {
   final bool hideHeader;
   final Locale locale;
   final bool showDate;
+  final void Function()? onAddItem;
+  final void Function()? onCopy;
+  final void Function()? onDelete;
   final void Function(ItemRef<TaskEntry> ref)? onDeleteItem;
   final void Function(ItemRef<TaskEntry> ref)? onEditItem;
 
@@ -44,9 +50,12 @@ class TaskEntryViewer extends StatelessWidget {
     required List<TaskEntry> taskEntries,
     String? subTitle,
     bool hideHeader = false,
-    final bool showDate = false,
-    final void Function(ItemRef<TaskEntry> ref)? onDeleteItem,
-    final void Function(ItemRef<TaskEntry> ref)? onEditItem,
+    bool showDate = false,
+    void Function()? onAddItem,
+    void Function()? onCopy,
+    void Function()? onDelete,
+    void Function(ItemRef<TaskEntry> ref)? onDeleteItem,
+    void Function(ItemRef<TaskEntry> ref)? onEditItem,
     Key? key,
   }) {
     final config = context.watch<ConfigModel>();
@@ -58,6 +67,9 @@ class TaskEntryViewer extends StatelessWidget {
       hideHeader: hideHeader,
       locale: config.getValue<Locale>(settingLanguage),
       showDate: showDate,
+      onAddItem: onAddItem,
+      onCopy: onCopy,
+      onDelete: onDelete,
       onDeleteItem: onDeleteItem,
       onEditItem: onEditItem,
       key: key,
@@ -66,6 +78,9 @@ class TaskEntryViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final onAddItem = this.onAddItem;
+    final onCopy = this.onCopy;
+    final onDelete = this.onDelete;
     final onEditItem = this.onEditItem;
     final onDeleteItem = this.onDeleteItem;
 
@@ -78,6 +93,26 @@ class TaskEntryViewer extends StatelessWidget {
       subTitle: subTitle,
       headerColor: primaryFixedColorFrom(context),
       hideHeader: hideHeader,
+      actions: [
+        if (onAddItem != null)
+          GlobalItemsAction(
+            icon: IconUtils.add(context),
+            label: context.texts.buttonAdd,
+            onPressed: (_) => onAddItem(),
+          ),
+        if (onCopy != null)
+          GlobalItemsAction(
+            icon: IconUtils.copy(context),
+            label: context.texts.buttonCopy,
+            onPressed: (_) => onCopy(),
+          ),
+        if (onDelete != null)
+          GlobalItemsAction(
+            icon: IconUtils.trashCan(context),
+            label: context.texts.buttonDelete,
+            onPressed: (_) => onDelete(),
+          ),
+      ],
       tileBuilder: (context, ref, onTap) {
         final item = ref.item;
 

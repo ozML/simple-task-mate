@@ -44,13 +44,14 @@ class ContentBoxHeader extends StatelessWidget {
               color: primaryColor,
             ),
           ),
-          Text(
-            subTitle ?? '',
-            textAlign: TextAlign.center,
-            style: secondaryTextStyle?.copyWith(
-              color: primaryColor,
+          if (subTitle != null)
+            Text(
+              subTitle,
+              textAlign: TextAlign.center,
+              style: secondaryTextStyle?.copyWith(
+                color: primaryColor,
+              ),
             ),
-          )
         ],
       );
     }
