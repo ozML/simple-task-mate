@@ -22,6 +22,8 @@ class TaskEntryViewer extends StatelessWidget {
     this.onAddItem,
     this.onCopy,
     this.onDelete,
+    this.onChangeDate,
+    this.onChangeTask,
     this.onDeleteItem,
     this.onEditItem,
     super.key,
@@ -45,6 +47,8 @@ class TaskEntryViewer extends StatelessWidget {
   final void Function()? onAddItem;
   final void Function(List<ItemRef<TaskEntry>> refs)? onCopy;
   final void Function(List<ItemRef<TaskEntry>> refs)? onDelete;
+  final void Function(List<ItemRef<TaskEntry>> refs)? onChangeDate;
+  final void Function(List<ItemRef<TaskEntry>> refs)? onChangeTask;
   final void Function(ItemRef<TaskEntry> ref)? onDeleteItem;
   final void Function(ItemRef<TaskEntry> ref)? onEditItem;
 
@@ -59,6 +63,8 @@ class TaskEntryViewer extends StatelessWidget {
     void Function()? onAddItem,
     void Function(List<ItemRef<TaskEntry>> refs)? onCopy,
     void Function(List<ItemRef<TaskEntry>> refs)? onDelete,
+    void Function(List<ItemRef<TaskEntry>> refs)? onChangeDate,
+    void Function(List<ItemRef<TaskEntry>> refs)? onChangeTask,
     void Function(ItemRef<TaskEntry> ref)? onDeleteItem,
     void Function(ItemRef<TaskEntry> ref)? onEditItem,
     Key? key,
@@ -76,6 +82,8 @@ class TaskEntryViewer extends StatelessWidget {
       onAddItem: onAddItem,
       onCopy: onCopy,
       onDelete: onDelete,
+      onChangeDate: onChangeDate,
+      onChangeTask: onChangeTask,
       onDeleteItem: onDeleteItem,
       onEditItem: onEditItem,
       key: key,
@@ -87,6 +95,8 @@ class TaskEntryViewer extends StatelessWidget {
     final onAddItem = this.onAddItem;
     final onCopy = this.onCopy;
     final onDelete = this.onDelete;
+    final onChangeDate = this.onChangeDate;
+    final onChangeTask = this.onChangeTask;
     final onEditItem = this.onEditItem;
     final onDeleteItem = this.onDeleteItem;
 
@@ -143,6 +153,24 @@ class TaskEntryViewer extends StatelessWidget {
               ),
             ],
           ),
+        GlobalItemsGroup(
+          icon: IconUtils.arrowRightLeft(context),
+          label: 'Verschieben',
+          items: [
+            if (onChangeDate != null)
+              GlobalItemsAction(
+                icon: IconUtils.calendar(context),
+                label: 'zu Datum',
+                onPressed: onChangeDate,
+              ),
+            if (onChangeTask != null)
+              GlobalItemsAction(
+                icon: IconUtils.clipboard(context),
+                label: 'zu Aufgabe',
+                onPressed: onChangeTask,
+              ),
+          ],
+        ),
       ],
       tileBuilder: (context, ref, onTap) {
         final item = ref.item;

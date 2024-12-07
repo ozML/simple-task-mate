@@ -283,6 +283,35 @@ class TaskViewState extends State<TaskView> {
                                     );
                                   }
                                 },
+                                onChangeDate: (refs) async {
+                                  final date =
+                                      context.read<DateTimeModel>().date;
+
+                                  final targetDate = await showDatePicker(
+                                    context: context,
+                                    firstDate: DateTime(1900),
+                                    lastDate: date.add(
+                                      const Duration(days: 365 * 5),
+                                    ),
+                                  );
+
+                                  if (targetDate == null) {
+                                    return;
+                                  }
+
+                                  final selection = refs
+                                      .where((element) => element.isSelected);
+
+                                  final List<TaskEntry> entryUpdates =
+                                      (selection.isNotEmpty ? selection : refs)
+                                          .map((e) =>
+                                              e.item.changeDateTo(targetDate))
+                                          .toList();
+
+                                  value
+                                      .updateTaskEntries(entryUpdates)
+                                      .then(_refresh);
+                                },
                                 onEditItem: (taskEntry) =>
                                     openEntryDialog(taskEntry: taskEntry.item),
                                 onDeleteItem: (taskEntry) =>
