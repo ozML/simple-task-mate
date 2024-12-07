@@ -109,6 +109,15 @@
 			}
 		}
 	},
+	"dialogTitleTaskEntryDeleteSelected": "Ausgewählte Aufgabeneinträge löschen",
+	"dialogInfoTaskEntryDeleteSelected" : "Ausgewählte Einträge der Aufgabe \n\"{title}\" \nwerden gelöscht",
+	"@dialogInfoTaskEntryDeleteSelected" : {
+		"placeholders" : {
+			"title" : {
+				"type" : "String"
+			}
+		}
+	},
 	"dialogTitleTaskEntryDeleteAll": "Alle Aufgabeneinträge löschen",
 	"dialogInfoTaskEntryDeleteAll" : "Alle Einträge der Aufgabe \n\"{title}\" \nfür diesen Tag werden gelöscht",
 	"@dialogInfoTaskEntryDeleteAll" : {

@@ -254,18 +254,35 @@ class TaskViewState extends State<TaskView> {
                                       .map((e) => e.item)
                                       .toList(),
                                 ),
-                                onDelete: () => confirmDeleteTaskEntries(
-                                  context: context,
-                                  task: selectedTask,
-                                  action: () => value
-                                      .deleteTaskEntriesForDate(
-                                        selectedTask,
-                                        context
-                                            .read<DateTimeModel>()
-                                            .selectedDate,
-                                      )
-                                      .then(_refresh),
-                                ),
+                                onDelete: (refs) {
+                                  final selection = refs
+                                      .where((element) => element.isSelected)
+                                      .map((e) => e.item)
+                                      .toList();
+
+                                  if (selection.isNotEmpty) {
+                                    confirmDeleteSelectedTaskEntries(
+                                      context: context,
+                                      task: selectedTask,
+                                      action: () => value
+                                          .deleteTaskEntries(selection)
+                                          .then(_refresh),
+                                    );
+                                  } else {
+                                    confirmDeleteTaskEntries(
+                                      context: context,
+                                      task: selectedTask,
+                                      action: () => value
+                                          .deleteTaskEntriesForDate(
+                                            selectedTask,
+                                            context
+                                                .read<DateTimeModel>()
+                                                .selectedDate,
+                                          )
+                                          .then(_refresh),
+                                    );
+                                  }
+                                },
                                 onEditItem: (taskEntry) =>
                                     openEntryDialog(taskEntry: taskEntry.item),
                                 onDeleteItem: (taskEntry) =>

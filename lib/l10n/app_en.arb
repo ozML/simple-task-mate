@@ -109,6 +109,15 @@
 			}
 		}
 	},
+	"dialogTitleTaskEntryDeleteSelected": "Delete selected task entries",
+	"dialogInfoTaskEntryDeleteSelected" : "Selected entries of \n\"{title}\" \nwill be deleted",
+	"@dialogInfoTaskEntryDeleteSelected" : {
+		"placeholders" : {
+			"title" : {
+				"type" : "String"
+			}
+		}
+	},
 	"dialogTitleTaskEntryDeleteAll": "Delete all task entries",
 	"dialogInfoTaskEntryDeleteAll" : "All entries of \n\"{title}\" \nfor this day will be deleted",
 	"@dialogInfoTaskEntryDeleteAll" : {

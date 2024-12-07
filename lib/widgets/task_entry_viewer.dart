@@ -44,7 +44,7 @@ class TaskEntryViewer extends StatelessWidget {
   final bool showSelectOption;
   final void Function()? onAddItem;
   final void Function(List<ItemRef<TaskEntry>> refs)? onCopy;
-  final void Function()? onDelete;
+  final void Function(List<ItemRef<TaskEntry>> refs)? onDelete;
   final void Function(ItemRef<TaskEntry> ref)? onDeleteItem;
   final void Function(ItemRef<TaskEntry> ref)? onEditItem;
 
@@ -58,7 +58,7 @@ class TaskEntryViewer extends StatelessWidget {
     bool showSelectOption = false,
     void Function()? onAddItem,
     void Function(List<ItemRef<TaskEntry>> refs)? onCopy,
-    void Function()? onDelete,
+    void Function(List<ItemRef<TaskEntry>> refs)? onDelete,
     void Function(ItemRef<TaskEntry> ref)? onDeleteItem,
     void Function(ItemRef<TaskEntry> ref)? onEditItem,
     Key? key,
@@ -116,7 +116,7 @@ class TaskEntryViewer extends StatelessWidget {
           GlobalItemsAction(
             icon: IconUtils.trashCan(context),
             label: context.texts.buttonDelete,
-            onPressed: (_) => onDelete(),
+            onPressed: onDelete,
           ),
         if (showSelectOption)
           GlobalItemsGroup(

@@ -313,7 +313,26 @@ class TaskDataBaseHelper extends DataBaseHelper {
         },
       ).then((value) => value ?? 0);
 
-  Future<int> deleteTaskEntries({
+  Future<int> deleteTaskEntries(List<TaskEntry> taskEntries) => dbAction<int>(
+        (db) async {
+          if (taskEntries.isEmpty) {
+            return 0;
+          }
+
+          const columnId = TaskEntryContract.columnId;
+          final tableName = entryContract.tableName;
+
+          final targetIds =
+              taskEntries.map((e) => e.id).whereNotNull().toList().join(',');
+
+          return db.delete(
+            tableName,
+            where: '$columnId IN ($targetIds)',
+          );
+        },
+      ).then((value) => value ?? 0);
+
+  Future<int> deleteTaskEntriesInRange({
     required Task task,
     DateTime? start,
     DateTime? end,
@@ -343,7 +362,7 @@ class TaskDataBaseHelper extends DataBaseHelper {
       ).then((value) => value ?? 0);
 
   Future<int> deleteTaskEntriesForDate(Task task, DateTime date) =>
-      deleteTaskEntries(
+      deleteTaskEntriesInRange(
         task: task,
         start: date,
         end: date.add(const Duration(days: 1)),

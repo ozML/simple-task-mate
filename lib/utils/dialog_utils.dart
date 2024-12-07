@@ -105,6 +105,22 @@ Future<bool> confirmDeleteTaskEntry({
       action: action,
     );
 
+Future<bool> confirmDeleteSelectedTaskEntries({
+  required BuildContext context,
+  required Task task,
+  required VoidCallback action,
+}) =>
+    confirmedAction(
+      context: context,
+      titleText: context.texts.dialogTitleTaskEntryDeleteSelected,
+      confirmText: context.texts.buttonOk,
+      cancelText: context.texts.buttonCancel,
+      infoText: context.texts.dialogInfoTaskEntryDeleteSelected(
+        task.fullName(),
+      ),
+      action: action,
+    );
+
 Future<bool> confirmDeleteTaskEntries({
   required BuildContext context,
   required Task task,
