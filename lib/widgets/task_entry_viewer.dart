@@ -43,7 +43,7 @@ class TaskEntryViewer extends StatelessWidget {
   final bool showDate;
   final bool showSelectOption;
   final void Function()? onAddItem;
-  final void Function()? onCopy;
+  final void Function(List<ItemRef<TaskEntry>> refs)? onCopy;
   final void Function()? onDelete;
   final void Function(ItemRef<TaskEntry> ref)? onDeleteItem;
   final void Function(ItemRef<TaskEntry> ref)? onEditItem;
@@ -57,7 +57,7 @@ class TaskEntryViewer extends StatelessWidget {
     bool showDate = false,
     bool showSelectOption = false,
     void Function()? onAddItem,
-    void Function()? onCopy,
+    void Function(List<ItemRef<TaskEntry>> refs)? onCopy,
     void Function()? onDelete,
     void Function(ItemRef<TaskEntry> ref)? onDeleteItem,
     void Function(ItemRef<TaskEntry> ref)? onEditItem,
@@ -110,7 +110,7 @@ class TaskEntryViewer extends StatelessWidget {
           GlobalItemsAction(
             icon: IconUtils.copy(context),
             label: context.texts.buttonCopy,
-            onPressed: (_) => onCopy(),
+            onPressed: onCopy,
           ),
         if (onDelete != null)
           GlobalItemsAction(

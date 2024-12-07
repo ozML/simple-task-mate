@@ -85,9 +85,21 @@ class TaskViewState extends State<TaskView> {
     Clipboard.setData(ClipboardData(text: result));
   }
 
-  void _copyEntryInfos() {
-    final selectedTaskEntries = _selectedTask?.entries;
+  void _copyEntryInfos({List<TaskEntry> entries = const []}) {
+    final targetIds = entries.map((e) => e.id);
+
+    var selectedTaskEntries = _selectedTask?.entries;
     if (selectedTaskEntries != null) {
+      if (targetIds.isNotEmpty) {
+        selectedTaskEntries = selectedTaskEntries
+            .where((element) => targetIds.contains(element.id))
+            .toList();
+      }
+
+      if (selectedTaskEntries.isEmpty) {
+        return;
+      }
+
       Clipboard.setData(
         ClipboardData(
           text: selectedTaskEntries
@@ -230,13 +242,18 @@ class TaskViewState extends State<TaskView> {
                                 context: context,
                                 title: context.texts.labelEntries,
                                 subTitle: StringUtils.join(
-                                  [selectedTask.refId, selectedTask.name],
-                                ),
+                                    [selectedTask.refId, selectedTask.name],
+                                    separator: ' - '),
                                 taskEntries: selectedTask.entries ?? [],
                                 showSelectOption: true,
                                 onAddItem: () =>
                                     openEntryDialog(task: selectedTask),
-                                onCopy: _copyEntryInfos,
+                                onCopy: (refs) => _copyEntryInfos(
+                                  entries: refs
+                                      .where((element) => element.isSelected)
+                                      .map((e) => e.item)
+                                      .toList(),
+                                ),
                                 onDelete: () => confirmDeleteTaskEntries(
                                   context: context,
                                   task: selectedTask,
