@@ -147,13 +147,6 @@ class TaskSummaryViewState extends State<TaskSummaryView> {
     }
 
     return Scaffold(
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: FloatingActionButton(
-          onPressed: () => openEntryDialog(),
-          child: IconUtils.add(context, color: primaryColorFrom(context)),
-        ),
-      ),
       body: Row(
         children: [
           Container(
@@ -219,6 +212,7 @@ class TaskSummaryViewState extends State<TaskSummaryView> {
                       summaries: value.summaries,
                       hideHeader: true,
                       searchText: _searchText,
+                      onAddItem: () => openEntryDialog(),
                       onTapItem: (summary) =>
                           value.loadFilledTask(summary.item.taskId),
                       onDeleteItem: (summary) => confirmDeleteTask(

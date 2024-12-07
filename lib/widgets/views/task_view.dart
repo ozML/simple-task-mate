@@ -233,6 +233,7 @@ class TaskViewState extends State<TaskView> {
                                   [selectedTask.refId, selectedTask.name],
                                 ),
                                 taskEntries: selectedTask.entries ?? [],
+                                showSelectOption: true,
                                 onAddItem: () =>
                                     openEntryDialog(task: selectedTask),
                                 onCopy: _copyEntryInfos,

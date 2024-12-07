@@ -11,6 +11,7 @@ class TaskSummaryViewer extends StatelessWidget {
     required this.summaries,
     this.hideHeader = false,
     this.searchText,
+    this.onAddItem,
     this.onTapItem,
     this.onDeleteItem,
     this.onEditItem,
@@ -27,6 +28,7 @@ class TaskSummaryViewer extends StatelessWidget {
   final List<TaskSummary> summaries;
   final bool hideHeader;
   final String? searchText;
+  final void Function()? onAddItem;
   final void Function(ItemRef<TaskSummary> ref)? onTapItem;
   final void Function(ItemRef<TaskSummary> ref)? onDeleteItem;
   final void Function(ItemRef<TaskSummary> ref)? onEditItem;
@@ -34,6 +36,7 @@ class TaskSummaryViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final onAddItem = this.onAddItem;
     final onDeleteItem = this.onDeleteItem;
     final onEditItem = this.onEditItem;
 
@@ -47,6 +50,14 @@ class TaskSummaryViewer extends StatelessWidget {
       searchFieldHintText: context.texts.labelSearchPlaceholderTaskEntry,
       onTapItem: onTapItem,
       onSearchTextChanged: onSearchTextChanged,
+      actions: [
+        if (onAddItem != null)
+          GlobalItemsAction(
+            icon: IconUtils.add(context),
+            label: context.texts.buttonAdd,
+            onPressed: (_) => onAddItem(),
+          ),
+      ],
       tileBuilder: (context, ref, onTap) {
         final item = ref.item;
 

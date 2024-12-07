@@ -155,7 +155,12 @@ class ItemTileState<T> extends State<ItemTile<T>> {
             )
             .toList();
 
-        return ContextMenuButton(key: key, icon: icon, items: items);
+        return ContextMenuButton(
+          key: key,
+          label: label,
+          icon: icon,
+          items: items,
+        );
       }
 
       throw Exception('Could not build local action button');
@@ -365,7 +370,12 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
             )
             .toList();
 
-        return ContextMenuButton(key: key, icon: icon, items: items);
+        return ContextMenuButton(
+          key: key,
+          label: label,
+          icon: icon,
+          items: items,
+        );
       }
 
       throw Exception('Could not build global action button');
@@ -453,11 +463,31 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
                 Expanded(
                   child: ListView.builder(
                     itemCount: refs.length,
-                    itemBuilder: (context, index) => widget.tileBuilder(
-                      context,
-                      refs[index],
-                      widget.onTapItem,
-                    ),
+                    itemBuilder: (context, index) {
+                      final ref = refs[index];
+
+                      return Row(
+                        children: [
+                          if (refs.any((element) => element.isSelected))
+                            Container(
+                              alignment: Alignment.topCenter,
+                              margin: const EdgeInsets.all(2),
+                              child: Checkbox(
+                                value: ref.isSelected,
+                                onChanged: (value) =>
+                                    ref.onSelect?.call(value ?? false),
+                              ),
+                            ),
+                          Expanded(
+                            child: widget.tileBuilder(
+                              context,
+                              ref,
+                              widget.onTapItem,
+                            ),
+                          ),
+                        ],
+                      );
+                    },
                   ),
                 ),
               ],

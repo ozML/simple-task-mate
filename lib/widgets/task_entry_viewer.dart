@@ -18,6 +18,7 @@ class TaskEntryViewer extends StatelessWidget {
     this.hideHeader = false,
     this.locale = const Locale('en'),
     this.showDate = false,
+    this.showSelectOption = false,
     this.onAddItem,
     this.onCopy,
     this.onDelete,
@@ -40,6 +41,7 @@ class TaskEntryViewer extends StatelessWidget {
   final bool hideHeader;
   final Locale locale;
   final bool showDate;
+  final bool showSelectOption;
   final void Function()? onAddItem;
   final void Function()? onCopy;
   final void Function()? onDelete;
@@ -53,6 +55,7 @@ class TaskEntryViewer extends StatelessWidget {
     String? subTitle,
     bool hideHeader = false,
     bool showDate = false,
+    bool showSelectOption = false,
     void Function()? onAddItem,
     void Function()? onCopy,
     void Function()? onDelete,
@@ -69,6 +72,7 @@ class TaskEntryViewer extends StatelessWidget {
       hideHeader: hideHeader,
       locale: config.getValue<Locale>(settingLanguage),
       showDate: showDate,
+      showSelectOption: showSelectOption,
       onAddItem: onAddItem,
       onCopy: onCopy,
       onDelete: onDelete,
@@ -114,6 +118,31 @@ class TaskEntryViewer extends StatelessWidget {
             label: context.texts.buttonDelete,
             onPressed: (_) => onDelete(),
           ),
+        if (showSelectOption)
+          GlobalItemsGroup(
+            icon: IconUtils.check(context),
+            label: context.texts.buttonSelection,
+            items: [
+              GlobalItemsAction(
+                icon: IconUtils.squareCheck(context),
+                label: context.texts.buttonSelectAll,
+                onPressed: (refs) {
+                  for (var element in refs) {
+                    element.onSelect?.call(true);
+                  }
+                },
+              ),
+              GlobalItemsAction(
+                icon: IconUtils.square(context),
+                label: context.texts.buttonDeselectAll,
+                onPressed: (refs) {
+                  for (var element in refs) {
+                    element.onSelect?.call(false);
+                  }
+                },
+              ),
+            ],
+          ),
       ],
       tileBuilder: (context, ref, onTap) {
         final item = ref.item;
@@ -145,6 +174,16 @@ class TaskEntryViewer extends StatelessWidget {
                     icon: IconUtils.edit(context),
                     label: context.texts.buttonEdit,
                     onPressed: onEditItem,
+                  ),
+                if (showSelectOption)
+                  LocalItemAction(
+                    icon: ref.isSelected
+                        ? IconUtils.square(context)
+                        : IconUtils.squareCheck(context),
+                    label: ref.isSelected
+                        ? context.texts.buttonDeselect
+                        : context.texts.buttonSelect,
+                    onPressed: (ref) => ref.onSelect?.call(!ref.isSelected),
                   ),
                 if (onDeleteItem != null)
                   LocalItemAction(

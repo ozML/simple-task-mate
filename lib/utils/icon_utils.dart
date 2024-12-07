@@ -346,4 +346,27 @@ class IconUtils {
         color: color,
         size: size,
       );
+
+  static Widget square(
+    BuildContext context, {
+    Color? color,
+    double? size,
+  }) =>
+      _getIcon(
+        context: context,
+        icon: FontAwesomeIcons.square,
+        color: color,
+        size: size,
+      );
+  static Widget squareCheck(
+    BuildContext context, {
+    Color? color,
+    double? size,
+  }) =>
+      _getIcon(
+        context: context,
+        icon: FontAwesomeIcons.squareCheck,
+        color: color,
+        size: size,
+      );
 }
