@@ -150,5 +150,6 @@
 	"dialogTitleRestart": "Restart required",
 	"dialogInfoRestart" : "Changes require restart.\nApply now?",
 	"dialogTitleResetSettings": "Reset settings",
-	"dialogInfoResetSettings" : "The settings will be set back to default. \nRestart required for the changes to take effect."
+	"dialogInfoResetSettings" : "The settings will be set back to default. \nRestart required for the changes to take effect.",
+	"dialogTitleJumpToDate" : "Jump to date?"
 }

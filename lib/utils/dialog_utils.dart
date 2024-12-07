@@ -192,3 +192,15 @@ Future<bool> confirmConfigReset({
       infoText: context.texts.dialogInfoRestart,
       action: action,
     );
+
+Future<bool> confirmJumpToDate({
+  required BuildContext context,
+  required VoidCallback action,
+}) =>
+    confirmedAction(
+      context: context,
+      titleText: context.texts.dialogTitleJumpToDate,
+      confirmText: context.texts.buttonOk,
+      cancelText: context.texts.buttonCancel,
+      action: action,
+    );

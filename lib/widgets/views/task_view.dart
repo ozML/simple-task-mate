@@ -284,18 +284,21 @@ class TaskViewState extends State<TaskView> {
                                   }
                                 },
                                 onChangeDate: (refs) async {
-                                  final date =
-                                      context.read<DateTimeModel>().date;
+                                  final dateModel =
+                                      context.read<DateTimeModel>();
+
+                                  final date = dateModel.date;
+                                  final sourceDate = dateModel.selectedDate;
 
                                   final targetDate = await showDatePicker(
                                     context: context,
+                                    currentDate: sourceDate,
                                     firstDate: DateTime(1900),
                                     lastDate: date.add(
                                       const Duration(days: 365 * 5),
                                     ),
                                   );
 
-                                  final sourceDate = refs.first.item.date;
                                   if (targetDate == null ||
                                       targetDate == sourceDate) {
                                     return;
@@ -318,12 +321,24 @@ class TaskViewState extends State<TaskView> {
                                     return;
                                   }
 
-                                  dialogAction(
+                                  await dialogAction(
                                     context: context,
                                     task: selectedTask,
                                     action: () => value
                                         .updateTaskEntries(entryUpdates)
                                         .then(_refresh),
+                                  );
+
+                                  if (!context.mounted) {
+                                    return;
+                                  }
+
+                                  confirmJumpToDate(
+                                    context: context,
+                                    action: () {
+                                      dateModel.selectDate(targetDate);
+                                      _refresh();
+                                    },
                                   );
                                 },
                                 onEditItem: (taskEntry) =>
