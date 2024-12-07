@@ -283,6 +283,64 @@ class TaskViewState extends State<TaskView> {
                                     );
                                   }
                                 },
+                                onChangeDate: (refs) async {
+                                  final dateModel =
+                                      context.read<DateTimeModel>();
+
+                                  final date = dateModel.date;
+                                  final sourceDate = dateModel.selectedDate;
+
+                                  final targetDate = await showDatePicker(
+                                    context: context,
+                                    currentDate: sourceDate,
+                                    firstDate: DateTime(1900),
+                                    lastDate: date.add(
+                                      const Duration(days: 365 * 5),
+                                    ),
+                                  );
+
+                                  if (targetDate == null ||
+                                      targetDate == sourceDate) {
+                                    return;
+                                  }
+
+                                  final selection = refs
+                                      .where((element) => element.isSelected);
+
+                                  final List<TaskEntry> entryUpdates =
+                                      (selection.isNotEmpty ? selection : refs)
+                                          .map((e) =>
+                                              e.item.changeDateTo(targetDate))
+                                          .toList();
+
+                                  final dialogAction = selection.isNotEmpty
+                                      ? confirmMoveSelectedTaskEntriesToDate
+                                      : confirmMoveTaskEntriesToDate;
+
+                                  if (!context.mounted) {
+                                    return;
+                                  }
+
+                                  await dialogAction(
+                                    context: context,
+                                    task: selectedTask,
+                                    action: () => value
+                                        .updateTaskEntries(entryUpdates)
+                                        .then(_refresh),
+                                  );
+
+                                  if (!context.mounted) {
+                                    return;
+                                  }
+
+                                  confirmJumpToDate(
+                                    context: context,
+                                    action: () {
+                                      dateModel.selectDate(targetDate);
+                                      _refresh();
+                                    },
+                                  );
+                                },
                                 onEditItem: (taskEntry) =>
                                     openEntryDialog(taskEntry: taskEntry.item),
                                 onDeleteItem: (taskEntry) =>

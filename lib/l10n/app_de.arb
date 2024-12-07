@@ -127,8 +127,27 @@
 			}
 		}
 	},
+	"dialogTitleTaskEntryMoveToDateSelected": "Ausgewählte Aufgabeneinträge zum Datum verschieben",
+	"dialogInfoTaskEntryMoveToDateSelected" : "Ausgewählte Einträge der Aufgabe \n\"{title}\" \nwerden zum ausgewählten Datum verschoben",
+	"@dialogInfoTaskEntryMoveToDateSelected" : {
+		"placeholders" : {
+			"title" : {
+				"type" : "String"
+			}
+		}
+	},
+	"dialogTitleTaskEntryMoveToDateAll": "Alle Aufgabeneinträge zum Datum verschieben",
+	"dialogInfoTaskEntryMoveToDateAll" : "Alle Einträge der Aufgabe \n\"{title}\" \ndieses Tages werden zum ausgewählten Datum verschoben",
+	"@dialogInfoTaskEntryMoveToDateAll" : {
+		"placeholders" : {
+			"title" : {
+				"type" : "String"
+			}
+		}
+	},
 	"dialogTitleRestart": "Neustart erforderlich",
 	"dialogInfoRestart" : "Änderungen sind nach Neustart verfügbar.\nJetzt anwenden?",
 	"dialogTitleResetSettings": "Einstellungen zurücksetzen",
-	"dialogInfoResetSettings" : "Die Einstellungen werden auf die Standardwerte zurückgesetzt. \nDie Änderungen sind nach Neustarz verfügbar."
+	"dialogInfoResetSettings" : "Die Einstellungen werden auf die Standardwerte zurückgesetzt. \nDie Änderungen sind nach Neustarz verfügbar.",
+	"dialogTitleJumpToDate" : "Zum Datum wechseln?"
 }

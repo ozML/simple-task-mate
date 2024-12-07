@@ -66,6 +66,13 @@ class TaskModel extends ChangeNotifier {
     return success;
   }
 
+  Future<bool> updateTaskEntries(List<TaskEntry> taskEntries) async {
+    final success =
+        await TaskDataBaseHelper.instance.updateTaskEntries(taskEntries) > 0;
+
+    return success;
+  }
+
   Future<bool> deleteTaskEntry(TaskEntry taskEntry) async {
     final success =
         await TaskDataBaseHelper.instance.deleteTaskEntry(taskEntry) > 0;

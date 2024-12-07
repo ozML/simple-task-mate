@@ -254,6 +254,24 @@ class TaskEntry with EquatableMixin {
         createdAt: createdAt ?? this.createdAt,
         modifiedAt: modifiedAt ?? this.modifiedAt,
       );
+
+  TaskEntry changeDateTo(DateTime date) {
+    final targetDate = date.date;
+
+    return copyWith(
+      date: targetDate,
+      startTime: startTime?.copyWith(
+        year: targetDate.year,
+        month: targetDate.month,
+        day: targetDate.day,
+      ),
+      endTime: endTime?.copyWith(
+        year: targetDate.year,
+        month: targetDate.month,
+        day: targetDate.day,
+      ),
+    );
+  }
 }
 
 class StampSummary with EquatableMixin {

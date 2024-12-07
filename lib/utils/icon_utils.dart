@@ -358,6 +358,7 @@ class IconUtils {
         color: color,
         size: size,
       );
+
   static Widget squareCheck(
     BuildContext context, {
     Color? color,
@@ -366,6 +367,30 @@ class IconUtils {
       _getIcon(
         context: context,
         icon: FontAwesomeIcons.squareCheck,
+        color: color,
+        size: size,
+      );
+
+  static Widget arrowRightLeft(
+    BuildContext context, {
+    Color? color,
+    double? size,
+  }) =>
+      _getIcon(
+        context: context,
+        icon: FontAwesomeIcons.arrowRightArrowLeft,
+        color: color,
+        size: size,
+      );
+
+  static Widget calendar(
+    BuildContext context, {
+    Color? color,
+    double? size,
+  }) =>
+      _getIcon(
+        context: context,
+        icon: FontAwesomeIcons.calendar,
         color: color,
         size: size,
       );

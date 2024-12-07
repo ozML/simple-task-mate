@@ -300,6 +300,26 @@ class TaskDataBaseHelper extends DataBaseHelper {
         },
       ).then((value) => value ?? 0);
 
+  Future<int> updateTaskEntries(List<TaskEntry> taskEntries) => dbAction<int>(
+        (db) async {
+          const columnId = TaskEntryContract.columnId;
+          final tableName = entryContract.tableName;
+
+          final batch = db.batch();
+
+          for (final taskEntry in taskEntries) {
+            batch.update(
+              tableName,
+              taskEntry.copyWith(modifiedAt: DateTime.now()).toMap(),
+              where: '$columnId = ?',
+              whereArgs: [taskEntry.id],
+            );
+          }
+
+          return batch.commit().then((value) => value.whereType<int>().sum);
+        },
+      ).then((value) => value ?? 0);
+
   Future<int> deleteTaskEntry(TaskEntry taskEntry) => dbAction<int>(
         (db) async {
           const columnId = TaskEntryContract.columnId;
