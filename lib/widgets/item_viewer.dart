@@ -166,6 +166,15 @@ class ItemTileState<T> extends State<ItemTile<T>> {
       throw Exception('Could not build local action button');
     }
 
+    final actionButtons = widget.actions
+        .where(
+          (element) =>
+              element is LocalItemAction<T> ||
+              element is LocalItemsGroup<T> && element.items.isNotEmpty,
+        )
+        .map(buildActionButton)
+        .toList();
+
     return GestureDetector(
       onTap: () => widget.onTap?.call(widget.ref),
       child: MouseRegion(
@@ -228,20 +237,12 @@ class ItemTileState<T> extends State<ItemTile<T>> {
                   ],
                 ],
               ),
-              if (isHovering && widget.actions.isNotEmpty)
+              if (isHovering && actionButtons.isNotEmpty)
                 Align(
                   alignment: Alignment.topRight,
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.end,
-                    children: widget.actions
-                        .where(
-                          (element) =>
-                              element is LocalItemAction<T> ||
-                              element is LocalItemsGroup<T> &&
-                                  element.items.isNotEmpty,
-                        )
-                        .map(buildActionButton)
-                        .toList(),
+                    children: actionButtons,
                   ),
                 )
             ],
@@ -381,6 +382,15 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
       throw Exception('Could not build global action button');
     }
 
+    final actionButtons = widget.actions
+        .where(
+          (element) =>
+              element is GlobalItemsAction<T> ||
+              element is GlobalItemsGroup<T> && element.items.isNotEmpty,
+        )
+        .map(buildActionButton)
+        .toList();
+
     return Column(
       children: [
         if (widget.showSearchField)
@@ -439,7 +449,7 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
                 : null,
             child: Column(
               children: [
-                if (widget.actions.isNotEmpty)
+                if (actionButtons.isNotEmpty)
                   Container(
                     decoration: BoxDecoration(
                       border: Border.all(width: 0.5),
@@ -449,15 +459,7 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
                     padding: const EdgeInsets.all(5),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: widget.actions
-                          .where(
-                            (element) =>
-                                element is GlobalItemsAction<T> ||
-                                element is GlobalItemsGroup<T> &&
-                                    element.items.isNotEmpty,
-                          )
-                          .map(buildActionButton)
-                          .toList(),
+                      children: actionButtons,
                     ),
                   ),
                 Expanded(
