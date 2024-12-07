@@ -295,7 +295,9 @@ class TaskViewState extends State<TaskView> {
                                     ),
                                   );
 
-                                  if (targetDate == null) {
+                                  final sourceDate = refs.first.item.date;
+                                  if (targetDate == null ||
+                                      targetDate == sourceDate) {
                                     return;
                                   }
 
@@ -308,9 +310,21 @@ class TaskViewState extends State<TaskView> {
                                               e.item.changeDateTo(targetDate))
                                           .toList();
 
-                                  value
-                                      .updateTaskEntries(entryUpdates)
-                                      .then(_refresh);
+                                  final dialogAction = selection.isNotEmpty
+                                      ? confirmMoveSelectedTaskEntriesToDate
+                                      : confirmMoveTaskEntriesToDate;
+
+                                  if (!context.mounted) {
+                                    return;
+                                  }
+
+                                  dialogAction(
+                                    context: context,
+                                    task: selectedTask,
+                                    action: () => value
+                                        .updateTaskEntries(entryUpdates)
+                                        .then(_refresh),
+                                  );
                                 },
                                 onEditItem: (taskEntry) =>
                                     openEntryDialog(taskEntry: taskEntry.item),
