@@ -167,6 +167,38 @@ Future<bool> confirmMoveTaskEntriesToDate({
       action: action,
     );
 
+Future<bool> confirmMoveSelectedTaskEntriesToTask({
+  required BuildContext context,
+  required Task task,
+  required VoidCallback action,
+}) =>
+    confirmedAction(
+      context: context,
+      titleText: context.texts.dialogTitleTaskEntryMoveToTaskSelected,
+      confirmText: context.texts.buttonOk,
+      cancelText: context.texts.buttonCancel,
+      infoText: context.texts.dialogInfoTaskEntryMoveToTaskSelected(
+        task.fullName(),
+      ),
+      action: action,
+    );
+
+Future<bool> confirmMoveTaskEntriesToTask({
+  required BuildContext context,
+  required Task task,
+  required VoidCallback action,
+}) =>
+    confirmedAction(
+      context: context,
+      titleText: context.texts.dialogTitleTaskEntryMoveToTaskAll,
+      confirmText: context.texts.buttonOk,
+      cancelText: context.texts.buttonCancel,
+      infoText: context.texts.dialogInfoTaskEntryMoveToTaskAll(
+        task.fullName(),
+      ),
+      action: action,
+    );
+
 Future<bool> confirmConfigChangeRestart({
   required BuildContext context,
   required VoidCallback action,

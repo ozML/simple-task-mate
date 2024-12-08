@@ -17,6 +17,7 @@ import 'package:simple_task_mate/widgets/date_selector.dart';
 import 'package:simple_task_mate/widgets/edit_task_entry_panel.dart';
 import 'package:simple_task_mate/widgets/page_scaffold.dart';
 import 'package:simple_task_mate/widgets/task_entry_viewer.dart';
+import 'package:simple_task_mate/widgets/task_selector.dart';
 import 'package:simple_task_mate/widgets/title_bands.dart';
 import 'package:simple_task_mate/widgets/time_ticker.dart';
 import 'package:simple_task_mate/widgets/task_viewer.dart';
@@ -339,6 +340,41 @@ class TaskViewState extends State<TaskView> {
                                       dateModel.selectDate(targetDate);
                                       _refresh();
                                     },
+                                  );
+                                },
+                                onChangeTask: (refs) async {
+                                  final targetTask =
+                                      await TaskSelector.openDialog(context);
+
+                                  final sourceTaskId = refs.first.item.taskId;
+                                  if (targetTask == null ||
+                                      targetTask.id == sourceTaskId) {
+                                    return;
+                                  }
+
+                                  final selection = refs
+                                      .where((element) => element.isSelected);
+
+                                  final List<TaskEntry> entryUpdates =
+                                      (selection.isNotEmpty ? selection : refs)
+                                          .map((e) => e.item
+                                              .copyWith(taskId: targetTask.id))
+                                          .toList();
+
+                                  final dialogAction = selection.isNotEmpty
+                                      ? confirmMoveSelectedTaskEntriesToTask
+                                      : confirmMoveTaskEntriesToTask;
+
+                                  if (!context.mounted) {
+                                    return;
+                                  }
+
+                                  await dialogAction(
+                                    context: context,
+                                    task: selectedTask,
+                                    action: () => value
+                                        .updateTaskEntries(entryUpdates)
+                                        .then(_refresh),
                                   );
                                 },
                                 onEditItem: (taskEntry) =>

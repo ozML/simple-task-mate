@@ -127,7 +127,6 @@
 			}
 		}
 	},
-
 	"dialogTitleTaskEntryMoveToDateSelected": "Move selected task entries to date",
 	"dialogInfoTaskEntryMoveToDateSelected" : "Selected entries of \n\"{title}\" \nwill be moved to the selected date",
 	"@dialogInfoTaskEntryMoveToDateSelected" : {
@@ -146,7 +145,24 @@
 			}
 		}
 	},
-
+	"dialogTitleTaskEntryMoveToTaskSelected": "Move selected task entries to task",
+	"dialogInfoTaskEntryMoveToTaskSelected" : "Selected entries of \n\"{title}\" \nwill be moved to the selected task",
+	"@dialogInfoTaskEntryMoveToTaskSelected" : {
+		"placeholders" : {
+			"title" : {
+				"type" : "String"
+			}
+		}
+	},
+	"dialogTitleTaskEntryMoveToTaskAll": "Move all task entries to task",
+	"dialogInfoTaskEntryMoveToTaskAll" : "All entries of \n\"{title}\" \nfor this day will be moved to the selected task",
+	"@dialogInfoTaskEntryMoveToTaskAll" : {
+		"placeholders" : {
+			"title" : {
+				"type" : "String"
+			}
+		}
+	},
 	"dialogTitleRestart": "Restart required",
 	"dialogInfoRestart" : "Changes require restart.\nApply now?",
 	"dialogTitleResetSettings": "Reset settings",
