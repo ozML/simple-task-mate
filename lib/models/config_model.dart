@@ -17,6 +17,7 @@ const String settingDbFilePath = 'dbfilepath';
 const String settingStyle = 'style';
 const String settingLanguage = 'language';
 const String settingStartView = 'startview';
+const String settingInvertStampList = 'invertStampList';
 const String settingAutoLinks = 'autolinks';
 const String settingAutoLinkGroups = 'autolinkgroups';
 const String settingClockTimeFormat = 'clocktimeformat';

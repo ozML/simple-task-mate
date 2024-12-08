@@ -394,4 +394,28 @@ class IconUtils {
         color: color,
         size: size,
       );
+
+  static Widget arrowDownShortWide(
+    BuildContext context, {
+    Color? color,
+    double? size,
+  }) =>
+      _getIcon(
+        context: context,
+        icon: FontAwesomeIcons.arrowDownShortWide,
+        color: color,
+        size: size,
+      );
+
+  static Widget arrowDownWideShort(
+    BuildContext context, {
+    Color? color,
+    double? size,
+  }) =>
+      _getIcon(
+        context: context,
+        icon: FontAwesomeIcons.arrowDownWideShort,
+        color: color,
+        size: size,
+      );
 }

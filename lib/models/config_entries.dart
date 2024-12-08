@@ -75,6 +75,12 @@ final _entries = <ConfigEntry>[
     toText: (value) => switch (value) { 1 => 'task', _ => 'stamp' },
   ),
   ConfigEntry<bool>(
+    key: settingInvertStampList,
+    defaultText: 'false',
+    fromText: (text) => bool.tryParse(text) ?? false,
+    toText: (value) => value.toString(),
+  ),
+  ConfigEntry<bool>(
     key: settingAutoLinks,
     defaultText: 'false',
     fromText: (text) => bool.tryParse(text) ?? false,

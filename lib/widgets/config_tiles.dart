@@ -71,6 +71,7 @@ class ConfigEntryTile<T extends Object> extends StatelessWidget {
             settingStyle => context.texts.labelSettingStyle,
             settingLanguage => context.texts.labelSettingLanguage,
             settingStartView => context.texts.labelSettingStartView,
+            settingInvertStampList => context.texts.labelSettingInvertStampList,
             settingAutoLinks => context.texts.labelSettingAutoLinks,
             settingAutoLinkGroups => context.texts.labelSettingAutoLinkGoups,
             settingClockTimeFormat => context.texts.labelSettingClockTimeFormat,

@@ -190,6 +190,7 @@ class ConfigViewState extends State<ConfigView> {
                           return items ?? [];
                         },
                       ),
+                      BinaryStateConfigTile(configKey: settingInvertStampList),
                       BinaryStateConfigTile(configKey: settingAutoLinks),
                       if (configModel.getValue(settingAutoLinks))
                         const TableConfigTile(configKey: settingAutoLinkGroups),

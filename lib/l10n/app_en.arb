@@ -79,6 +79,7 @@
 	"labelSettingStyle" : "Style",
 	"labelSettingLanguage" : "Language",
 	"labelSettingStartView" : "Start view",
+	"labelSettingInvertStampList" : "Inverted stamp list order",
 	"labelSettingAutoLinks" : "Automatic links",
 	"labelSettingAutoLinkGoups" : "Automatic link groups",
 	"labelSettingClockTimeFormat" : "Clock time format",

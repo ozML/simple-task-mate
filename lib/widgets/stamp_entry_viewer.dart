@@ -112,6 +112,7 @@ class StampEntryViewer extends StatefulWidget {
     this.hideHeader = false,
     this.clockTimeFormat = ClockTimeFormat.twentyFourHours,
     this.locale = const Locale('en'),
+    this.isStampListInverted = false,
     this.isManualMode = true,
     this.isStampDisabled = false,
     this.isLoading = false,
@@ -134,6 +135,7 @@ class StampEntryViewer extends StatefulWidget {
   final bool hideHeader;
   final ClockTimeFormat clockTimeFormat;
   final Locale locale;
+  final bool isStampListInverted;
   final bool isManualMode;
   final bool isStampDisabled;
   final bool isLoading;
@@ -157,6 +159,9 @@ class StampEntryViewer extends StatefulWidget {
     final clockTimeFormat = context.select<ConfigModel, ClockTimeFormat>(
       (value) => value.getValue(settingClockTimeFormat),
     );
+    final invertedStampList = context.select<ConfigModel, bool>(
+      (value) => value.getValue(settingInvertStampList),
+    );
 
     final selectedDate = context.select<DateTimeModel, DateTime>(
       (value) => value.selectedDate,
@@ -177,6 +182,7 @@ class StampEntryViewer extends StatefulWidget {
       hideHeader: hideHeader,
       clockTimeFormat: clockTimeFormat,
       locale: locale,
+      isStampListInverted: invertedStampList,
       isManualMode: isManualMode,
       isStampDisabled: !isCurrentDate,
       isLoading: isLoading,
@@ -195,6 +201,7 @@ class StampEntryViewerState extends State<StampEntryViewer> {
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
 
+  late bool _reverseListOrder = widget.isStampListInverted;
   bool _isManualStampDeparture = false;
 
   @override
@@ -289,7 +296,15 @@ class StampEntryViewerState extends State<StampEntryViewer> {
       _focusNode.requestFocus();
     }
 
-    final stamps = widget.stamps.reversed.toList();
+    final List<Stamp> stamps;
+    final Widget orderButtonIcon;
+    if (_reverseListOrder) {
+      stamps = widget.stamps.reversed.toList();
+      orderButtonIcon = IconUtils.arrowDownWideShort(context);
+    } else {
+      stamps = widget.stamps;
+      orderButtonIcon = IconUtils.arrowDownShortWide(context);
+    }
 
     return Column(
       children: [
@@ -298,25 +313,53 @@ class StampEntryViewerState extends State<StampEntryViewer> {
             header: !widget.hideHeader
                 ? ContentBoxHeader.title(title: context.texts.labelStamps)
                 : null,
-            child: widget.isLoading
-                ? Container(
-                    key: StampEntryViewer.keyLoadingIndicator,
-                    width: 100,
-                    height: 100,
-                    alignment: Alignment.center,
-                    child: const CircularProgressIndicator(),
-                  )
-                : ListView.builder(
-                    itemCount: stamps.length,
-                    itemBuilder: (context, index) => StampEntryTile(
-                      key: StampEntryViewer.keyItemTile,
-                      stamp: stamps[index],
-                      locale: widget.locale,
-                      clockTimeFormat: widget.clockTimeFormat,
-                      isEditable: widget.isManualMode,
-                      onDeleteStamp: onDeleteStamp,
-                    ),
+            child: Column(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                    border: Border.all(width: 0.5),
+                    borderRadius: BorderRadius.circular(8),
                   ),
+                  margin: const EdgeInsets.all(5),
+                  padding: const EdgeInsets.all(5),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      TextButton(
+                        child: orderButtonIcon,
+                        onPressed: () {
+                          setState(() {
+                            _reverseListOrder = !_reverseListOrder;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: widget.isLoading
+                      ? Container(
+                          key: StampEntryViewer.keyLoadingIndicator,
+                          width: 100,
+                          height: 100,
+                          alignment: Alignment.center,
+                          child: const CircularProgressIndicator(),
+                        )
+                      : ListView.builder(
+                          itemCount: stamps.length,
+                          itemBuilder: (context, index) => StampEntryTile(
+                            key: StampEntryViewer.keyItemTile,
+                            stamp: stamps[index],
+                            locale: widget.locale,
+                            clockTimeFormat: widget.clockTimeFormat,
+                            isEditable: widget.isManualMode,
+                            onDeleteStamp: onDeleteStamp,
+                          ),
+                        ),
+                ),
+              ],
+            ),
           ),
         ),
         Padding(

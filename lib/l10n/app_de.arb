@@ -79,6 +79,7 @@
 	"labelSettingStyle" : "Stil",
 	"labelSettingLanguage" : "Sprache",
 	"labelSettingStartView" : "Startansicht",
+	"labelSettingInvertStampList" : "Umgekehrte Sortierung der Stempelliste",
 	"labelSettingAutoLinks" : "Automatische Links",
 	"labelSettingAutoLinkGoups" : "Automatische Link Gruppen",
 	"labelSettingClockTimeFormat" : "Uhrzeitformat",
