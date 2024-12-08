@@ -322,14 +322,16 @@ class TaskViewState extends State<TaskView> {
                                     return;
                                   }
 
-                                  await dialogAction(
+                                  final confirmed = await dialogAction(
                                     context: context,
                                     task: selectedTask,
                                     action: () => value
                                         .updateTaskEntries(entryUpdates)
                                         .then(_refresh),
                                   );
-
+                                  if (!confirmed) {
+                                    return;
+                                  }
                                   if (!context.mounted) {
                                     return;
                                   }
