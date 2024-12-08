@@ -46,12 +46,13 @@ class TaskSelectorState extends State<TaskSelector> {
         children: [
           Expanded(
             child: TaskViewer.buildFromModels(
+              highlightedTasks: [if (selectedTask != null) selectedTask],
               context: context,
               hideHeader: true,
               hideDurations: true,
               hideCopyButton: true,
-              onTapItem: (task) {
-                setState(() => _selectedTask = task.item);
+              onTapItem: (ref) {
+                setState(() => _selectedTask = ref.item);
               },
               onSearchTextChanged: (value) {
                 context.read<TaskModel>().loadTasks(searchText: value);
