@@ -155,18 +155,18 @@ class TaskEntryViewer extends StatelessWidget {
           ),
         GlobalItemsGroup(
           icon: IconUtils.arrowRightLeft(context),
-          label: 'Verschieben',
+          label: context.texts.buttonMove,
           items: [
             if (onChangeDate != null)
               GlobalItemsAction(
                 icon: IconUtils.calendar(context),
-                label: 'zu Datum',
+                label: context.texts.buttonToDate,
                 onPressed: onChangeDate,
               ),
             if (onChangeTask != null)
               GlobalItemsAction(
                 icon: IconUtils.clipboard(context),
-                label: 'zu Aufgabe',
+                label: context.texts.buttonToTask,
                 onPressed: onChangeTask,
               ),
           ],
