@@ -80,6 +80,7 @@ class ItemTile<T> extends StatefulWidget {
     this.footNote,
     this.infoIcon,
     this.linkIcon,
+    this.isHighlighted = false,
     this.onTap,
     this.actions = const [],
     super.key,
@@ -96,6 +97,7 @@ class ItemTile<T> extends StatefulWidget {
   final String? footNote;
   final Widget? infoIcon;
   final Widget? linkIcon;
+  final bool isHighlighted;
   final void Function(ItemRef<T> ref)? onTap;
   final List<LocalActionsElement<T>> actions;
 
@@ -185,7 +187,13 @@ class ItemTileState<T> extends State<ItemTile<T>> {
           padding: const EdgeInsets.all(8.0),
           decoration: BoxDecoration(
             border: Border.all(
-              width: isHovering ? 1 : 0.5,
+              width: isHovering
+                  ? widget.isHighlighted
+                      ? 2.5
+                      : 1
+                  : widget.isHighlighted
+                      ? 2
+                      : 0.5,
               color: primaryColor,
             ),
             borderRadius: BorderRadius.circular(8),

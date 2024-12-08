@@ -145,6 +145,24 @@
 			}
 		}
 	},
+    "dialogTitleTaskEntryMoveToTaskSelected": "Ausgewählte Aufgabeneinträge zur Aufgabe verschieben",
+	"dialogInfoTaskEntryMoveToTaskSelected" : "Ausgewählte Einträge der Aufgabe \n\"{title}\" \nwerden zur ausgewählten Aufgabe verschoben",
+	"@dialogInfoTaskEntryMoveToTaskSelected" : {
+		"placeholders" : {
+			"title" : {
+				"type" : "String"
+			}
+		}
+	},
+	"dialogTitleTaskEntryMoveToTaskAll": "Alle Aufgabeneinträge zur Aufgabe verschieben",
+	"dialogInfoTaskEntryMoveToTaskAll" : "Alle Einträge der Aufgabe \n\"{title}\" \ndieses Tages werden zur ausgewählten Aufgabe verschoben",
+	"@dialogInfoTaskEntryMoveToTaskAll" : {
+		"placeholders" : {
+			"title" : {
+				"type" : "String"
+			}
+		}
+	},
 	"dialogTitleRestart": "Neustart erforderlich",
 	"dialogInfoRestart" : "Änderungen sind nach Neustart verfügbar.\nJetzt anwenden?",
 	"dialogTitleResetSettings": "Einstellungen zurücksetzen",

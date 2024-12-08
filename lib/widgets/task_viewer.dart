@@ -15,6 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 class TaskViewer extends StatelessWidget {
   const TaskViewer({
     required this.tasks,
+    this.highlightedTasks = const [],
     this.hideHeader = false,
     this.hideCopyButton = false,
     this.hideDurations = false,
@@ -37,6 +38,7 @@ class TaskViewer extends StatelessWidget {
   static Key get keyItemActionAdd => Key('$TaskViewer/itemActionAdd');
 
   final List<Task> tasks;
+  final List<Task> highlightedTasks;
   final bool hideHeader;
   final bool hideCopyButton;
   final bool hideDurations;
@@ -51,6 +53,7 @@ class TaskViewer extends StatelessWidget {
 
   static Widget buildFromModels({
     required BuildContext context,
+    List<Task> highlightedTasks = const [],
     bool hideHeader = false,
     bool hideCopyButton = false,
     bool hideDurations = false,
@@ -70,6 +73,7 @@ class TaskViewer extends StatelessWidget {
 
     return TaskViewer(
       tasks: tasks,
+      highlightedTasks: highlightedTasks,
       hideHeader: hideHeader,
       hideCopyButton: hideCopyButton,
       hideDurations: hideDurations,
@@ -141,6 +145,9 @@ class TaskViewer extends StatelessWidget {
           }
         }
 
+        final isHighlighted =
+            highlightedTasks.any((element) => element.id == item.id);
+
         return ItemTile(
           key: keyItemTile,
           ref: ref,
@@ -174,6 +181,7 @@ class TaskViewer extends StatelessWidget {
                   ),
                 )
               : null,
+          isHighlighted: isHighlighted,
           onTap: onTap,
           actions: [
             if (!hideCopyButton)
