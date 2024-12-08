@@ -37,13 +37,13 @@ void main() {
         tester
             .widgetList<Text>(find.byKey(StampEntryTile.keyTypeText))
             .map((e) => e.data),
-        ['Leave', 'Arrive', 'Leave', 'Arrive'],
+        ['Arrive', 'Leave', 'Arrive', 'Leave'],
       );
       expect(
         tester
             .widgetList<Text>(find.byKey(StampEntryTile.keyTimeText))
             .map((e) => e.data),
-        ['16:30', '13:00', '12:30', '08:00'],
+        ['08:00', '12:30', '13:00', '16:30'],
       );
 
       await tester.tap(find.byKey(StampEntryViewer.keyButtonArrive));
@@ -126,7 +126,7 @@ void main() {
         tester
             .widgetList<Text>(find.byKey(StampEntryTile.keyTimeText))
             .map((e) => e.data),
-        ['04:30 PM', '01:00 PM', '12:30 PM', '08:00 AM'],
+        ['08:00 AM', '12:30 PM', '01:00 PM', '04:30 PM'],
       );
     });
 
