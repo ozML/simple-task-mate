@@ -84,7 +84,7 @@ class TaskSelectorState extends State<TaskSelector> {
         ? Dialog(
             child: SizedBox(
               width: 900,
-              height: 350,
+              height: 650,
               child: Padding(padding: const EdgeInsets.all(10), child: content),
             ),
           )

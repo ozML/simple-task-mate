@@ -80,6 +80,9 @@ class TaskViewer extends StatelessWidget {
       autoLinkGroups: autoLinksEnabled
           ? config.getValue<List<Tuple<String, String>>>(settingAutoLinkGroups)
           : null,
+      onAddItem: onAddItem,
+      onCopy: onCopy,
+      onCopyAll: onCopyAll,
       onTapItem: onTapItem,
       onDeleteItem: onDeleteItem,
       onAddItemEntry: onAddItemEntry,
