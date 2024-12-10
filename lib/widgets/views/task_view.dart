@@ -210,212 +210,217 @@ class TaskViewState extends State<TaskView> {
         Expanded(
           child: Padding(
             padding: const EdgeInsets.only(top: 8.0),
-            child: Consumer<TaskModel>(builder: (context, value, _) {
-              return LayoutBuilder(
-                builder: (context, constraints) {
-                  final alignVertical = constraints.maxWidth < 960;
+            child: LayoutBuilder(
+              builder: (context, constraints) {
+                final alignVertical = constraints.maxWidth < 960;
 
-                  final showGlobalTaskActions = value.tasks.isNotEmpty;
+                final showGlobalTaskActions = context.select<TaskModel, bool>(
+                  (value) => value.tasks.isNotEmpty,
+                );
 
-                  return Flex(
-                    direction: alignVertical ? Axis.vertical : Axis.horizontal,
-                    children: [
-                      Expanded(
-                        child: TaskViewer(
-                          tasks: value.tasks,
-                          onAddItem: openEntryDialog,
-                          onCopy: showGlobalTaskActions ? _copyTaskInfos : null,
-                          onCopyAll: showGlobalTaskActions
-                              ? () => _copyTaskInfos(fullCopy: true)
-                              : null,
-                          onTapItem: (task) {
-                            setState(() => _selectedTask = task.item);
-                          },
-                        ),
+                return Flex(
+                  direction: alignVertical ? Axis.vertical : Axis.horizontal,
+                  children: [
+                    Expanded(
+                      child: TaskViewer.buildFromModels(
+                        context: context,
+                        onAddItem: openEntryDialog,
+                        onCopy: showGlobalTaskActions ? _copyTaskInfos : null,
+                        onCopyAll: showGlobalTaskActions
+                            ? () => _copyTaskInfos(fullCopy: true)
+                            : null,
+                        onTapItem: (task) {
+                          setState(() => _selectedTask = task.item);
+                        },
                       ),
-                      if (selectedTask != null)
-                        const SizedBox.square(dimension: 15),
-                      if (selectedTask != null)
-                        Expanded(
-                          child: Stack(
-                            children: [
-                              TaskEntryViewer.buildFromModels(
-                                context: context,
-                                title: context.texts.labelEntries,
-                                subTitle: StringUtils.join(
-                                    [selectedTask.refId, selectedTask.name],
-                                    separator: ' - '),
-                                taskEntries: selectedTask.entries ?? [],
-                                showSelectOption: true,
-                                onAddItem: () =>
-                                    openEntryDialog(task: selectedTask),
-                                onCopy: (refs) => _copyEntryInfos(
-                                  entries: refs
-                                      .where((element) => element.isSelected)
-                                      .map((e) => e.item)
-                                      .toList(),
-                                ),
-                                onDelete: (refs) {
-                                  final selection = refs
-                                      .where((element) => element.isSelected)
-                                      .map((e) => e.item)
-                                      .toList();
-
-                                  if (selection.isNotEmpty) {
-                                    confirmDeleteSelectedTaskEntries(
-                                      context: context,
-                                      task: selectedTask,
-                                      action: () => value
-                                          .deleteTaskEntries(selection)
-                                          .then(_refresh),
-                                    );
-                                  } else {
-                                    confirmDeleteTaskEntries(
-                                      context: context,
-                                      task: selectedTask,
-                                      action: () => value
-                                          .deleteTaskEntriesForDate(
-                                            selectedTask,
-                                            context
-                                                .read<DateTimeModel>()
-                                                .selectedDate,
-                                          )
-                                          .then(_refresh),
-                                    );
-                                  }
-                                },
-                                onChangeDate: (refs) async {
-                                  final dateModel =
-                                      context.read<DateTimeModel>();
-
-                                  final date = dateModel.date;
-                                  final sourceDate = dateModel.selectedDate;
-
-                                  final targetDate = await showDatePicker(
-                                    context: context,
-                                    currentDate: sourceDate,
-                                    firstDate: DateTime(1900),
-                                    lastDate: date.add(
-                                      const Duration(days: 365 * 5),
-                                    ),
-                                  );
-
-                                  if (targetDate == null ||
-                                      targetDate == sourceDate) {
-                                    return;
-                                  }
-
-                                  final selection = refs
-                                      .where((element) => element.isSelected);
-
-                                  final List<TaskEntry> entryUpdates =
-                                      (selection.isNotEmpty ? selection : refs)
-                                          .map((e) =>
-                                              e.item.changeDateTo(targetDate))
-                                          .toList();
-
-                                  final dialogAction = selection.isNotEmpty
-                                      ? confirmMoveSelectedTaskEntriesToDate
-                                      : confirmMoveTaskEntriesToDate;
-
-                                  if (!context.mounted) {
-                                    return;
-                                  }
-
-                                  final confirmed = await dialogAction(
-                                    context: context,
-                                    task: selectedTask,
-                                    action: () => value
-                                        .updateTaskEntries(entryUpdates)
-                                        .then(_refresh),
-                                  );
-                                  if (!confirmed) {
-                                    return;
-                                  }
-                                  if (!context.mounted) {
-                                    return;
-                                  }
-
-                                  confirmJumpToDate(
-                                    context: context,
-                                    action: () {
-                                      dateModel.selectDate(targetDate);
-                                      _refresh();
-                                    },
-                                  );
-                                },
-                                onChangeTask: (refs) async {
-                                  final targetTask =
-                                      await TaskSelector.openDialog(context);
-
-                                  final sourceTaskId = refs.first.item.taskId;
-                                  if (targetTask == null ||
-                                      targetTask.id == sourceTaskId) {
-                                    return;
-                                  }
-
-                                  final selection = refs
-                                      .where((element) => element.isSelected);
-
-                                  final List<TaskEntry> entryUpdates =
-                                      (selection.isNotEmpty ? selection : refs)
-                                          .map((e) => e.item
-                                              .copyWith(taskId: targetTask.id))
-                                          .toList();
-
-                                  final dialogAction = selection.isNotEmpty
-                                      ? confirmMoveSelectedTaskEntriesToTask
-                                      : confirmMoveTaskEntriesToTask;
-
-                                  if (!context.mounted) {
-                                    return;
-                                  }
-
-                                  await dialogAction(
-                                    context: context,
-                                    task: selectedTask,
-                                    action: () => value
-                                        .updateTaskEntries(entryUpdates)
-                                        .then(_refresh),
-                                  );
-                                },
-                                onEditItem: (taskEntry) =>
-                                    openEntryDialog(taskEntry: taskEntry.item),
-                                onDeleteItem: (taskEntry) =>
-                                    confirmDeleteTaskEntry(
-                                  context: context,
-                                  taskEntry: taskEntry.item,
-                                  action: () => value
-                                      .deleteTaskEntry(taskEntry.item)
-                                      .then(_refresh),
-                                ),
+                    ),
+                    if (selectedTask != null)
+                      const SizedBox.square(dimension: 15),
+                    if (selectedTask != null)
+                      Expanded(
+                        child: Stack(
+                          children: [
+                            TaskEntryViewer.buildFromModels(
+                              context: context,
+                              title: context.texts.labelEntries,
+                              subTitle: StringUtils.join(
+                                  [selectedTask.refId, selectedTask.name],
+                                  separator: ' - '),
+                              taskEntries: selectedTask.entries ?? [],
+                              showSelectOption: true,
+                              onAddItem: () =>
+                                  openEntryDialog(task: selectedTask),
+                              onCopy: (refs) => _copyEntryInfos(
+                                entries: refs
+                                    .where((element) => element.isSelected)
+                                    .map((e) => e.item)
+                                    .toList(),
                               ),
-                              Container(
-                                alignment: Alignment.topRight,
-                                margin: const EdgeInsets.only(
-                                  top: 5,
-                                  right: 5,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    const SizedBox(width: 5),
-                                    IconButton(
-                                      icon: IconUtils.close(context),
-                                      onPressed: _clearSelectedTask,
-                                    ),
-                                  ],
-                                ),
-                              )
-                            ],
-                          ),
-                        )
-                    ],
-                  );
-                },
-              );
-            }),
+                              onDelete: (refs) {
+                                final selection = refs
+                                    .where((element) => element.isSelected)
+                                    .map((e) => e.item)
+                                    .toList();
+
+                                if (selection.isNotEmpty) {
+                                  confirmDeleteSelectedTaskEntries(
+                                    context: context,
+                                    task: selectedTask,
+                                    action: () => context
+                                        .read<TaskModel>()
+                                        .deleteTaskEntries(selection)
+                                        .then(_refresh),
+                                  );
+                                } else {
+                                  confirmDeleteTaskEntries(
+                                    context: context,
+                                    task: selectedTask,
+                                    action: () => context
+                                        .read<TaskModel>()
+                                        .deleteTaskEntriesForDate(
+                                          selectedTask,
+                                          context
+                                              .read<DateTimeModel>()
+                                              .selectedDate,
+                                        )
+                                        .then(_refresh),
+                                  );
+                                }
+                              },
+                              onChangeDate: (refs) async {
+                                final dateModel = context.read<DateTimeModel>();
+
+                                final date = dateModel.date;
+                                final sourceDate = dateModel.selectedDate;
+
+                                final targetDate = await showDatePicker(
+                                  context: context,
+                                  currentDate: sourceDate,
+                                  firstDate: DateTime(1900),
+                                  lastDate: date.add(
+                                    const Duration(days: 365 * 5),
+                                  ),
+                                );
+
+                                if (targetDate == null ||
+                                    targetDate == sourceDate) {
+                                  return;
+                                }
+
+                                final selection =
+                                    refs.where((element) => element.isSelected);
+
+                                final List<TaskEntry> entryUpdates = (selection
+                                            .isNotEmpty
+                                        ? selection
+                                        : refs)
+                                    .map((e) => e.item.changeDateTo(targetDate))
+                                    .toList();
+
+                                final dialogAction = selection.isNotEmpty
+                                    ? confirmMoveSelectedTaskEntriesToDate
+                                    : confirmMoveTaskEntriesToDate;
+
+                                if (!context.mounted) {
+                                  return;
+                                }
+
+                                final confirmed = await dialogAction(
+                                  context: context,
+                                  task: selectedTask,
+                                  action: () => context
+                                      .read<TaskModel>()
+                                      .updateTaskEntries(entryUpdates)
+                                      .then(_refresh),
+                                );
+                                if (!confirmed) {
+                                  return;
+                                }
+                                if (!context.mounted) {
+                                  return;
+                                }
+
+                                confirmJumpToDate(
+                                  context: context,
+                                  action: () {
+                                    dateModel.selectDate(targetDate);
+                                    _refresh();
+                                  },
+                                );
+                              },
+                              onChangeTask: (refs) async {
+                                final targetTask =
+                                    await TaskSelector.openDialog(context);
+
+                                final sourceTaskId = refs.first.item.taskId;
+                                if (targetTask == null ||
+                                    targetTask.id == sourceTaskId) {
+                                  return;
+                                }
+
+                                final selection =
+                                    refs.where((element) => element.isSelected);
+
+                                final List<TaskEntry> entryUpdates =
+                                    (selection.isNotEmpty ? selection : refs)
+                                        .map((e) => e.item
+                                            .copyWith(taskId: targetTask.id))
+                                        .toList();
+
+                                final dialogAction = selection.isNotEmpty
+                                    ? confirmMoveSelectedTaskEntriesToTask
+                                    : confirmMoveTaskEntriesToTask;
+
+                                if (!context.mounted) {
+                                  return;
+                                }
+
+                                await dialogAction(
+                                  context: context,
+                                  task: selectedTask,
+                                  action: () => context
+                                      .read<TaskModel>()
+                                      .updateTaskEntries(entryUpdates)
+                                      .then(_refresh),
+                                );
+                              },
+                              onEditItem: (taskEntry) =>
+                                  openEntryDialog(taskEntry: taskEntry.item),
+                              onDeleteItem: (taskEntry) =>
+                                  confirmDeleteTaskEntry(
+                                context: context,
+                                taskEntry: taskEntry.item,
+                                action: () => context
+                                    .read<TaskModel>()
+                                    .deleteTaskEntry(taskEntry.item)
+                                    .then(_refresh),
+                              ),
+                            ),
+                            Container(
+                              alignment: Alignment.topRight,
+                              margin: const EdgeInsets.only(
+                                top: 5,
+                                right: 5,
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  const SizedBox(width: 5),
+                                  IconButton(
+                                    icon: IconUtils.close(context),
+                                    onPressed: _clearSelectedTask,
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      )
+                  ],
+                );
+              },
+            ),
           ),
         ),
       ],
