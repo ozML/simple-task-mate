@@ -31,12 +31,16 @@ class TaskSummaryModel extends ChangeNotifier {
     return success;
   }
 
-  Future<void> loadSummaries({String? searchText}) async {
+  Future<void> loadSummaries({
+    String? searchText,
+    bool searchInEntryInfo = false,
+  }) async {
     _isLoading = true;
     notifyListeners();
 
     _summaries = await TaskDataBaseHelper.instance.loadSummaries(
       searchText: searchText,
+      searchInEntryInfo: searchInEntryInfo,
     );
 
     _isLoading = false;

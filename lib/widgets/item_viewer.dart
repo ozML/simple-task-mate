@@ -1,5 +1,6 @@
 import 'package:async/async.dart';
 import 'package:flutter/material.dart';
+import 'package:simple_task_mate/extensions/context.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
 import 'package:simple_task_mate/widgets/content_box.dart';
@@ -273,6 +274,7 @@ class ItemListViewer<T> extends StatefulWidget {
     this.showSearchField = false,
     this.searchText,
     this.searchFieldHintText,
+    this.decorateSearchField,
     this.onSearchTextChanged,
     this.onTapItem,
     this.actions = const [],
@@ -295,6 +297,8 @@ class ItemListViewer<T> extends StatefulWidget {
   final bool showSearchField;
   final String? searchText;
   final String? searchFieldHintText;
+  final Widget Function(BuildContext context, Widget searchField)?
+      decorateSearchField;
   final void Function(String value)? onSearchTextChanged;
   final void Function(ItemRef<T> ref)? onTapItem;
   final List<GlobalActionsElement<T>> actions;
@@ -399,53 +403,61 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
         .map(buildActionButton)
         .toList();
 
-    return Column(
-      children: [
-        if (widget.showSearchField)
-          Row(
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: Stack(
-                    children: [
-                      TextField(
-                        key: ItemListViewer.keySearchField,
-                        controller: _searchTextController,
-                        decoration: textInputDecoration(
-                          context,
-                          labelText: 'Search',
-                          hintText: widget.searchFieldHintText,
+    Widget? searchField;
+    if (widget.showSearchField) {
+      final baseSearchField = Row(
+        children: [
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Stack(
+                children: [
+                  TextField(
+                    key: ItemListViewer.keySearchField,
+                    controller: _searchTextController,
+                    decoration: textInputDecoration(
+                      context,
+                      labelText: context.texts.labelSearch,
+                      hintText: widget.searchFieldHintText,
+                    ),
+                    onChanged: (value) => setState(() {
+                      _searchDelayTimer ??= RestartableTimer(
+                        _searchDelay,
+                        () => widget.onSearchTextChanged?.call(
+                          _searchTextController.text,
                         ),
-                        onChanged: (value) => setState(() {
-                          _searchDelayTimer ??= RestartableTimer(
-                            _searchDelay,
-                            () => widget.onSearchTextChanged?.call(
-                              _searchTextController.text,
-                            ),
-                          );
-                          _searchDelayTimer?.reset();
+                      );
+                      _searchDelayTimer?.reset();
+                    }),
+                  ),
+                  if (_searchTextController.text.isNotEmpty)
+                    Container(
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.all(5),
+                      child: IconButton(
+                        icon: IconUtils.clear(context),
+                        onPressed: () => setState(() {
+                          _searchDelayTimer?.cancel();
+                          _searchTextController.clear();
+                          widget.onSearchTextChanged?.call('');
                         }),
                       ),
-                      if (_searchTextController.text.isNotEmpty)
-                        Container(
-                          alignment: Alignment.centerRight,
-                          padding: const EdgeInsets.all(5),
-                          child: IconButton(
-                            icon: IconUtils.clear(context),
-                            onPressed: () => setState(() {
-                              _searchDelayTimer?.cancel();
-                              _searchTextController.clear();
-                              widget.onSearchTextChanged?.call('');
-                            }),
-                          ),
-                        ),
-                    ],
-                  ),
-                ),
+                    ),
+                ],
               ),
-            ],
+            ),
           ),
+        ],
+      );
+
+      searchField =
+          widget.decorateSearchField?.call(context, baseSearchField) ??
+              baseSearchField;
+    }
+
+    return Column(
+      children: [
+        if (searchField != null) searchField,
         Expanded(
           child: ContentBox(
             header: !widget.hideHeader

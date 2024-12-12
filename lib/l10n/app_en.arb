@@ -57,6 +57,7 @@
 	"labelSelectedTask" : "Selected task",
 	"labelDescription" : "Description",
 	"labelSearchPlaceholderTaskEntry" : "Enter ref ID or title",
+	"labelSearchIncludeEntries" : "Search entries",
 	"labelAddEntry" : "Add entry",
 	"labelEditEntry" : "Edit entry",
 	"labelNewTask" : "New task",

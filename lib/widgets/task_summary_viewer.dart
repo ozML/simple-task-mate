@@ -4,6 +4,7 @@ import 'package:simple_task_mate/extensions/context.dart';
 import 'package:simple_task_mate/extensions/duration.dart';
 import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
+import 'package:simple_task_mate/utils/theme_utils.dart';
 import 'package:simple_task_mate/widgets/item_viewer.dart';
 
 class TaskSummaryViewer extends StatelessWidget {
@@ -11,11 +12,13 @@ class TaskSummaryViewer extends StatelessWidget {
     required this.summaries,
     this.hideHeader = false,
     this.searchText,
+    this.isExtendedSearchEnabled = false,
     this.onAddItem,
     this.onTapItem,
     this.onDeleteItem,
     this.onEditItem,
     this.onSearchTextChanged,
+    this.onSearchSettingChanged,
     super.key,
   });
 
@@ -28,11 +31,13 @@ class TaskSummaryViewer extends StatelessWidget {
   final List<TaskSummary> summaries;
   final bool hideHeader;
   final String? searchText;
+  final bool isExtendedSearchEnabled;
   final void Function()? onAddItem;
   final void Function(ItemRef<TaskSummary> ref)? onTapItem;
   final void Function(ItemRef<TaskSummary> ref)? onDeleteItem;
   final void Function(ItemRef<TaskSummary> ref)? onEditItem;
   final void Function(String value)? onSearchTextChanged;
+  final void Function(bool value)? onSearchSettingChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -48,8 +53,36 @@ class TaskSummaryViewer extends StatelessWidget {
       showSearchField: onSearchTextChanged != null,
       searchText: searchText,
       searchFieldHintText: context.texts.labelSearchPlaceholderTaskEntry,
-      onTapItem: onTapItem,
+      decorateSearchField: (context, searchField) {
+        return Column(
+          children: [
+            searchField,
+            Container(
+              margin: const EdgeInsets.only(left: 10, bottom: 10),
+              alignment: Alignment.centerLeft,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Checkbox(
+                    value: isExtendedSearchEnabled,
+                    onChanged: onSearchSettingChanged != null
+                        ? (value) =>
+                            onSearchSettingChanged?.call(value ?? false)
+                        : null,
+                  ),
+                  const SizedBox(width: 10),
+                  Text(
+                    context.texts.labelSearchIncludeEntries,
+                    style: secondaryTextStyleFrom(context),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
       onSearchTextChanged: onSearchTextChanged,
+      onTapItem: onTapItem,
       actions: [
         if (onAddItem != null)
           GlobalItemsAction(

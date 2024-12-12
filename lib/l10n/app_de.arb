@@ -57,6 +57,7 @@
 	"labelSelectedTask" : "Selektierte Aufgabe",
 	"labelDescription" : "Beschreibung",
 	"labelSearchPlaceholderTaskEntry" : "Ref ID oder Titel angeben",
+	"labelSearchIncludeEntries" : "Einträge durchsuchen",
 	"labelAddEntry" : "Eintrag hinzufügen",
 	"labelEditEntry" : "Eintrag bearbeiten",
 	"labelNewTask" : "Neue Aufgabe",

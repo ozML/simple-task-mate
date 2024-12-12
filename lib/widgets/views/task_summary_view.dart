@@ -94,6 +94,7 @@ class TaskSummaryView extends StatefulWidget {
 
 class TaskSummaryViewState extends State<TaskSummaryView> {
   String _searchText = '';
+  bool _extendedSearch = false;
 
   @override
   void initState() {
@@ -112,7 +113,10 @@ class TaskSummaryViewState extends State<TaskSummaryView> {
       }
       final summaryModel = context.read<TaskSummaryModel>();
 
-      await summaryModel.loadSummaries(searchText: _searchText);
+      await summaryModel.loadSummaries(
+        searchText: _searchText,
+        searchInEntryInfo: _extendedSearch,
+      );
 
       final selectedTask = summaryModel.task;
       if (selectedTask != null) {
@@ -212,6 +216,7 @@ class TaskSummaryViewState extends State<TaskSummaryView> {
                       summaries: value.summaries,
                       hideHeader: true,
                       searchText: _searchText,
+                      isExtendedSearchEnabled: _extendedSearch,
                       onAddItem: () => openEntryDialog(),
                       onTapItem: (summary) =>
                           value.loadFilledTask(summary.item.taskId),
@@ -226,6 +231,12 @@ class TaskSummaryViewState extends State<TaskSummaryView> {
                       onSearchTextChanged: (value) {
                         _searchText = value;
                         _refresh();
+                      },
+                      onSearchSettingChanged: (value) {
+                        setState(() {
+                          _extendedSearch = value;
+                          _refresh();
+                        });
                       },
                     );
                   }

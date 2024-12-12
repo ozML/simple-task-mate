@@ -390,6 +390,7 @@ class TaskDataBaseHelper extends DataBaseHelper {
 
   Future<List<TaskSummary>> loadSummaries({
     String? searchText,
+    bool searchInEntryInfo = false,
   }) =>
       dbAction<List<TaskSummary>>(
         (db) async {
@@ -406,6 +407,8 @@ class TaskDataBaseHelper extends DataBaseHelper {
           final entryColumnId = '$entryTableName.${TaskEntryContract.columnId}';
           final entryColumnTaskId =
               '$entryTableName.${TaskEntryContract.columnTaskId}';
+          final entryColumnInfo =
+              '$entryTableName.${TaskEntryContract.columnInfo}';
           final entryColumnAlias = <String, String>{
             for (final columnName in entryContract.columnNames)
               columnName: '$entryTableName.$columnName',
@@ -423,10 +426,28 @@ class TaskDataBaseHelper extends DataBaseHelper {
               ?.expandIndexed((i, e) => [
                     '$taskColumnRefId LIKE ?${i + 1}',
                     '$taskColumnName LIKE ?${i + 1}',
+                    if (searchInEntryInfo) '$entryColumnInfo LIKE ?${i + 1}',
                   ])
               .join(' OR ');
 
-          final where = searchQuery?.mapTo((e) => 'WHERE $e') ?? '';
+          final String where;
+          if (searchInEntryInfo) {
+            if (searchQuery != null) {
+              final subQuery = '''
+                SELECT $taskColumnId AS `$taskColumnId`
+                FROM $taskTableName
+                LEFT JOIN $entryTableName ON $entryColumnTaskId=$taskColumnId
+                ${searchQuery.mapTo((e) => 'WHERE $e')}
+                GROUP BY $taskColumnId
+              ''';
+
+              where = 'WHERE $taskColumnId IN ($subQuery)';
+            } else {
+              where = '';
+            }
+          } else {
+            where = searchQuery?.mapTo((e) => 'WHERE $e') ?? '';
+          }
 
           final query = '''
             SELECT $selectColumnNames
