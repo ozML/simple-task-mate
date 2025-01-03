@@ -9,6 +9,7 @@ import 'package:simple_task_mate/models/stamp_model.dart';
 import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
+import 'package:simple_task_mate/widgets/context_menu_button.dart';
 import 'package:simple_task_mate/widgets/time_input_field.dart';
 import 'package:simple_task_mate/widgets/content_box.dart';
 
@@ -63,33 +64,56 @@ class StampEntryTileState extends State<StampEntryTile> {
             )
           : null,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            key: StampEntryTile.keyTypeText,
-            switch (widget.stamp.type) {
-              StampType.arrival => context.texts.labelArrive,
-              StampType.departure => context.texts.labelLeave,
-              _ => '?',
-            },
-            style: primaryTextStyle,
-          ),
-          const SizedBox(width: 20),
-          Text(
-            key: StampEntryTile.keyTimeText,
-            DateFormat(clockTimeFormat, languageCode).format(widget.stamp.time),
-            style: primaryTextStyle,
-          ),
-          if (widget.isEditable && isHovering) ...[
-            const SizedBox(width: 50),
-            IconButton(
-              key: StampEntryTile.keyActionDelete,
-              icon: IconUtils.trashCan(context),
-              onPressed: onDeleteStamp != null
-                  ? () => onDeleteStamp(widget.stamp)
-                  : null,
+          Expanded(
+            child: Center(
+              child: RichText(
+                text: TextSpan(
+                  children: [
+                    WidgetSpan(
+                      child: Text(
+                        key: StampEntryTile.keyTypeText,
+                        switch (widget.stamp.type) {
+                          StampType.arrival => context.texts.labelArrive,
+                          StampType.departure => context.texts.labelLeave,
+                          _ => '?',
+                        },
+                        style: primaryTextStyle,
+                      ),
+                    ),
+                    const WidgetSpan(child: SizedBox(width: 20)),
+                    WidgetSpan(
+                      child: Text(
+                        key: StampEntryTile.keyTimeText,
+                        DateFormat(clockTimeFormat, languageCode)
+                            .format(widget.stamp.time),
+                        style: primaryTextStyle,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ],
+          ),
+          Visibility(
+            visible: widget.isEditable && isHovering,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: ContextMenuButton(
+                icon: IconUtils.ellipsisVertical(context),
+                items: [
+                  ContextMenuItem(
+                    key: StampEntryTile.keyActionDelete,
+                    title: context.texts.buttonDelete,
+                    iconBuilder: IconUtils.trashCan,
+                    onPressed: onDeleteStamp != null
+                        ? () => onDeleteStamp(widget.stamp)
+                        : null,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
