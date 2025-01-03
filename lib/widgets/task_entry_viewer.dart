@@ -102,6 +102,11 @@ class TaskEntryViewer extends StatelessWidget {
 
     final languageCode = locale.languageCode;
 
+    final duration = taskEntries.fold<Duration>(
+      Duration.zero,
+      (previousValue, element) => previousValue + element.time(),
+    );
+
     return ItemListViewer<TaskEntry>(
       items: taskEntries,
       getItemId: (item) => item.id!,
@@ -225,6 +230,23 @@ class TaskEntryViewer extends StatelessWidget {
           ],
         );
       },
+      footer: Container(
+        decoration: BoxDecoration(
+          border: Border.all(width: 0.5),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        margin: const EdgeInsets.all(5),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: [
+            Text(
+              context.texts.labelDuration(duration.asHHMM),
+              style: secondaryTextStyleFrom(context, bold: true),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

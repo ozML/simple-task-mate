@@ -277,6 +277,7 @@ class ItemListViewer<T> extends StatefulWidget {
     this.searchText,
     this.searchFieldHintText,
     this.decorateSearchField,
+    this.footer,
     this.onSearchTextChanged,
     this.onTapItem,
     this.actions = const [],
@@ -301,6 +302,7 @@ class ItemListViewer<T> extends StatefulWidget {
   final String? searchFieldHintText;
   final Widget Function(BuildContext context, Widget searchField)?
       decorateSearchField;
+  final Widget? footer;
   final void Function(String value)? onSearchTextChanged;
   final void Function(ItemRef<T> ref)? onTapItem;
   final List<GlobalActionsElement<T>> actions;
@@ -504,6 +506,8 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
       ),
     );
 
+    final footer = widget.footer;
+
     return Column(
       children: [
         if (searchField != null) searchField,
@@ -520,6 +524,7 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
               children: [
                 if (globalActionsBar != null) globalActionsBar,
                 listContent,
+                if (footer != null) footer,
               ],
             ),
           ),
