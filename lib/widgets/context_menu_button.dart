@@ -13,15 +13,21 @@ class ContextMenuItem {
 }
 
 class ContextMenuButton extends StatelessWidget {
-  ContextMenuButton({
+  ContextMenuButton({required this.items, this.label, this.icon, super.key})
+      : assert(label != null || icon != null),
+        text = null;
+
+  ContextMenuButton.labelText({
     required this.items,
-    this.label,
+    this.text,
     this.icon,
     super.key,
-  }) : assert(label != null || icon != null);
+  })  : assert(text != null || icon != null),
+        label = null;
 
   final List<ContextMenuItem> items;
-  final String? label;
+  final String? text;
+  final Widget? label;
   final Widget? icon;
 
   final anchorKey = GlobalKey();
@@ -30,6 +36,7 @@ class ContextMenuButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final secondaryTextStyle = secondaryTextStyleFrom(context);
 
+    final text = this.text;
     final label = this.label;
     final icon = this.icon;
 
@@ -71,10 +78,19 @@ class ContextMenuButton extends StatelessWidget {
       }
     }
 
-    if (icon != null && label != null) {
+    final Widget? labelWidget;
+    if (label != null) {
+      labelWidget = label;
+    } else if (text != null) {
+      labelWidget = Text(text, style: secondaryTextStyle);
+    } else {
+      labelWidget = null;
+    }
+
+    if (icon != null && labelWidget != null) {
       return TextButton.icon(
         key: anchorKey,
-        label: Text(label, style: secondaryTextStyle),
+        label: labelWidget,
         icon: icon,
         onPressed: openPopup,
       );
@@ -82,9 +98,7 @@ class ContextMenuButton extends StatelessWidget {
       return TextButton(
         key: anchorKey,
         onPressed: openPopup,
-        child: label != null
-            ? Text(label, style: secondaryTextStyle)
-            : icon ?? Container(),
+        child: labelWidget ?? icon ?? Container(),
       );
     }
   }

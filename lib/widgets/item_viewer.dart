@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:simple_task_mate/extensions/context.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
+import 'package:simple_task_mate/widgets/collapsable_button.dart';
 import 'package:simple_task_mate/widgets/content_box.dart';
 import 'package:simple_task_mate/widgets/context_menu_button.dart';
 
@@ -158,9 +159,9 @@ class ItemTileState<T> extends State<ItemTile<T>> {
             )
             .toList();
 
-        return ContextMenuButton(
+        return ContextMenuButton.labelText(
           key: key,
-          label: label,
+          text: label,
           icon: icon,
           items: items,
         );
@@ -326,8 +327,6 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final secondaryTextStyle = secondaryTextStyleFrom(context);
-
     final refs = widget.items.map((e) {
       final id = widget.getItemId(e);
 
@@ -353,22 +352,12 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
       final key = element.key;
 
       if (element is GlobalItemsAction<T>) {
-        if (icon != null && label != null) {
-          return TextButton.icon(
-            key: key,
-            label: Text(label, style: secondaryTextStyle),
-            icon: icon,
-            onPressed: () => element.onPressed(refs),
-          );
-        } else {
-          return TextButton(
-            key: key,
-            child: label != null
-                ? Text(label, style: secondaryTextStyle)
-                : icon ?? Container(),
-            onPressed: () => element.onPressed(refs),
-          );
-        }
+        return CollapsableButton(
+          key: key,
+          icon: icon,
+          label: label,
+          onPressed: () => element.onPressed(refs),
+        );
       }
 
       if (element is GlobalItemsGroup<T>) {
@@ -383,7 +372,7 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
             )
             .toList();
 
-        return ContextMenuButton(
+        return CollapsableButton.contextMenu(
           key: key,
           label: label,
           icon: icon,
@@ -479,7 +468,16 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
                     padding: const EdgeInsets.all(5),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
-                      children: actionButtons,
+                      children: [
+                        for (final button in actionButtons)
+                          Flexible(
+                            child: ConstrainedBox(
+                              constraints: const BoxConstraints(maxWidth: 300),
+                              child: button,
+                            ),
+                          ),
+                      ],
+                      // children: actionButtons,
                     ),
                   ),
                 Expanded(
