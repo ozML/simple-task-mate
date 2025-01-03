@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
 import 'package:simple_task_mate/widgets/context_menu_button.dart';
+import 'package:simple_task_mate/widgets/flex_container.dart';
 import 'package:simple_task_mate/widgets/size_builder.dart';
 
 class CollapsableButton extends StatefulWidget {
@@ -64,11 +65,7 @@ class _CollapsableButtonState extends State<CollapsableButton> {
             );
           }
 
-          final content = Row(
-            children: [
-              Expanded(child: SizeChangedLayoutNotifier(child: button)),
-            ],
-          );
+          final content = FlexHorizontalContainer(child: button);
 
           return isCollapsed
               ? Tooltip(message: actualLabel, child: content)

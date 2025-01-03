@@ -37,9 +37,9 @@ class _SizeBuilderState extends State<SizeBuilder> {
 
         return true;
       },
-      child: Builder(builder: (context) {
-        return widget.builder(context, _currentSize);
-      }),
+      child: SizeChangedLayoutNotifier(
+        child: widget.builder(context, _currentSize),
+      ),
     );
   }
 }

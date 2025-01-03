@@ -6,6 +6,7 @@ import 'package:simple_task_mate/utils/theme_utils.dart';
 import 'package:simple_task_mate/widgets/collapsable_button.dart';
 import 'package:simple_task_mate/widgets/content_box.dart';
 import 'package:simple_task_mate/widgets/context_menu_button.dart';
+import 'package:simple_task_mate/widgets/flex_container.dart';
 
 class ItemRef<T> {
   ItemRef({
@@ -444,6 +445,65 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
               baseSearchField;
     }
 
+    final Widget? globalActionsBar;
+    if (actionButtons.isNotEmpty) {
+      globalActionsBar = Container(
+        decoration: BoxDecoration(
+          border: Border.all(width: 0.5),
+          borderRadius: BorderRadius.circular(8),
+        ),
+        margin: const EdgeInsets.all(5),
+        padding: const EdgeInsets.all(5),
+        child: FlexHorizontalContainer(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              for (final button in actionButtons)
+                Flexible(
+                  child: Container(
+                    constraints: const BoxConstraints(maxWidth: 300),
+                    child: button,
+                  ),
+                ),
+            ],
+          ),
+        ),
+      );
+    } else {
+      globalActionsBar = null;
+    }
+
+    final listContent = Expanded(
+      child: ListView.builder(
+        itemCount: refs.length,
+        itemBuilder: (context, index) {
+          final ref = refs[index];
+
+          return Row(
+            children: [
+              if (refs.any((element) => element.isSelected))
+                Container(
+                  alignment: Alignment.topCenter,
+                  margin: const EdgeInsets.all(2),
+                  child: Checkbox(
+                    value: ref.isSelected,
+                    onChanged: (value) => ref.onSelect?.call(value ?? false),
+                  ),
+                ),
+              Expanded(
+                child: widget.tileBuilder(
+                  context,
+                  ref,
+                  widget.onTapItem,
+                ),
+              ),
+            ],
+          );
+        },
+      ),
+    );
+
     return Column(
       children: [
         if (searchField != null) searchField,
@@ -458,58 +518,8 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
                 : null,
             child: Column(
               children: [
-                if (actionButtons.isNotEmpty)
-                  Container(
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 0.5),
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    margin: const EdgeInsets.all(5),
-                    padding: const EdgeInsets.all(5),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        for (final button in actionButtons)
-                          Flexible(
-                            child: ConstrainedBox(
-                              constraints: const BoxConstraints(maxWidth: 300),
-                              child: button,
-                            ),
-                          ),
-                      ],
-                      // children: actionButtons,
-                    ),
-                  ),
-                Expanded(
-                  child: ListView.builder(
-                    itemCount: refs.length,
-                    itemBuilder: (context, index) {
-                      final ref = refs[index];
-
-                      return Row(
-                        children: [
-                          if (refs.any((element) => element.isSelected))
-                            Container(
-                              alignment: Alignment.topCenter,
-                              margin: const EdgeInsets.all(2),
-                              child: Checkbox(
-                                value: ref.isSelected,
-                                onChanged: (value) =>
-                                    ref.onSelect?.call(value ?? false),
-                              ),
-                            ),
-                          Expanded(
-                            child: widget.tileBuilder(
-                              context,
-                              ref,
-                              widget.onTapItem,
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
+                if (globalActionsBar != null) globalActionsBar,
+                listContent,
               ],
             ),
           ),
