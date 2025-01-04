@@ -71,6 +71,34 @@ Future<bool> confirmDeleteStamp({
       action: action,
     );
 
+Future<bool> confirmChangeStampType({
+  required BuildContext context,
+  required Stamp stamp,
+  required VoidCallback action,
+}) =>
+    confirmedAction(
+      context: context,
+      titleText: context.texts.dialogTitleStampChangeType,
+      confirmText: context.texts.buttonOk,
+      cancelText: context.texts.buttonCancel,
+      infoText: () {
+        final type = switch (stamp.type) {
+          StampType.arrival => context.texts.labelArrive,
+          StampType.departure => context.texts.labelLeave,
+          _ => '?',
+        };
+        final targetType = switch (stamp.type) {
+          StampType.arrival => context.texts.labelLeave,
+          StampType.departure => context.texts.labelArrive,
+          _ => '?',
+        };
+        final time = DateFormat('HH:mm').format(stamp.time);
+
+        return context.texts.dialogInfoStampChangeType(type, time, targetType);
+      }(),
+      action: action,
+    );
+
 Future<bool> confirmDeleteTask({
   required BuildContext context,
   required Task task,

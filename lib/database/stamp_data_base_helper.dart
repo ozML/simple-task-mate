@@ -84,6 +84,20 @@ class StampDataBaseHelper extends DataBaseHelper {
         },
       ).then((value) => value ?? 0);
 
+  Future<int> updateStamp(Stamp stamp) => dbAction<int>(
+        (db) async {
+          const columnId = StampContract.columnId;
+          final tableName = contract.tableName;
+
+          return db.update(
+            tableName,
+            stamp.copyWith(createdAt: DateTime.now()).toMap(),
+            where: '$columnId = ?',
+            whereArgs: [stamp.id],
+          );
+        },
+      ).then((value) => value ?? 0);
+
   Future<int> deleteStamp(Stamp stamp) => dbAction<int>(
         (db) async {
           const columnId = StampContract.columnId;

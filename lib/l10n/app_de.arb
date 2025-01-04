@@ -19,6 +19,7 @@
 	"buttonMove" : "Verschieben",
 	"buttonToDate" : "Zu Datum",
 	"buttonToTask" : "Zu Aufgabe",
+	"buttonChangeStampType":"Typ ändern",
 	"labelArrive": "Kommt",
 	"labelLeave": "Geht",
 	"labelPresentnessTime" : "Arbeitstag",
@@ -92,6 +93,21 @@
 				"type" : "String"
 			},
 			"time" : {
+				"type" : "String"
+			}
+		}
+	},
+	"dialogTitleStampChangeType": "Stempeltyp ändern",
+	"dialogInfoStampChangeType" : "Die \"{type}\" Stempelung um {time} wird in \"{targetType}\" geändert",
+	"@dialogInfoStampChangeType" : {
+		"placeholders" : {
+			"type" : {
+				"type" : "String"
+			},
+			"time" : {
+				"type" : "String"
+			},
+			"targetType" : {
 				"type" : "String"
 			}
 		}

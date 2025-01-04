@@ -121,6 +121,16 @@ class StampViewState extends State<StampView> {
                           .deleteStamp(stamp)
                           .then(_refresh),
                     ),
+                    onChangeStampType: (stamp) => confirmChangeStampType(
+                      context: context,
+                      stamp: stamp,
+                      action: () => context
+                          .read<StampModel>()
+                          .updateStamp(
+                            stamp.copyWith(type: stamp.type.opposite),
+                          )
+                          .then((value) => _refresh(value.$1)),
+                    ),
                     onModeChanged: (value) => setState(() {
                       _manualStampMode = value;
                     }),

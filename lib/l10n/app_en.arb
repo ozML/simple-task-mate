@@ -19,6 +19,7 @@
 	"buttonMove" : "Move",
 	"buttonToDate" : "To Date",
 	"buttonToTask" : "To Task",
+	"buttonChangeStampType":"Change type",
 	"labelArrive": "Arrive",
 	"labelLeave": "Leave",
 	"labelPresentnessTime" : "Working day",
@@ -92,6 +93,21 @@
 				"type" : "String"
 			},
 			"time" : {
+				"type" : "String"
+			}
+		}
+	},
+	"dialogTitleStampChangeType": "Change stamp type",
+	"dialogInfoStampChangeType" : "Stamp \"{type}\" at {time} will be changed to \"{targetType}\"",
+	"@dialogInfoStampChangeType" : {
+		"placeholders" : {
+			"type" : {
+				"type" : "String"
+			},
+			"time" : {
+				"type" : "String"
+			},
+			"targetType" : {
 				"type" : "String"
 			}
 		}

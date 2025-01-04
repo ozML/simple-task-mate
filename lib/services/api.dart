@@ -6,7 +6,13 @@ import 'package:simple_task_mate/extensions/object_extension.dart';
 enum StampType {
   undefined,
   arrival,
-  departure,
+  departure;
+
+  StampType get opposite => switch (this) {
+        StampType.arrival => StampType.departure,
+        StampType.departure => StampType.arrival,
+        _ => StampType.undefined,
+      };
 }
 
 class Stamp with EquatableMixin {

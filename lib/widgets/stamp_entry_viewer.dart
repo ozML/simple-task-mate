@@ -20,18 +20,21 @@ class StampEntryTile extends StatefulWidget {
     this.locale = const Locale('en'),
     this.isEditable = false,
     this.onDeleteStamp,
+    this.onChangeStampType,
     super.key,
   });
 
   static Key get keyTypeText => Key('$StampEntryTile/typeText');
   static Key get keyTimeText => Key('$StampEntryTile/timeText');
   static Key get keyActionDelete => Key('$StampEntryTile/actionDelete');
+  static Key get keyActionChangeType => Key('$StampEntryTile/actionChangeType');
 
   final Stamp stamp;
   final ClockTimeFormat clockTimeFormat;
   final Locale locale;
   final bool isEditable;
   final void Function(Stamp stamp)? onDeleteStamp;
+  final void Function(Stamp stamp)? onChangeStampType;
 
   @override
   State<StatefulWidget> createState() => StampEntryTileState();
@@ -46,6 +49,7 @@ class StampEntryTileState extends State<StampEntryTile> {
     final primaryTextStyle = primaryTextStyleFrom(context);
 
     final onDeleteStamp = widget.onDeleteStamp;
+    final onChangeStampType = widget.onChangeStampType;
 
     final clockTimeFormat = switch (widget.clockTimeFormat) {
       ClockTimeFormat.twelveHours => 'hh:mm a',
@@ -103,6 +107,14 @@ class StampEntryTileState extends State<StampEntryTile> {
                 icon: IconUtils.ellipsisVertical(context),
                 items: [
                   ContextMenuItem(
+                    key: StampEntryTile.keyActionChangeType,
+                    title: context.texts.buttonChangeStampType,
+                    iconBuilder: IconUtils.repeat,
+                    onPressed: onChangeStampType != null
+                        ? () => onChangeStampType(widget.stamp)
+                        : null,
+                  ),
+                  ContextMenuItem(
                     key: StampEntryTile.keyActionDelete,
                     title: context.texts.buttonDelete,
                     iconBuilder: IconUtils.trashCan,
@@ -143,6 +155,7 @@ class StampEntryViewer extends StatefulWidget {
     this.onModeChanged,
     this.onSaveStamp,
     this.onDeleteStamp,
+    this.onChangeStampType,
     super.key,
   });
 
@@ -167,6 +180,7 @@ class StampEntryViewer extends StatefulWidget {
   final ValueChanged<bool>? onModeChanged;
   final void Function(Stamp stamp)? onSaveStamp;
   final void Function(Stamp stamp)? onDeleteStamp;
+  final void Function(Stamp stamp)? onChangeStampType;
 
   static Widget buildFromModels({
     required BuildContext context,
@@ -175,6 +189,7 @@ class StampEntryViewer extends StatefulWidget {
     ValueChanged<bool>? onModeChanged,
     void Function(Stamp stamp)? onSaveStamp,
     void Function(Stamp stamp)? onDeleteStamp,
+    void Function(Stamp stamp)? onChangeStampType,
     Key? key,
   }) {
     final locale = context.select<ConfigModel, Locale>(
@@ -213,6 +228,7 @@ class StampEntryViewer extends StatefulWidget {
       onModeChanged: onModeChanged,
       onSaveStamp: onSaveStamp,
       onDeleteStamp: onDeleteStamp,
+      onChangeStampType: onChangeStampType,
       key: key,
     );
   }
@@ -267,6 +283,7 @@ class StampEntryViewerState extends State<StampEntryViewer> {
     final onModeChanged = widget.onModeChanged;
     final onSaveStamp = widget.onSaveStamp;
     final onDeleteStamp = widget.onDeleteStamp;
+    final onChangeStampType = widget.onChangeStampType;
 
     void onSaveStampType(StampType type) {
       if (widget.isManualMode) {
@@ -379,6 +396,7 @@ class StampEntryViewerState extends State<StampEntryViewer> {
                             clockTimeFormat: widget.clockTimeFormat,
                             isEditable: widget.isManualMode,
                             onDeleteStamp: onDeleteStamp,
+                            onChangeStampType: onChangeStampType,
                           ),
                         ),
                 ),
