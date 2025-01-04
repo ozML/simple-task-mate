@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -429,7 +428,7 @@ class StampEntryViewerState extends State<StampEntryViewer> {
                                 setState(
                                   () {
                                     _selectedStampIds.addAll(
-                                      stamps.map((e) => e.id).whereNotNull(),
+                                      stamps.map((e) => e.id).nonNulls,
                                     );
                                   },
                                 );

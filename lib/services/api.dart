@@ -1,4 +1,3 @@
-import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:simple_task_mate/extensions/date_time.dart';
 import 'package:simple_task_mate/extensions/object_extension.dart';
@@ -139,7 +138,7 @@ class Task with EquatableMixin {
       };
 
   String fullName({String separator = ' - '}) =>
-      [refId, name].whereNotNull().join(separator);
+      [refId, name].nonNulls.join(separator);
 
   Duration time() =>
       entries?.fold<Duration>(
@@ -319,7 +318,7 @@ class TaskSummary with EquatableMixin {
   List<Object?> get props => [taskId, refId, name, time];
 
   String fullName({String separator = ' - '}) =>
-      [refId, name].whereNotNull().join(separator);
+      [refId, name].nonNulls.join(separator);
 
   Task toRef() => Task(id: taskId, refId: refId, name: name);
 }

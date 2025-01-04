@@ -141,8 +141,7 @@ class StampDataBaseHelper extends DataBaseHelper {
           const columnId = StampContract.columnId;
           final tableName = contract.tableName;
 
-          final targetIds =
-              stamps.map((e) => e.id).whereNotNull().toList().join(',');
+          final targetIds = stamps.map((e) => e.id).nonNulls.toList().join(',');
 
           return db.delete(
             tableName,

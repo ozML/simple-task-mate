@@ -343,7 +343,7 @@ class TaskDataBaseHelper extends DataBaseHelper {
           final tableName = entryContract.tableName;
 
           final targetIds =
-              taskEntries.map((e) => e.id).whereNotNull().toList().join(',');
+              taskEntries.map((e) => e.id).nonNulls.toList().join(',');
 
           return db.delete(
             tableName,
