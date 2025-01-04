@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
@@ -9,6 +10,7 @@ import 'package:simple_task_mate/models/stamp_model.dart';
 import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
+import 'package:simple_task_mate/widgets/context_menu_button.dart';
 import 'package:simple_task_mate/widgets/time_input_field.dart';
 import 'package:simple_task_mate/widgets/content_box.dart';
 
@@ -18,19 +20,26 @@ class StampEntryTile extends StatefulWidget {
     this.clockTimeFormat = ClockTimeFormat.twentyFourHours,
     this.locale = const Locale('en'),
     this.isEditable = false,
+    this.isSelected = false,
     this.onDeleteStamp,
+    this.onSelectStamp,
+    this.onChangeStampType,
     super.key,
   });
 
   static Key get keyTypeText => Key('$StampEntryTile/typeText');
   static Key get keyTimeText => Key('$StampEntryTile/timeText');
   static Key get keyActionDelete => Key('$StampEntryTile/actionDelete');
+  static Key get keyActionChangeType => Key('$StampEntryTile/actionChangeType');
 
   final Stamp stamp;
   final ClockTimeFormat clockTimeFormat;
   final Locale locale;
   final bool isEditable;
+  final bool isSelected;
   final void Function(Stamp stamp)? onDeleteStamp;
+  final void Function(Stamp stamp)? onSelectStamp;
+  final void Function(Stamp stamp)? onChangeStampType;
 
   @override
   State<StatefulWidget> createState() => StampEntryTileState();
@@ -45,6 +54,8 @@ class StampEntryTileState extends State<StampEntryTile> {
     final primaryTextStyle = primaryTextStyleFrom(context);
 
     final onDeleteStamp = widget.onDeleteStamp;
+    final onSelectStamp = widget.onSelectStamp;
+    final onChangeStampType = widget.onChangeStampType;
 
     final clockTimeFormat = switch (widget.clockTimeFormat) {
       ClockTimeFormat.twelveHours => 'hh:mm a',
@@ -63,33 +74,80 @@ class StampEntryTileState extends State<StampEntryTile> {
             )
           : null,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            key: StampEntryTile.keyTypeText,
-            switch (widget.stamp.type) {
-              StampType.arrival => context.texts.labelArrive,
-              StampType.departure => context.texts.labelLeave,
-              _ => '?',
-            },
-            style: primaryTextStyle,
-          ),
-          const SizedBox(width: 20),
-          Text(
-            key: StampEntryTile.keyTimeText,
-            DateFormat(clockTimeFormat, languageCode).format(widget.stamp.time),
-            style: primaryTextStyle,
-          ),
-          if (widget.isEditable && isHovering) ...[
-            const SizedBox(width: 50),
-            IconButton(
-              key: StampEntryTile.keyActionDelete,
-              icon: IconUtils.trashCan(context),
-              onPressed: onDeleteStamp != null
-                  ? () => onDeleteStamp(widget.stamp)
-                  : null,
+          Expanded(
+            child: Center(
+              child: RichText(
+                text: TextSpan(
+                  children: [
+                    WidgetSpan(
+                      child: Text(
+                        key: StampEntryTile.keyTypeText,
+                        switch (widget.stamp.type) {
+                          StampType.arrival => context.texts.labelArrive,
+                          StampType.departure => context.texts.labelLeave,
+                          _ => '?',
+                        },
+                        style: primaryTextStyle,
+                      ),
+                    ),
+                    const WidgetSpan(child: SizedBox(width: 20)),
+                    WidgetSpan(
+                      child: Text(
+                        key: StampEntryTile.keyTimeText,
+                        DateFormat(clockTimeFormat, languageCode)
+                            .format(widget.stamp.time),
+                        style: primaryTextStyle,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
-          ],
+          ),
+          Visibility(
+            visible: widget.isEditable && isHovering,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 8.0),
+              child: ContextMenuButton(
+                icon: IconUtils.ellipsisVertical(context),
+                items: [
+                  if (widget.isSelected)
+                    ContextMenuItem(
+                      title: context.texts.buttonDeselect,
+                      iconBuilder: IconUtils.square,
+                      onPressed: onSelectStamp != null
+                          ? () => onSelectStamp(widget.stamp)
+                          : null,
+                    )
+                  else
+                    ContextMenuItem(
+                      title: context.texts.buttonSelect,
+                      iconBuilder: IconUtils.squareCheck,
+                      onPressed: onSelectStamp != null
+                          ? () => onSelectStamp(widget.stamp)
+                          : null,
+                    ),
+                  ContextMenuItem(
+                    key: StampEntryTile.keyActionChangeType,
+                    title: context.texts.buttonChangeStampType,
+                    iconBuilder: IconUtils.repeat,
+                    onPressed: onChangeStampType != null
+                        ? () => onChangeStampType(widget.stamp)
+                        : null,
+                  ),
+                  ContextMenuItem(
+                    key: StampEntryTile.keyActionDelete,
+                    title: context.texts.buttonDelete,
+                    iconBuilder: IconUtils.trashCan,
+                    onPressed: onDeleteStamp != null
+                        ? () => onDeleteStamp(widget.stamp)
+                        : null,
+                  ),
+                ],
+              ),
+            ),
+          ),
         ],
       ),
     );
@@ -117,8 +175,11 @@ class StampEntryViewer extends StatefulWidget {
     this.isStampDisabled = false,
     this.isLoading = false,
     this.onModeChanged,
+    this.onDelete,
+    this.onChangeDate,
     this.onSaveStamp,
     this.onDeleteStamp,
+    this.onChangeStampType,
     super.key,
   });
 
@@ -141,16 +202,22 @@ class StampEntryViewer extends StatefulWidget {
   final bool isLoading;
   final DateTime Function() getTime;
   final ValueChanged<bool>? onModeChanged;
+  final void Function(List<Stamp> stamps)? onDelete;
+  final void Function(List<Stamp> stamps)? onChangeDate;
   final void Function(Stamp stamp)? onSaveStamp;
   final void Function(Stamp stamp)? onDeleteStamp;
+  final void Function(Stamp stamp)? onChangeStampType;
 
   static Widget buildFromModels({
     required BuildContext context,
     bool hideHeader = false,
     bool isManualMode = true,
     ValueChanged<bool>? onModeChanged,
+    void Function(List<Stamp> stamps)? onDelete,
+    void Function(List<Stamp> stamps)? onChangeDate,
     void Function(Stamp stamp)? onSaveStamp,
     void Function(Stamp stamp)? onDeleteStamp,
+    void Function(Stamp stamp)? onChangeStampType,
     Key? key,
   }) {
     final locale = context.select<ConfigModel, Locale>(
@@ -187,8 +254,11 @@ class StampEntryViewer extends StatefulWidget {
       isStampDisabled: !isCurrentDate,
       isLoading: isLoading,
       onModeChanged: onModeChanged,
+      onDelete: onDelete,
+      onChangeDate: onChangeDate,
       onSaveStamp: onSaveStamp,
       onDeleteStamp: onDeleteStamp,
+      onChangeStampType: onChangeStampType,
       key: key,
     );
   }
@@ -200,6 +270,7 @@ class StampEntryViewer extends StatefulWidget {
 class StampEntryViewerState extends State<StampEntryViewer> {
   final _textEditingController = TextEditingController();
   final _focusNode = FocusNode();
+  final _selectedStampIds = <int>{};
 
   late bool _reverseListOrder = widget.isStampListInverted;
   bool _isManualStampDeparture = false;
@@ -209,6 +280,19 @@ class StampEntryViewerState extends State<StampEntryViewer> {
     super.initState();
 
     ServicesBinding.instance.keyboard.addHandler(_onKey);
+  }
+
+  @override
+  void didUpdateWidget(covariant StampEntryViewer oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (widget.date != oldWidget.date ||
+        !widget.isManualMode && oldWidget.isManualMode ||
+        widget.stamps.length != oldWidget.stamps.length) {
+      setState(() {
+        _selectedStampIds.clear();
+      });
+    }
   }
 
   @override
@@ -241,8 +325,11 @@ class StampEntryViewerState extends State<StampEntryViewer> {
     );
 
     final onModeChanged = widget.onModeChanged;
+    final onDelete = widget.onDelete;
+    final onChangeDate = widget.onChangeDate;
     final onSaveStamp = widget.onSaveStamp;
     final onDeleteStamp = widget.onDeleteStamp;
+    final onChangeStampType = widget.onChangeStampType;
 
     void onSaveStampType(StampType type) {
       if (widget.isManualMode) {
@@ -306,6 +393,10 @@ class StampEntryViewerState extends State<StampEntryViewer> {
       orderButtonIcon = IconUtils.arrowDownShortWide(context);
     }
 
+    final selectedStamps = stamps
+        .where((element) => _selectedStampIds.contains(element.id))
+        .toList();
+
     return Column(
       children: [
         Expanded(
@@ -326,6 +417,57 @@ class StampEntryViewerState extends State<StampEntryViewer> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
+                      if (widget.isManualMode && stamps.isNotEmpty) ...[
+                        ContextMenuButton.labelText(
+                          text: context.texts.buttonSelection,
+                          icon: IconUtils.check(context),
+                          items: [
+                            ContextMenuItem(
+                              title: context.texts.buttonSelectAll,
+                              iconBuilder: IconUtils.squareCheck,
+                              onPressed: () {
+                                setState(
+                                  () {
+                                    _selectedStampIds.addAll(
+                                      stamps.map((e) => e.id).whereNotNull(),
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                            ContextMenuItem(
+                              title: context.texts.buttonDeselectAll,
+                              iconBuilder: IconUtils.square,
+                              onPressed: () {
+                                setState(() => _selectedStampIds.clear());
+                              },
+                            ),
+                          ],
+                        ),
+                        if (_selectedStampIds.isNotEmpty) ...[
+                          TextButton.icon(
+                            label: Text(
+                              context.texts.buttonMoveToDate,
+                              style: secondaryTextStyleFrom(context),
+                            ),
+                            icon: IconUtils.arrowRightLeft(context),
+                            onPressed: onChangeDate != null
+                                ? () => onChangeDate(selectedStamps)
+                                : null,
+                          ),
+                          TextButton.icon(
+                            label: Text(
+                              context.texts.buttonDelete,
+                              style: secondaryTextStyleFrom(context),
+                            ),
+                            icon: IconUtils.trashCan(context),
+                            onPressed: onDelete != null
+                                ? () => onDelete(selectedStamps)
+                                : null,
+                          ),
+                        ],
+                      ],
+                      Expanded(child: Container()),
                       TextButton(
                         child: orderButtonIcon,
                         onPressed: () {
@@ -348,14 +490,53 @@ class StampEntryViewerState extends State<StampEntryViewer> {
                         )
                       : ListView.builder(
                           itemCount: stamps.length,
-                          itemBuilder: (context, index) => StampEntryTile(
-                            key: StampEntryViewer.keyItemTile,
-                            stamp: stamps[index],
-                            locale: widget.locale,
-                            clockTimeFormat: widget.clockTimeFormat,
-                            isEditable: widget.isManualMode,
-                            onDeleteStamp: onDeleteStamp,
-                          ),
+                          itemBuilder: (context, index) {
+                            final stamp = stamps[index];
+                            final id = stamp.id;
+
+                            void onSelect(bool? value) {
+                              if (id != null) {
+                                setState(() {
+                                  if (value == true) {
+                                    _selectedStampIds.add(id);
+                                  } else {
+                                    _selectedStampIds.remove(id);
+                                  }
+                                });
+                              }
+                            }
+
+                            return Row(
+                              children: [
+                                if (widget.isManualMode &&
+                                    _selectedStampIds.isNotEmpty)
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 8),
+                                    child: Checkbox(
+                                      value:
+                                          _selectedStampIds.contains(stamp.id),
+                                      onChanged: onSelect,
+                                    ),
+                                  ),
+                                Expanded(
+                                  child: StampEntryTile(
+                                    key: StampEntryViewer.keyItemTile,
+                                    stamp: stamp,
+                                    locale: widget.locale,
+                                    clockTimeFormat: widget.clockTimeFormat,
+                                    isEditable: widget.isManualMode,
+                                    isSelected:
+                                        _selectedStampIds.contains(stamp.id),
+                                    onDeleteStamp: onDeleteStamp,
+                                    onSelectStamp: (stamp) => onSelect(
+                                      !_selectedStampIds.contains(stamp.id),
+                                    ),
+                                    onChangeStampType: onChangeStampType,
+                                  ),
+                                ),
+                              ],
+                            );
+                          },
                         ),
                 ),
               ],

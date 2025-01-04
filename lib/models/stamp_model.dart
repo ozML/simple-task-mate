@@ -36,8 +36,26 @@ class StampModel extends ChangeNotifier {
     return (id > 0, id);
   }
 
+  Future<bool> updateStamp(Stamp stamp) async {
+    final success = await StampDataBaseHelper.instance.updateStamp(stamp) > 0;
+
+    return success;
+  }
+
+  Future<bool> updateStamps(List<Stamp> stamps) async {
+    final success = await StampDataBaseHelper.instance.updateStamps(stamps) > 0;
+
+    return success;
+  }
+
   Future<bool> deleteStamp(Stamp stamp) async {
     final success = await StampDataBaseHelper.instance.deleteStamp(stamp) > 0;
+
+    return success;
+  }
+
+  Future<bool> deleteStamps(List<Stamp> stamps) async {
+    final success = await StampDataBaseHelper.instance.deleteStamps(stamps) > 0;
 
     return success;
   }

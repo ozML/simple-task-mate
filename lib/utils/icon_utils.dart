@@ -155,6 +155,18 @@ class IconUtils {
         size: size,
       );
 
+  static Widget repeat(
+    BuildContext context, {
+    Color? color,
+    double? size,
+  }) =>
+      _getIcon(
+        context: context,
+        icon: FontAwesomeIcons.repeat,
+        color: color,
+        size: size,
+      );
+
   static Widget gears(
     BuildContext context, {
     Color? color,

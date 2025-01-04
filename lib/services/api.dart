@@ -6,7 +6,13 @@ import 'package:simple_task_mate/extensions/object_extension.dart';
 enum StampType {
   undefined,
   arrival,
-  departure,
+  departure;
+
+  StampType get opposite => switch (this) {
+        StampType.arrival => StampType.departure,
+        StampType.departure => StampType.arrival,
+        _ => StampType.undefined,
+      };
 }
 
 class Stamp with EquatableMixin {
@@ -63,6 +69,18 @@ class Stamp with EquatableMixin {
         createdAt: createdAt ?? this.createdAt,
         modifiedAt: modifiedAt ?? this.modifiedAt,
       );
+
+  Stamp changeDateTo(DateTime date) {
+    final targetDate = date.date;
+
+    return copyWith(
+      time: time.copyWith(
+        year: targetDate.year,
+        month: targetDate.month,
+        day: targetDate.day,
+      ),
+    );
+  }
 }
 
 class Task with EquatableMixin {
