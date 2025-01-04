@@ -71,6 +71,19 @@ Future<bool> confirmDeleteStamp({
       action: action,
     );
 
+Future<bool> confirmDeleteSelectedStamps({
+  required BuildContext context,
+  required VoidCallback action,
+}) =>
+    confirmedAction(
+      context: context,
+      titleText: context.texts.dialogTitleStampDeleteSelected,
+      confirmText: context.texts.buttonOk,
+      cancelText: context.texts.buttonCancel,
+      infoText: context.texts.dialogInfoStampDeleteSelected,
+      action: action,
+    );
+
 Future<bool> confirmChangeStampType({
   required BuildContext context,
   required Stamp stamp,
@@ -96,6 +109,19 @@ Future<bool> confirmChangeStampType({
 
         return context.texts.dialogInfoStampChangeType(type, time, targetType);
       }(),
+      action: action,
+    );
+
+Future<bool> confirmMoveSelectedStampsToDate({
+  required BuildContext context,
+  required VoidCallback action,
+}) =>
+    confirmedAction(
+      context: context,
+      titleText: context.texts.dialogTitleStampMoveToDateSelected,
+      confirmText: context.texts.buttonOk,
+      cancelText: context.texts.buttonCancel,
+      infoText: context.texts.dialogInfoStampMoveToDateSelected,
       action: action,
     );
 

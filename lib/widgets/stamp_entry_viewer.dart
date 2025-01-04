@@ -175,6 +175,8 @@ class StampEntryViewer extends StatefulWidget {
     this.isStampDisabled = false,
     this.isLoading = false,
     this.onModeChanged,
+    this.onDelete,
+    this.onChangeDate,
     this.onSaveStamp,
     this.onDeleteStamp,
     this.onChangeStampType,
@@ -200,6 +202,8 @@ class StampEntryViewer extends StatefulWidget {
   final bool isLoading;
   final DateTime Function() getTime;
   final ValueChanged<bool>? onModeChanged;
+  final void Function(List<Stamp> stamps)? onDelete;
+  final void Function(List<Stamp> stamps)? onChangeDate;
   final void Function(Stamp stamp)? onSaveStamp;
   final void Function(Stamp stamp)? onDeleteStamp;
   final void Function(Stamp stamp)? onChangeStampType;
@@ -209,6 +213,8 @@ class StampEntryViewer extends StatefulWidget {
     bool hideHeader = false,
     bool isManualMode = true,
     ValueChanged<bool>? onModeChanged,
+    void Function(List<Stamp> stamps)? onDelete,
+    void Function(List<Stamp> stamps)? onChangeDate,
     void Function(Stamp stamp)? onSaveStamp,
     void Function(Stamp stamp)? onDeleteStamp,
     void Function(Stamp stamp)? onChangeStampType,
@@ -248,6 +254,8 @@ class StampEntryViewer extends StatefulWidget {
       isStampDisabled: !isCurrentDate,
       isLoading: isLoading,
       onModeChanged: onModeChanged,
+      onDelete: onDelete,
+      onChangeDate: onChangeDate,
       onSaveStamp: onSaveStamp,
       onDeleteStamp: onDeleteStamp,
       onChangeStampType: onChangeStampType,
@@ -279,7 +287,8 @@ class StampEntryViewerState extends State<StampEntryViewer> {
     super.didUpdateWidget(oldWidget);
 
     if (widget.date != oldWidget.date ||
-        !widget.isManualMode && oldWidget.isManualMode) {
+        !widget.isManualMode && oldWidget.isManualMode ||
+        widget.stamps.length != oldWidget.stamps.length) {
       setState(() {
         _selectedStampIds.clear();
       });
@@ -316,6 +325,8 @@ class StampEntryViewerState extends State<StampEntryViewer> {
     );
 
     final onModeChanged = widget.onModeChanged;
+    final onDelete = widget.onDelete;
+    final onChangeDate = widget.onChangeDate;
     final onSaveStamp = widget.onSaveStamp;
     final onDeleteStamp = widget.onDeleteStamp;
     final onChangeStampType = widget.onChangeStampType;
@@ -382,6 +393,10 @@ class StampEntryViewerState extends State<StampEntryViewer> {
       orderButtonIcon = IconUtils.arrowDownShortWide(context);
     }
 
+    final selectedStamps = stamps
+        .where((element) => _selectedStampIds.contains(element.id))
+        .toList();
+
     return Column(
       children: [
         Expanded(
@@ -402,7 +417,7 @@ class StampEntryViewerState extends State<StampEntryViewer> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
-                      if (widget.isManualMode && stamps.isNotEmpty)
+                      if (widget.isManualMode && stamps.isNotEmpty) ...[
                         ContextMenuButton.labelText(
                           text: context.texts.buttonSelection,
                           icon: IconUtils.check(context),
@@ -429,6 +444,29 @@ class StampEntryViewerState extends State<StampEntryViewer> {
                             ),
                           ],
                         ),
+                        if (_selectedStampIds.isNotEmpty) ...[
+                          TextButton.icon(
+                            label: Text(
+                              context.texts.buttonMoveToDate,
+                              style: secondaryTextStyleFrom(context),
+                            ),
+                            icon: IconUtils.arrowRightLeft(context),
+                            onPressed: onChangeDate != null
+                                ? () => onChangeDate(selectedStamps)
+                                : null,
+                          ),
+                          TextButton.icon(
+                            label: Text(
+                              context.texts.buttonDelete,
+                              style: secondaryTextStyleFrom(context),
+                            ),
+                            icon: IconUtils.trashCan(context),
+                            onPressed: onDelete != null
+                                ? () => onDelete(selectedStamps)
+                                : null,
+                          ),
+                        ],
+                      ],
                       Expanded(child: Container()),
                       TextButton(
                         child: orderButtonIcon,

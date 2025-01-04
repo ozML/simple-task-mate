@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:properties/properties.dart';
 import 'package:simple_task_mate/database/data_base_helper.dart';
 import 'package:simple_task_mate/database/stamp_contract.dart';
@@ -98,6 +99,26 @@ class StampDataBaseHelper extends DataBaseHelper {
         },
       ).then((value) => value ?? 0);
 
+  Future<int> updateStamps(List<Stamp> stamps) => dbAction<int>(
+        (db) async {
+          const columnId = StampContract.columnId;
+          final tableName = contract.tableName;
+
+          final batch = db.batch();
+
+          for (final stamp in stamps) {
+            batch.update(
+              tableName,
+              stamp.copyWith(modifiedAt: DateTime.now()).toMap(),
+              where: '$columnId = ?',
+              whereArgs: [stamp.id],
+            );
+          }
+
+          return batch.commit().then((value) => value.whereType<int>().sum);
+        },
+      ).then((value) => value ?? 0);
+
   Future<int> deleteStamp(Stamp stamp) => dbAction<int>(
         (db) async {
           const columnId = StampContract.columnId;
@@ -107,6 +128,25 @@ class StampDataBaseHelper extends DataBaseHelper {
             tableName,
             where: '$columnId = ?',
             whereArgs: [stamp.id],
+          );
+        },
+      ).then((value) => value ?? 0);
+
+  Future<int> deleteStamps(List<Stamp> stamps) => dbAction<int>(
+        (db) async {
+          if (stamps.isEmpty) {
+            return 0;
+          }
+
+          const columnId = StampContract.columnId;
+          final tableName = contract.tableName;
+
+          final targetIds =
+              stamps.map((e) => e.id).whereNotNull().toList().join(',');
+
+          return db.delete(
+            tableName,
+            where: '$columnId IN ($targetIds)',
           );
         },
       ).then((value) => value ?? 0);

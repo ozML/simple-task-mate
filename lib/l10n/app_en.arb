@@ -19,6 +19,7 @@
 	"buttonMove" : "Move",
 	"buttonToDate" : "To Date",
 	"buttonToTask" : "To Task",
+	"buttonMoveToDate" : "Move to date",
 	"buttonChangeStampType":"Change type",
 	"labelArrive": "Arrive",
 	"labelLeave": "Leave",
@@ -97,6 +98,8 @@
 			}
 		}
 	},
+	"dialogTitleStampDeleteSelected": "Delete selected stamps",
+	"dialogInfoStampDeleteSelected" : "Selected stamps will be deleted",
 	"dialogTitleStampChangeType": "Change stamp type",
 	"dialogInfoStampChangeType" : "Stamp \"{type}\" at {time} will be changed to \"{targetType}\"",
 	"@dialogInfoStampChangeType" : {
@@ -112,6 +115,8 @@
 			}
 		}
 	},
+	"dialogTitleStampMoveToDateSelected": "Move selected stamps to date",
+	"dialogInfoStampMoveToDateSelected" : "Selected stamps will be moved to the selected date",
 	"dialogTitleTaskDelete": "Delete task",
 	"dialogInfoTaskDelete" : "Task \n\"{title}\" \nwill be deleted",
 	"@dialogInfoTaskDelete" : {

@@ -19,6 +19,7 @@
 	"buttonMove" : "Verschieben",
 	"buttonToDate" : "Zu Datum",
 	"buttonToTask" : "Zu Aufgabe",
+	"buttonMoveToDate" : "Zu Datum verschieben",
 	"buttonChangeStampType":"Typ ändern",
 	"labelArrive": "Kommt",
 	"labelLeave": "Geht",
@@ -97,6 +98,8 @@
 			}
 		}
 	},
+	"dialogTitleStampDeleteSelected": "Ausgewählte Stempelungen löschen",
+	"dialogInfoStampDeleteSelected" : "Die ausgewählten Stempelungen werden gelöscht",
 	"dialogTitleStampChangeType": "Stempeltyp ändern",
 	"dialogInfoStampChangeType" : "Die \"{type}\" Stempelung um {time} wird in \"{targetType}\" geändert",
 	"@dialogInfoStampChangeType" : {
@@ -112,6 +115,8 @@
 			}
 		}
 	},
+	"dialogTitleStampMoveToDateSelected": "Augewählte Stempelungen zum Datum verschieben",
+	"dialogInfoStampMoveToDateSelected" : "Die ausgewählten Stempelungen werden zum ausgewählten Datum verschoben",
 	"dialogTitleTaskDelete": "Aufgabe löschen",
 	"dialogInfoTaskDelete" : "Die Aufgabe \n\"{title}\" \nwird gelöscht",
 	"@dialogInfoTaskDelete" : {

@@ -113,6 +113,62 @@ class StampViewState extends State<StampView> {
                         .read<StampModel>()
                         .addStamp(stamp)
                         .then((value) => _refresh(value.$1)),
+                    onDelete: (stamps) => confirmDeleteSelectedStamps(
+                      context: context,
+                      action: () => context
+                          .read<StampModel>()
+                          .deleteStamps(stamps)
+                          .then(_refresh),
+                    ),
+                    onChangeDate: (stamps) async {
+                      final dateModel = context.read<DateTimeModel>();
+
+                      final date = dateModel.date;
+                      final sourceDate = dateModel.selectedDate;
+
+                      final targetDate = await showDatePicker(
+                        context: context,
+                        currentDate: sourceDate,
+                        firstDate: DateTime(1900),
+                        lastDate: date.add(
+                          const Duration(days: 365 * 5),
+                        ),
+                      );
+
+                      if (targetDate == null || targetDate == sourceDate) {
+                        return;
+                      }
+
+                      final entryUpdates = stamps
+                          .map((e) => e.changeDateTo(targetDate))
+                          .toList();
+
+                      if (!context.mounted) {
+                        return;
+                      }
+
+                      final confirmed = await confirmMoveSelectedStampsToDate(
+                        context: context,
+                        action: () => context
+                            .read<StampModel>()
+                            .updateStamps(entryUpdates)
+                            .then(_refresh),
+                      );
+                      if (!confirmed) {
+                        return;
+                      }
+                      if (!context.mounted) {
+                        return;
+                      }
+
+                      confirmJumpToDate(
+                        context: context,
+                        action: () {
+                          dateModel.selectDate(targetDate);
+                          _refresh();
+                        },
+                      );
+                    },
                     onDeleteStamp: (stamp) => confirmDeleteStamp(
                       context: context,
                       stamp: stamp,
@@ -129,7 +185,7 @@ class StampViewState extends State<StampView> {
                           .updateStamp(
                             stamp.copyWith(type: stamp.type.opposite),
                           )
-                          .then((value) => _refresh(value.$1)),
+                          .then(_refresh),
                     ),
                     onModeChanged: (value) => setState(() {
                       _manualStampMode = value;

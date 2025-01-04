@@ -69,6 +69,18 @@ class Stamp with EquatableMixin {
         createdAt: createdAt ?? this.createdAt,
         modifiedAt: modifiedAt ?? this.modifiedAt,
       );
+
+  Stamp changeDateTo(DateTime date) {
+    final targetDate = date.date;
+
+    return copyWith(
+      time: time.copyWith(
+        year: targetDate.year,
+        month: targetDate.month,
+        day: targetDate.day,
+      ),
+    );
+  }
 }
 
 class Task with EquatableMixin {
