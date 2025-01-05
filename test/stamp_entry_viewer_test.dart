@@ -3,7 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:simple_task_mate/extensions/date_time.dart';
 import 'package:simple_task_mate/models/config_model.dart';
 import 'package:simple_task_mate/services/api.dart';
-import 'package:simple_task_mate/widgets/stamp_entry_viewer.dart';
+import 'package:simple_task_mate/widgets/viewers/stamp_entry_viewer.dart';
 import 'package:simple_task_mate/widgets/time_input_field.dart';
 
 import '_test_utils.dart';

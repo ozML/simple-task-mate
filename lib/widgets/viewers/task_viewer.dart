@@ -9,7 +9,7 @@ import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
 import 'package:simple_task_mate/utils/tuple.dart';
-import 'package:simple_task_mate/widgets/item_viewer.dart';
+import 'package:simple_task_mate/widgets/viewers/item_viewer.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class TaskViewer extends StatelessWidget {

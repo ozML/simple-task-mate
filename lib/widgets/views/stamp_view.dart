@@ -9,7 +9,7 @@ import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/widgets/date_selector.dart';
 import 'package:simple_task_mate/widgets/title_bands.dart';
 import 'package:simple_task_mate/widgets/page_scaffold.dart';
-import 'package:simple_task_mate/widgets/stamp_entry_viewer.dart';
+import 'package:simple_task_mate/widgets/viewers/stamp_entry_viewer.dart';
 import 'package:simple_task_mate/widgets/time_ticker.dart';
 import 'package:simple_task_mate/widgets/week_summary_panel.dart';
 

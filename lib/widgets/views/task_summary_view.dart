@@ -5,8 +5,8 @@ import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/dialog_utils.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
-import 'package:simple_task_mate/widgets/task_entry_viewer.dart';
-import 'package:simple_task_mate/widgets/task_summary_viewer.dart';
+import 'package:simple_task_mate/widgets/viewers/task_entry_viewer.dart';
+import 'package:simple_task_mate/widgets/viewers/task_summary_viewer.dart';
 import 'package:simple_task_mate/widgets/task_edit_panel.dart';
 
 class SelectedTaskBand extends StatelessWidget {

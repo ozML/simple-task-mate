@@ -16,11 +16,11 @@ import 'package:simple_task_mate/utils/time_summary_utils.dart';
 import 'package:simple_task_mate/widgets/date_selector.dart';
 import 'package:simple_task_mate/widgets/edit_task_entry_panel.dart';
 import 'package:simple_task_mate/widgets/page_scaffold.dart';
-import 'package:simple_task_mate/widgets/task_entry_viewer.dart';
+import 'package:simple_task_mate/widgets/viewers/task_entry_viewer.dart';
 import 'package:simple_task_mate/widgets/task_selector.dart';
 import 'package:simple_task_mate/widgets/title_bands.dart';
 import 'package:simple_task_mate/widgets/time_ticker.dart';
-import 'package:simple_task_mate/widgets/task_viewer.dart';
+import 'package:simple_task_mate/widgets/viewers/task_viewer.dart';
 
 class TaskView extends StatefulWidget {
   const TaskView({super.key});

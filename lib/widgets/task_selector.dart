@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:simple_task_mate/extensions/context.dart';
 import 'package:simple_task_mate/models/task_model.dart';
 import 'package:simple_task_mate/services/api.dart';
-import 'package:simple_task_mate/widgets/task_viewer.dart';
+import 'package:simple_task_mate/widgets/viewers/task_viewer.dart';
 
 class TaskSelector extends StatefulWidget {
   const TaskSelector({this.onClose, super.key}) : isDialog = false;
