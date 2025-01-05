@@ -144,15 +144,6 @@
 			}
 		}
 	},
-	"dialogTitleTaskEntryDeleteAll": "Alle Aufgabeneinträge löschen",
-	"dialogInfoTaskEntryDeleteAll" : "Alle Einträge der Aufgabe \n\"{title}\" \nfür diesen Tag werden gelöscht",
-	"@dialogInfoTaskEntryDeleteAll" : {
-		"placeholders" : {
-			"title" : {
-				"type" : "String"
-			}
-		}
-	},
 	"dialogTitleTaskEntryMoveToDateSelected": "Ausgewählte Aufgabeneinträge zum Datum verschieben",
 	"dialogInfoTaskEntryMoveToDateSelected" : "Ausgewählte Einträge der Aufgabe \n\"{title}\" \nwerden zum ausgewählten Datum verschoben",
 	"@dialogInfoTaskEntryMoveToDateSelected" : {
@@ -162,27 +153,9 @@
 			}
 		}
 	},
-	"dialogTitleTaskEntryMoveToDateAll": "Alle Aufgabeneinträge zum Datum verschieben",
-	"dialogInfoTaskEntryMoveToDateAll" : "Alle Einträge der Aufgabe \n\"{title}\" \ndieses Tages werden zum ausgewählten Datum verschoben",
-	"@dialogInfoTaskEntryMoveToDateAll" : {
-		"placeholders" : {
-			"title" : {
-				"type" : "String"
-			}
-		}
-	},
     "dialogTitleTaskEntryMoveToTaskSelected": "Ausgewählte Aufgabeneinträge zur Aufgabe verschieben",
 	"dialogInfoTaskEntryMoveToTaskSelected" : "Ausgewählte Einträge der Aufgabe \n\"{title}\" \nwerden zur ausgewählten Aufgabe verschoben",
 	"@dialogInfoTaskEntryMoveToTaskSelected" : {
-		"placeholders" : {
-			"title" : {
-				"type" : "String"
-			}
-		}
-	},
-	"dialogTitleTaskEntryMoveToTaskAll": "Alle Aufgabeneinträge zur Aufgabe verschieben",
-	"dialogInfoTaskEntryMoveToTaskAll" : "Alle Einträge der Aufgabe \n\"{title}\" \ndieses Tages werden zur ausgewählten Aufgabe verschoben",
-	"@dialogInfoTaskEntryMoveToTaskAll" : {
 		"placeholders" : {
 			"title" : {
 				"type" : "String"

@@ -66,12 +66,14 @@ class GlobalItemsGroup<T> extends GlobalActionsElement<T> {
 class GlobalItemsAction<T> extends GlobalActionsElement<T> {
   GlobalItemsAction({
     required this.onPressed,
+    this.itemFilter,
     super.label,
     super.icon,
     super.key,
   });
 
   final void Function(List<ItemRef<T>> refs) onPressed;
+  final List<ItemRef<T>> Function(List<ItemRef<T>> refs)? itemFilter;
 }
 
 class ItemTile<T> extends StatefulWidget {
@@ -349,6 +351,11 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
       );
     }).toList();
 
+    List<ItemRef<T>> getItems([
+      List<ItemRef<T>> Function(List<ItemRef<T>> refs)? filter,
+    ]) =>
+        filter?.call(refs) ?? refs;
+
     Widget buildActionButton(GlobalActionsElement element) {
       final icon = element.icon;
       final label = element.label;
@@ -359,7 +366,7 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
           key: key,
           icon: icon,
           label: label,
-          onPressed: () => element.onPressed(refs),
+          onPressed: () => element.onPressed(getItems(element.itemFilter)),
         );
       }
 
@@ -370,7 +377,7 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
                 key: e.key,
                 title: e.label,
                 iconBuilder: (context, {color, size}) => e.icon ?? Container(),
-                onPressed: () => e.onPressed(refs),
+                onPressed: () => e.onPressed(getItems(e.itemFilter)),
               ),
             )
             .toList();
@@ -386,14 +393,26 @@ class _ItemListViewerState<T> extends State<ItemListViewer<T>> {
       throw Exception('Could not build global action button');
     }
 
-    final actionButtons = widget.actions
-        .where(
-          (element) =>
-              element is GlobalItemsAction<T> ||
-              element is GlobalItemsGroup<T> && element.items.isNotEmpty,
-        )
-        .map(buildActionButton)
-        .toList();
+    bool canDisplayButton(GlobalActionsElement<T> element) {
+      if (element is GlobalItemsAction<T>) {
+        return element.itemFilter == null ||
+            getItems(element.itemFilter).isNotEmpty;
+      }
+
+      if (element is GlobalItemsGroup<T>) {
+        return element.items.isNotEmpty &&
+            element.items.every(
+              (element) =>
+                  element.itemFilter == null ||
+                  getItems(element.itemFilter).isNotEmpty,
+            );
+      }
+
+      return false;
+    }
+
+    final actionButtons =
+        widget.actions.where(canDisplayButton).map(buildActionButton).toList();
 
     Widget? searchField;
     if (widget.showSearchField) {

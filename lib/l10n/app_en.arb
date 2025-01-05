@@ -144,15 +144,6 @@
 			}
 		}
 	},
-	"dialogTitleTaskEntryDeleteAll": "Delete all task entries",
-	"dialogInfoTaskEntryDeleteAll" : "All entries of \n\"{title}\" \nfor this day will be deleted",
-	"@dialogInfoTaskEntryDeleteAll" : {
-		"placeholders" : {
-			"title" : {
-				"type" : "String"
-			}
-		}
-	},
 	"dialogTitleTaskEntryMoveToDateSelected": "Move selected task entries to date",
 	"dialogInfoTaskEntryMoveToDateSelected" : "Selected entries of \n\"{title}\" \nwill be moved to the selected date",
 	"@dialogInfoTaskEntryMoveToDateSelected" : {
@@ -162,27 +153,9 @@
 			}
 		}
 	},
-	"dialogTitleTaskEntryMoveToDateAll": "Move all task entries to date",
-	"dialogInfoTaskEntryMoveToDateAll" : "All entries of \n\"{title}\" \nfor this day will be moved to the selected date",
-	"@dialogInfoTaskEntryMoveToDateAll" : {
-		"placeholders" : {
-			"title" : {
-				"type" : "String"
-			}
-		}
-	},
 	"dialogTitleTaskEntryMoveToTaskSelected": "Move selected task entries to task",
 	"dialogInfoTaskEntryMoveToTaskSelected" : "Selected entries of \n\"{title}\" \nwill be moved to the selected task",
 	"@dialogInfoTaskEntryMoveToTaskSelected" : {
-		"placeholders" : {
-			"title" : {
-				"type" : "String"
-			}
-		}
-	},
-	"dialogTitleTaskEntryMoveToTaskAll": "Move all task entries to task",
-	"dialogInfoTaskEntryMoveToTaskAll" : "All entries of \n\"{title}\" \nfor this day will be moved to the selected task",
-	"@dialogInfoTaskEntryMoveToTaskAll" : {
 		"placeholders" : {
 			"title" : {
 				"type" : "String"

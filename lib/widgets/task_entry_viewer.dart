@@ -107,6 +107,9 @@ class TaskEntryViewer extends StatelessWidget {
       (previousValue, element) => previousValue + element.time(),
     );
 
+    List<ItemRef<TaskEntry>> itemFilter(List<ItemRef<TaskEntry>> refs) =>
+        refs.where((element) => element.isSelected).toList();
+
     return ItemListViewer<TaskEntry>(
       items: taskEntries,
       getItemId: (item) => item.id!,
@@ -120,18 +123,6 @@ class TaskEntryViewer extends StatelessWidget {
             icon: IconUtils.add(context),
             label: context.texts.buttonAdd,
             onPressed: (_) => onAddItem(),
-          ),
-        if (onCopy != null)
-          GlobalItemsAction(
-            icon: IconUtils.copy(context),
-            label: context.texts.buttonCopy,
-            onPressed: onCopy,
-          ),
-        if (onDelete != null)
-          GlobalItemsAction(
-            icon: IconUtils.trashCan(context),
-            label: context.texts.buttonDelete,
-            onPressed: onDelete,
           ),
         if (showSelectOption)
           GlobalItemsGroup(
@@ -158,6 +149,20 @@ class TaskEntryViewer extends StatelessWidget {
               ),
             ],
           ),
+        if (onCopy != null)
+          GlobalItemsAction(
+            icon: IconUtils.copy(context),
+            label: context.texts.buttonCopy,
+            itemFilter: itemFilter,
+            onPressed: onCopy,
+          ),
+        if (onDelete != null)
+          GlobalItemsAction(
+            icon: IconUtils.trashCan(context),
+            label: context.texts.buttonDelete,
+            itemFilter: itemFilter,
+            onPressed: onDelete,
+          ),
         GlobalItemsGroup(
           icon: IconUtils.arrowRightLeft(context),
           label: context.texts.buttonMove,
@@ -166,12 +171,14 @@ class TaskEntryViewer extends StatelessWidget {
               GlobalItemsAction(
                 icon: IconUtils.calendar(context),
                 label: context.texts.buttonToDate,
+                itemFilter: itemFilter,
                 onPressed: onChangeDate,
               ),
             if (onChangeTask != null)
               GlobalItemsAction(
                 icon: IconUtils.clipboard(context),
                 label: context.texts.buttonToTask,
+                itemFilter: itemFilter,
                 onPressed: onChangeTask,
               ),
           ],

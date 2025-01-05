@@ -251,41 +251,20 @@ class TaskViewState extends State<TaskView> {
                               onAddItem: () =>
                                   openEntryDialog(task: selectedTask),
                               onCopy: (refs) => _copyEntryInfos(
-                                entries: refs
-                                    .where((element) => element.isSelected)
-                                    .map((e) => e.item)
-                                    .toList(),
+                                entries: refs.map((e) => e.item).toList(),
                               ),
                               onDelete: (refs) {
-                                final selection = refs
-                                    .where((element) => element.isSelected)
-                                    .map((e) => e.item)
-                                    .toList();
+                                final selection =
+                                    refs.map((e) => e.item).toList();
 
-                                if (selection.isNotEmpty) {
-                                  confirmDeleteSelectedTaskEntries(
-                                    context: context,
-                                    task: selectedTask,
-                                    action: () => context
-                                        .read<TaskModel>()
-                                        .deleteTaskEntries(selection)
-                                        .then(_refresh),
-                                  );
-                                } else {
-                                  confirmDeleteTaskEntries(
-                                    context: context,
-                                    task: selectedTask,
-                                    action: () => context
-                                        .read<TaskModel>()
-                                        .deleteTaskEntriesForDate(
-                                          selectedTask,
-                                          context
-                                              .read<DateTimeModel>()
-                                              .selectedDate,
-                                        )
-                                        .then(_refresh),
-                                  );
-                                }
+                                confirmDeleteSelectedTaskEntries(
+                                  context: context,
+                                  task: selectedTask,
+                                  action: () => context
+                                      .read<TaskModel>()
+                                      .deleteTaskEntries(selection)
+                                      .then(_refresh),
+                                );
                               },
                               onChangeDate: (refs) async {
                                 final dateModel = context.read<DateTimeModel>();
@@ -308,24 +287,18 @@ class TaskViewState extends State<TaskView> {
                                 }
 
                                 final selection =
-                                    refs.where((element) => element.isSelected);
+                                    refs.map((e) => e.item).toList();
 
-                                final List<TaskEntry> entryUpdates = (selection
-                                            .isNotEmpty
-                                        ? selection
-                                        : refs)
-                                    .map((e) => e.item.changeDateTo(targetDate))
+                                final List<TaskEntry> entryUpdates = selection
+                                    .map((e) => e.changeDateTo(targetDate))
                                     .toList();
-
-                                final dialogAction = selection.isNotEmpty
-                                    ? confirmMoveSelectedTaskEntriesToDate
-                                    : confirmMoveTaskEntriesToDate;
 
                                 if (!context.mounted) {
                                   return;
                                 }
 
-                                final confirmed = await dialogAction(
+                                final confirmed =
+                                    await confirmMoveSelectedTaskEntriesToDate(
                                   context: context,
                                   task: selectedTask,
                                   action: () => context
@@ -359,23 +332,18 @@ class TaskViewState extends State<TaskView> {
                                 }
 
                                 final selection =
-                                    refs.where((element) => element.isSelected);
+                                    refs.map((e) => e.item).toList();
 
-                                final List<TaskEntry> entryUpdates =
-                                    (selection.isNotEmpty ? selection : refs)
-                                        .map((e) => e.item
-                                            .copyWith(taskId: targetTask.id))
-                                        .toList();
-
-                                final dialogAction = selection.isNotEmpty
-                                    ? confirmMoveSelectedTaskEntriesToTask
-                                    : confirmMoveTaskEntriesToTask;
+                                final List<TaskEntry> entryUpdates = selection
+                                    .map((e) =>
+                                        e.copyWith(taskId: targetTask.id))
+                                    .toList();
 
                                 if (!context.mounted) {
                                   return;
                                 }
 
-                                await dialogAction(
+                                await confirmMoveSelectedTaskEntriesToTask(
                                   context: context,
                                   task: selectedTask,
                                   action: () => context
