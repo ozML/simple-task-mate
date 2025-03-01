@@ -51,7 +51,7 @@ class TaskSelectorState extends State<TaskSelector> {
               hideHeader: true,
               hideDurations: true,
               hideCopyButton: true,
-              onTapItem: (ref) {
+              onTapItem: (ref, _) {
                 setState(() => _selectedTask = ref.item);
               },
               onSearchTextChanged: (value) {

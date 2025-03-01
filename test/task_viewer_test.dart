@@ -31,7 +31,7 @@ void main() {
         TestApp(
           child: TaskViewer(
             tasks: testFullTasks,
-            onTapItem: (ref) => selectedTaskId = ref.item.id,
+            onTapItem: (ref, _) => selectedTaskId = ref.item.id,
             onDeleteItem: (ref) => deletedTaskId = ref.item.id,
             onAddItemEntry: (ref) => addedTaskId = ref.item.id,
           ),
@@ -73,15 +73,19 @@ void main() {
       expect(find.byKey(TaskViewer.keyItemActionDelete), findsOneWidget);
 
       await tester.tap(find.byKey(TaskViewer.keyItemTile).first);
+      await tester.pump(Durations.medium2);
       expect(selectedTaskId, 0);
 
       await tester.tap(find.byKey(TaskViewer.keyItemActionCopy));
+      await tester.pump(Durations.medium2);
       expect(copiedTaskData, 'ref0 - task0');
 
       await tester.tap(find.byKey(TaskViewer.keyItemActionAdd));
+      await tester.pump(Durations.medium2);
       expect(addedTaskId, 0);
 
       await tester.tap(find.byKey(TaskViewer.keyItemActionDelete));
+      await tester.pump(Durations.medium2);
       expect(deletedTaskId, 0);
     });
 
@@ -144,6 +148,7 @@ void main() {
       );
 
       await tester.tap(find.byKey(TaskViewer.keyItemLinkIcon));
+      await tester.pump(Durations.medium2);
       expect(openedLink, 'http:example.org/ref0');
     });
   });

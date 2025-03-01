@@ -218,7 +218,7 @@ class TaskSummaryViewState extends State<TaskSummaryView> {
                       searchText: _searchText,
                       isExtendedSearchEnabled: _extendedSearch,
                       onAddItem: () => openEntryDialog(),
-                      onTapItem: (summary) =>
+                      onTapItem: (summary, _) =>
                           value.loadFilledTask(summary.item.taskId),
                       onDeleteItem: (summary) => confirmDeleteTask(
                         context: context,

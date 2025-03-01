@@ -46,7 +46,7 @@ class TaskViewer extends StatelessWidget {
   final void Function()? onAddItem;
   final void Function()? onCopy;
   final void Function()? onCopyAll;
-  final void Function(ItemRef<Task> ref)? onTapItem;
+  final void Function(ItemRef<Task> ref, TapInfo info)? onTapItem;
   final void Function(ItemRef<Task> ref)? onDeleteItem;
   final void Function(ItemRef<Task> ref)? onAddItemEntry;
   final void Function(String value)? onSearchTextChanged;
@@ -61,7 +61,7 @@ class TaskViewer extends StatelessWidget {
     void Function()? onAddItem,
     void Function()? onCopy,
     void Function()? onCopyAll,
-    void Function(ItemRef<Task> ref)? onTapItem,
+    void Function(ItemRef<Task> ref, TapInfo info)? onTapItem,
     void Function(ItemRef<Task> ref)? onDeleteItem,
     void Function(ItemRef<Task> ref)? onAddItemEntry,
     void Function(String value)? onSearchTextChanged,

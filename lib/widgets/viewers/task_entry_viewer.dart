@@ -24,6 +24,7 @@ class TaskEntryViewer extends StatelessWidget {
     this.onDelete,
     this.onChangeDate,
     this.onChangeTask,
+    this.onTapItem,
     this.onDeleteItem,
     this.onEditItem,
     super.key,
@@ -49,6 +50,7 @@ class TaskEntryViewer extends StatelessWidget {
   final void Function(List<ItemRef<TaskEntry>> refs)? onDelete;
   final void Function(List<ItemRef<TaskEntry>> refs)? onChangeDate;
   final void Function(List<ItemRef<TaskEntry>> refs)? onChangeTask;
+  final void Function(ItemRef<TaskEntry> ref, TapInfo info)? onTapItem;
   final void Function(ItemRef<TaskEntry> ref)? onDeleteItem;
   final void Function(ItemRef<TaskEntry> ref)? onEditItem;
 
@@ -65,6 +67,7 @@ class TaskEntryViewer extends StatelessWidget {
     void Function(List<ItemRef<TaskEntry>> refs)? onDelete,
     void Function(List<ItemRef<TaskEntry>> refs)? onChangeDate,
     void Function(List<ItemRef<TaskEntry>> refs)? onChangeTask,
+    void Function(ItemRef<TaskEntry> ref, TapInfo info)? onTapItem,
     void Function(ItemRef<TaskEntry> ref)? onDeleteItem,
     void Function(ItemRef<TaskEntry> ref)? onEditItem,
     Key? key,
@@ -84,6 +87,7 @@ class TaskEntryViewer extends StatelessWidget {
       onDelete: onDelete,
       onChangeDate: onChangeDate,
       onChangeTask: onChangeTask,
+      onTapItem: onTapItem,
       onDeleteItem: onDeleteItem,
       onEditItem: onEditItem,
       key: key,
@@ -117,6 +121,7 @@ class TaskEntryViewer extends StatelessWidget {
       subTitle: subTitle,
       headerColor: primaryFixedColorFrom(context),
       hideHeader: hideHeader,
+      onTapItem: onTapItem,
       actions: [
         if (onAddItem != null)
           GlobalItemsAction(

@@ -69,22 +69,23 @@ void main() {
       );
 
       await tester.tap(find.byKey(TaskEntryViewer.keyItemActionCopy));
+      await tester.pump(Durations.medium2);
       expect(copiedTaskEntryData, 'First entry');
 
       await tester.tap(
         find.byKey(TaskEntryViewer.keyItemActionGroupAdditional),
       );
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(Durations.medium2);
       await tester.tap(find.byKey(TaskEntryViewer.keyItemActionDelete));
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(Durations.medium2);
       expect(deletedTaskEntryId, 0);
 
       await tester.tap(
         find.byKey(TaskEntryViewer.keyItemActionGroupAdditional),
       );
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(Durations.medium2);
       await tester.tap(find.byKey(TaskEntryViewer.keyItemActionEdit));
-      await tester.pumpAndSettle();
+      await tester.pumpAndSettle(Durations.medium2);
       expect(editTaskEntryId, 0);
     });
 

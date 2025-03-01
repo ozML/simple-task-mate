@@ -74,6 +74,7 @@ void main() {
             getTime: () => testStamps.last.time.add(const Duration(hours: 2)),
             onModeChanged: (value) => toggledMode = true,
             onDeleteStamp: (stamp) => deletedStamp = true,
+            isManualMode: true,
           ),
         ),
       );
@@ -90,6 +91,7 @@ void main() {
 
       final gesture = await tester
           .hoverOver(find.byKey(StampEntryViewer.keyItemTile).first);
+      await tester.pumpAndSettle();
       expect(find.byKey(StampEntryTile.keyActionDelete), findsOneWidget);
 
       await tester.tap(find.byKey(StampEntryTile.keyActionDelete));

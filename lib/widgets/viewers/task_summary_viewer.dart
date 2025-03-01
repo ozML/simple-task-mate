@@ -33,7 +33,7 @@ class TaskSummaryViewer extends StatelessWidget {
   final String? searchText;
   final bool isExtendedSearchEnabled;
   final void Function()? onAddItem;
-  final void Function(ItemRef<TaskSummary> ref)? onTapItem;
+  final void Function(ItemRef<TaskSummary> ref, TapInfo info)? onTapItem;
   final void Function(ItemRef<TaskSummary> ref)? onDeleteItem;
   final void Function(ItemRef<TaskSummary> ref)? onEditItem;
   final void Function(String value)? onSearchTextChanged;

@@ -209,7 +209,7 @@ class EditTaskEntryPanelState extends State<EditTaskEntryPanel> {
                       hideHeader: true,
                       hideDurations: true,
                       hideCopyButton: true,
-                      onTapItem: (task) {
+                      onTapItem: (task, _) {
                         setState(() => _selectedTask = task.item);
                       },
                       onSearchTextChanged: (value) {

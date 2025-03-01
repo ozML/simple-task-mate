@@ -30,7 +30,7 @@ void main() {
         TestApp(
           child: TaskSummaryViewer(
             summaries: testTaskSummaries,
-            onTapItem: (ref) => selectedTaskId = ref.item.taskId,
+            onTapItem: (ref, _) => selectedTaskId = ref.item.taskId,
             onDeleteItem: (ref) => deletedTaskId = ref.item.taskId,
             onEditItem: (ref) => editTaskId = ref.item.taskId,
           ),
@@ -67,15 +67,19 @@ void main() {
       expect(find.byKey(TaskSummaryViewer.keyItemActionEdit), findsOneWidget);
 
       await tester.tap(find.byKey(TaskSummaryViewer.keyItemTile).first);
+      await tester.pump(Durations.medium2);
       expect(selectedTaskId, 0);
 
       await tester.tap(find.byKey(TaskSummaryViewer.keyItemActionCopy));
+      await tester.pump(Durations.medium2);
       expect(copiedTaskData, 'ref0 - task0');
 
       await tester.tap(find.byKey(TaskSummaryViewer.keyItemActionDelete));
+      await tester.pump(Durations.medium2);
       expect(deletedTaskId, 0);
 
       await tester.tap(find.byKey(TaskSummaryViewer.keyItemActionEdit));
+      await tester.pump(Durations.medium2);
       expect(editTaskId, 0);
     });
   });

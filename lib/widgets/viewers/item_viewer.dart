@@ -76,6 +76,20 @@ class GlobalItemsAction<T> extends GlobalActionsElement<T> {
   final List<ItemRef<T>> Function(List<ItemRef<T>> refs)? itemFilter;
 }
 
+class TapInfo {
+  TapInfo({this.isLeft = true, this.isRight = false, this.isDouble = false});
+
+  TapInfo.left({bool isDouble = false})
+      : this(isLeft: true, isRight: false, isDouble: isDouble);
+
+  TapInfo.right({bool isDouble = false})
+      : this(isLeft: false, isRight: true, isDouble: isDouble);
+
+  final bool isLeft;
+  final bool isRight;
+  final bool isDouble;
+}
+
 class ItemTile<T> extends StatefulWidget {
   const ItemTile({
     required this.ref,
@@ -103,7 +117,7 @@ class ItemTile<T> extends StatefulWidget {
   final Widget? infoIcon;
   final Widget? linkIcon;
   final bool isHighlighted;
-  final void Function(ItemRef<T> ref)? onTap;
+  final void Function(ItemRef<T> ref, TapInfo info)? onTap;
   final List<LocalActionsElement<T>> actions;
 
   @override
@@ -183,7 +197,11 @@ class ItemTileState<T> extends State<ItemTile<T>> {
         .toList();
 
     return GestureDetector(
-      onTap: () => widget.onTap?.call(widget.ref),
+      onTap: () => widget.onTap?.call(widget.ref, TapInfo.left()),
+      onDoubleTap: () => widget.onTap?.call(
+        widget.ref,
+        TapInfo.left(isDouble: true),
+      ),
       child: MouseRegion(
         onEnter: (event) => setState(() => isHovering = true),
         onExit: (event) => setState(() => isHovering = false),
@@ -293,7 +311,7 @@ class ItemListViewer<T> extends StatefulWidget {
   final ItemTile<T> Function(
     BuildContext context,
     ItemRef<T> ref,
-    void Function(ItemRef<T> ref)? onTap,
+    void Function(ItemRef<T> ref, TapInfo info)? onTap,
   ) tileBuilder;
   final String title;
   final String? subTitle;
@@ -306,7 +324,7 @@ class ItemListViewer<T> extends StatefulWidget {
       decorateSearchField;
   final Widget? footer;
   final void Function(String value)? onSearchTextChanged;
-  final void Function(ItemRef<T> ref)? onTapItem;
+  final void Function(ItemRef<T> ref, TapInfo info)? onTapItem;
   final List<GlobalActionsElement<T>> actions;
 
   @override

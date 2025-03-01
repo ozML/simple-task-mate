@@ -229,7 +229,7 @@ class TaskViewState extends State<TaskView> {
                         onCopyAll: showGlobalTaskActions
                             ? () => _copyTaskInfos(fullCopy: true)
                             : null,
-                        onTapItem: (task) {
+                        onTapItem: (task, _) {
                           setState(() => _selectedTask = task.item);
                         },
                       ),
@@ -352,15 +352,19 @@ class TaskViewState extends State<TaskView> {
                                       .then(_refresh),
                                 );
                               },
-                              onEditItem: (taskEntry) =>
-                                  openEntryDialog(taskEntry: taskEntry.item),
-                              onDeleteItem: (taskEntry) =>
-                                  confirmDeleteTaskEntry(
+                              onTapItem: (ref, info) {
+                                if (info.isLeft && info.isDouble) {
+                                  openEntryDialog(taskEntry: ref.item);
+                                }
+                              },
+                              onEditItem: (ref) =>
+                                  openEntryDialog(taskEntry: ref.item),
+                              onDeleteItem: (ref) => confirmDeleteTaskEntry(
                                 context: context,
-                                taskEntry: taskEntry.item,
+                                taskEntry: ref.item,
                                 action: () => context
                                     .read<TaskModel>()
-                                    .deleteTaskEntry(taskEntry.item)
+                                    .deleteTaskEntry(ref.item)
                                     .then(_refresh),
                               ),
                             ),

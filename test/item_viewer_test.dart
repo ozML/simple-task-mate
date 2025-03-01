@@ -66,6 +66,7 @@ void main() {
       expect(find.byKey(keyActionIcon), findsOneWidget);
 
       await tester.tap(find.byKey(keyAction));
+      await tester.pump(Durations.medium2);
       expect(triggeredAction, true);
     });
 
