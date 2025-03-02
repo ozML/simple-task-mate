@@ -162,11 +162,22 @@ class TaskViewState extends State<TaskView> {
           ),
         ],
         builder: (context, _) {
+          final model = context.watch<TaskModel>();
+
+          if (model.isLoading) {
+            return Container(
+              width: 100,
+              height: 100,
+              alignment: Alignment.center,
+              child: const CircularProgressIndicator(),
+            );
+          }
+
           return Dialog(
             child: Padding(
               padding: const EdgeInsets.all(20),
               child: TaskSummaryPanel(
-                task: task,
+                task: model.tasks.first,
                 onEdit: (task) {
                   Navigator.pop(context);
                   Navigator.of(context).push(
