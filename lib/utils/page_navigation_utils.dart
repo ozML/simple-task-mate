@@ -19,3 +19,9 @@ PageRouteBuilder get taskSummaryViewRoute => PageRouteBuilder(
 PageRouteBuilder get configViewRoute => PageRouteBuilder(
       pageBuilder: (_, __, ___) => const ConfigView(),
     );
+
+PageRouteBuilder taskSummaryViewForTaskRoute({required int taskId}) =>
+    PageRouteBuilder(
+      pageBuilder: (_, __, ___) => const TaskSummaryView(),
+      settings: RouteSettings(arguments: taskId),
+    );

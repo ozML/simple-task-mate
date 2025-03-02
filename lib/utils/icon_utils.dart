@@ -430,4 +430,16 @@ class IconUtils {
         color: color,
         size: size,
       );
+
+  static Widget magnifier(
+    BuildContext context, {
+    Color? color,
+    double? size,
+  }) =>
+      _getIcon(
+        context: context,
+        icon: FontAwesomeIcons.magnifyingGlass,
+        color: color,
+        size: size,
+      );
 }

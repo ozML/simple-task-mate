@@ -5,7 +5,7 @@ import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/dialog_utils.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
-import 'package:simple_task_mate/widgets/viewers/task_entry_viewer.dart';
+import 'package:simple_task_mate/widgets/task_summary_panel.dart';
 import 'package:simple_task_mate/widgets/viewers/task_summary_viewer.dart';
 import 'package:simple_task_mate/widgets/task_edit_panel.dart';
 
@@ -19,13 +19,17 @@ class SelectedTaskBand extends StatelessWidget {
   });
 
   final Task task;
-  final void Function(Task task) onEdit;
-  final void Function(Task task) onDelete;
-  final void Function() onBack;
+  final void Function(Task task)? onEdit;
+  final void Function(Task task)? onDelete;
+  final void Function()? onBack;
 
   @override
   Widget build(BuildContext context) {
     final primaryColor = primaryColorFrom(context);
+
+    final onEdit = this.onEdit;
+    final onDelete = this.onDelete;
+    final onBack = this.onBack;
 
     final refId = task.refId;
 
@@ -65,18 +69,21 @@ class SelectedTaskBand extends StatelessWidget {
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
-              IconButton(
-                icon: IconUtils.arrowLeft(context),
-                onPressed: onBack,
-              ),
-              IconButton(
-                icon: IconUtils.trashCan(context),
-                onPressed: () => onDelete(task),
-              ),
-              IconButton(
-                icon: IconUtils.edit(context),
-                onPressed: () => onEdit(task),
-              ),
+              if (onBack != null)
+                IconButton(
+                  icon: IconUtils.arrowLeft(context),
+                  onPressed: onBack,
+                ),
+              if (onDelete != null)
+                IconButton(
+                  icon: IconUtils.trashCan(context),
+                  onPressed: () => onDelete(task),
+                ),
+              if (onEdit != null)
+                IconButton(
+                  icon: IconUtils.edit(context),
+                  onPressed: () => onEdit(task),
+                ),
             ],
           ),
         ),
@@ -101,7 +108,12 @@ class TaskSummaryViewState extends State<TaskSummaryView> {
     super.initState();
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<TaskSummaryModel>().clearTask();
+      final taskId = ModalRoute.of(context)?.settings.arguments as int?;
+      if (taskId != null) {
+        context.read<TaskSummaryModel>().loadFilledTask(taskId);
+      } else {
+        context.read<TaskSummaryModel>().clearTask();
+      }
       _refresh();
     });
   }
@@ -177,39 +189,23 @@ class TaskSummaryViewState extends State<TaskSummaryView> {
 
                   final Widget content;
                   if (task != null) {
-                    content = Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        SelectedTaskBand(
-                          task: task,
-                          onEdit: (task) => openEntryDialog(task: task),
-                          onDelete: (task) => confirmDeleteTask(
-                            context: context,
-                            task: task,
-                            action: () async {
-                              final summaryModel =
-                                  context.read<TaskSummaryModel>();
-                              final success =
-                                  await summaryModel.deleteTask(task);
+                    content = TaskSummaryPanel(
+                      task: task,
+                      onEdit: (task) => openEntryDialog(task: task),
+                      onDelete: (task) => confirmDeleteTask(
+                        context: context,
+                        task: task,
+                        action: () async {
+                          final summaryModel = context.read<TaskSummaryModel>();
+                          final success = await summaryModel.deleteTask(task);
 
-                              if (success) {
-                                summaryModel.clearTask();
-                                _refresh();
-                              }
-                            },
-                          ),
-                          onBack: () => value.clearTask(),
-                        ),
-                        Expanded(
-                          child: TaskEntryViewer.buildFromModels(
-                            context: context,
-                            title: '',
-                            hideHeader: true,
-                            showDate: true,
-                            taskEntries: task.entries ?? [],
-                          ),
-                        ),
-                      ],
+                          if (success) {
+                            summaryModel.clearTask();
+                            _refresh();
+                          }
+                        },
+                      ),
+                      onClose: () => value.clearTask(),
                     );
                   } else {
                     content = TaskSummaryViewer(

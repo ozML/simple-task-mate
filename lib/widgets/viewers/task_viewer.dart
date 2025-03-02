@@ -27,6 +27,7 @@ class TaskViewer extends StatelessWidget {
     this.onTapItem,
     this.onDeleteItem,
     this.onAddItemEntry,
+    this.onInspectItem,
     this.onSearchTextChanged,
     super.key,
   });
@@ -51,6 +52,7 @@ class TaskViewer extends StatelessWidget {
   final void Function(ItemRef<Task> ref, TapInfo info)? onTapItem;
   final void Function(ItemRef<Task> ref)? onDeleteItem;
   final void Function(ItemRef<Task> ref)? onAddItemEntry;
+  final void Function(ItemRef<Task> ref)? onInspectItem;
   final void Function(String value)? onSearchTextChanged;
 
   static Widget buildFromModels({
@@ -67,6 +69,7 @@ class TaskViewer extends StatelessWidget {
     void Function(ItemRef<Task> ref, TapInfo info)? onTapItem,
     void Function(ItemRef<Task> ref)? onDeleteItem,
     void Function(ItemRef<Task> ref)? onAddItemEntry,
+    void Function(ItemRef<Task> ref)? onInspectItem,
     void Function(String value)? onSearchTextChanged,
   }) {
     final config = context.watch<ConfigModel>();
@@ -90,6 +93,7 @@ class TaskViewer extends StatelessWidget {
       onTapItem: onTapItem,
       onDeleteItem: onDeleteItem,
       onAddItemEntry: onAddItemEntry,
+      onInspectItem: onInspectItem,
       onSearchTextChanged: onSearchTextChanged,
     );
   }
@@ -101,6 +105,7 @@ class TaskViewer extends StatelessWidget {
     final onCopyAll = this.onCopyAll;
     final onDeleteItem = this.onDeleteItem;
     final onAddItemEntry = this.onAddItemEntry;
+    final onInspectItem = this.onInspectItem;
 
     final autoLinkGroups = this.autoLinkGroups;
 
@@ -199,6 +204,12 @@ class TaskViewer extends StatelessWidget {
                 onPressed: (_) {
                   Clipboard.setData(ClipboardData(text: item.fullName()));
                 },
+              ),
+            if (onInspectItem != null)
+              LocalItemAction(
+                key: keyItemActionDelete,
+                icon: IconUtils.magnifier(context),
+                onPressed: onInspectItem,
               ),
             if (onDeleteItem != null)
               LocalItemAction(

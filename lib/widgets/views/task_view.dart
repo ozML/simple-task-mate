@@ -16,6 +16,7 @@ import 'package:simple_task_mate/utils/time_summary_utils.dart';
 import 'package:simple_task_mate/widgets/date_selector.dart';
 import 'package:simple_task_mate/widgets/edit_task_entry_panel.dart';
 import 'package:simple_task_mate/widgets/page_scaffold.dart';
+import 'package:simple_task_mate/widgets/task_summary_panel.dart';
 import 'package:simple_task_mate/widgets/viewers/task_entry_viewer.dart';
 import 'package:simple_task_mate/widgets/task_selector.dart';
 import 'package:simple_task_mate/widgets/title_bands.dart';
@@ -147,6 +148,44 @@ class TaskViewState extends State<TaskView> {
       showDialog(context: context, builder: (context) => dialogContent);
     }
 
+    void openTaskSummary({required Task task}) {
+      final taskId = task.id;
+      if (taskId == null) {
+        return;
+      }
+
+      final dialogContent = MultiProvider(
+        providers: [
+          ChangeNotifierProvider(
+            create: (context) => TaskModel()..loadFilledTask(taskId),
+            lazy: false,
+          ),
+        ],
+        builder: (context, _) {
+          return Dialog(
+            child: Padding(
+              padding: const EdgeInsets.all(20),
+              child: TaskSummaryPanel(
+                task: task,
+                onEdit: (task) {
+                  Navigator.pop(context);
+                  Navigator.of(context).push(
+                    taskSummaryViewForTaskRoute(taskId: taskId),
+                  );
+                },
+                onClose: () {
+                  Navigator.pop(context);
+                  _refresh();
+                },
+              ),
+            ),
+          );
+        },
+      );
+
+      showDialog(context: context, builder: (context) => dialogContent);
+    }
+
     final selectedTask = _selectedTask;
 
     final header = Align(
@@ -225,6 +264,7 @@ class TaskViewState extends State<TaskView> {
                       child: TaskViewer.buildFromModels(
                         context: context,
                         onAddItem: openEntryDialog,
+                        onInspectItem: (ref) => openTaskSummary(task: ref.item),
                         onCopy: showGlobalTaskActions ? _copyTaskInfos : null,
                         onCopyAll: showGlobalTaskActions
                             ? () => _copyTaskInfos(fullCopy: true)
