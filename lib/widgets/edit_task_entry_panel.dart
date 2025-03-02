@@ -59,186 +59,166 @@ class EditTaskEntryPanelState extends State<EditTaskEntryPanel> {
     final selectedTask = _selectedTask;
     final taskEntry = widget.taskEntry;
 
+    void clearControllers() {
+      _taskTitleController.clear();
+      _taskRefIdController.clear();
+      _taskInfoController.clear();
+      _taskHRefController.clear();
+      _entryInfoController.clear();
+      _timeController.clear();
+    }
+
     final isCreateDialog = task == null && taskEntry == null;
 
-    final Widget details;
-    if (isCreateDialog) {
-      details = Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 15),
+    final Widget details = Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (_addNewTask) ...[
+          Row(
+            children: [
+              Expanded(
+                flex: 1,
+                child: TextField(
+                  controller: _taskRefIdController,
+                  decoration: textInputDecoration(
+                    context,
+                    labelText: context.texts.labelTaskRefId,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 5),
+              Expanded(
+                flex: 3,
+                child: TextField(
+                  controller: _taskTitleController,
+                  decoration: textInputDecoration(
+                    context,
+                    labelText: context.texts.labelTaskTitle,
+                    suffixLabelText: '*',
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 15),
+          TextField(
+            controller: _taskHRefController,
+            decoration: textInputDecoration(
+              context,
+              labelText: context.texts.labelTaskHRef,
+            ),
+          ),
+          const SizedBox(height: 15),
+          TextField(
+            controller: _taskInfoController,
+            minLines: 3,
+            maxLines: null,
+            decoration: textInputDecoration(
+              context,
+              labelText: context.texts.labelTaskInfo,
+            ),
+          ),
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: 20),
+            child: Divider(indent: 10, endIndent: 10, height: 0.5),
+          ),
+        ] else if (isCreateDialog) ...[
+          Center(
             child: Text(
-              context.texts.labelAddEntry,
-              style: primaryTextStyleFrom(context, bold: true),
-            ),
-          ),
-          CheckboxListTile(
-            title: Text(context.texts.labelNewTask),
-            value: _addNewTask,
-            onChanged: (value) {
-              if (value != null) {
-                setState(() => _addNewTask = value);
-              }
-            },
-          ),
-          const SizedBox(height: 10),
-          if (_addNewTask) ...[
-            Row(
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: TextField(
-                    controller: _taskRefIdController,
-                    decoration: textInputDecoration(
-                      context,
-                      labelText: context.texts.labelTaskRefId,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 5),
-                Expanded(
-                  flex: 3,
-                  child: TextField(
-                    controller: _taskTitleController,
-                    decoration: textInputDecoration(
-                      context,
-                      labelText: context.texts.labelTaskTitle,
-                      suffixLabelText: '*',
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 15),
-            TextField(
-              controller: _taskHRefController,
-              decoration: textInputDecoration(
-                context,
-                labelText: context.texts.labelTaskHRef,
-              ),
-            ),
-            const SizedBox(height: 15),
-            TextField(
-              controller: _taskInfoController,
-              minLines: 3,
-              maxLines: null,
-              decoration: textInputDecoration(
-                context,
-                labelText: context.texts.labelTaskInfo,
-              ),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 20),
-              child: Divider(indent: 10, endIndent: 10, height: 0.5),
-            ),
-          ] else ...[
-            Text(
               context.texts.labelSelectedTask,
-              style: secondaryTextStyleFrom(context, bold: true),
-            ),
-            Text(selectedTask?.fullName() ?? ''),
-            const SizedBox(height: 15),
-          ],
-          TextField(
-            controller: _entryInfoController,
-            minLines: 3,
-            maxLines: null,
-            decoration: textInputDecoration(
-              context,
-              labelText: context.texts.labelTaskEntryInfo,
+              style: secondaryTextStyleFrom(context),
             ),
           ),
-          const SizedBox(height: 15),
-          TimeInputField(
-            controller: _timeController,
-            decoration: textInputDecoration(
-              context,
-              labelText: context.texts.labelTaskEntryDuration,
-              suffixLabelText: '*',
-            ),
-          ),
-        ],
-      );
-    } else {
-      details = Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(bottom: 15),
+          const SizedBox(height: 5),
+          Center(
             child: Text(
-              task != null
-                  ? context.texts.labelAddEntry
-                  : context.texts.labelEditEntry,
-              style: primaryTextStyleFrom(context, bold: true),
+              selectedTask?.fullName() ?? '',
+              style: primaryTextStyleFrom(context),
             ),
           ),
-          TextField(
-            controller: _entryInfoController,
-            minLines: 3,
-            maxLines: null,
-            decoration: textInputDecoration(
-              context,
-              labelText: context.texts.labelTaskEntryInfo,
-            ),
-          ),
-          const SizedBox(height: 15),
-          TimeInputField(
-            controller: _timeController,
-            decoration: textInputDecoration(
-              context,
-              labelText: context.texts.labelTaskEntryDuration,
-              suffixLabelText: '*',
-            ),
-          ),
+          const SizedBox(height: 20),
         ],
-      );
-    }
+        TextField(
+          controller: _entryInfoController,
+          minLines: 3,
+          maxLines: null,
+          decoration: textInputDecoration(
+            context,
+            labelText: context.texts.labelTaskEntryInfo,
+          ),
+        ),
+        const SizedBox(height: 15),
+        TimeInputField(
+          controller: _timeController,
+          decoration: textInputDecoration(
+            context,
+            labelText: context.texts.labelTaskEntryDuration,
+            suffixLabelText: '*',
+          ),
+        ),
+      ],
+    );
 
     final content = Padding(
       padding: const EdgeInsets.all(8.0),
       child: Column(
         children: [
-          Expanded(
-            child: Row(
-              children: [
-                if (isCreateDialog && !_addNewTask) ...[
-                  Expanded(
-                    flex: 2,
-                    child: TaskViewer.buildFromModels(
-                      context: context,
-                      hideHeader: true,
-                      hideDurations: true,
-                      hideCopyButton: true,
-                      onTapItem: (task, _) {
-                        setState(() => _selectedTask = task.item);
-                      },
-                      onSearchTextChanged: (value) {
-                        context.read<TaskModel>().loadTasks(searchText: value);
-                      },
-                    ),
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20),
-                    child: VerticalDivider(
-                      width: 0.5,
-                      indent: 30,
-                      endIndent: 30,
-                    ),
-                  ),
-                ],
-                Expanded(
-                  flex: isCreateDialog && !_addNewTask ? 3 : 1,
-                  child: details,
-                ),
-              ],
-            ),
+          Text(
+            context.texts.labelAddEntry,
+            style: primaryTextStyleFrom(context, bold: true),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(top: 15),
-                child: FilledButton.icon(
+          const SizedBox(height: 20),
+          if (isCreateDialog && _selectedTask == null) ...[
+            CheckboxListTile(
+              title: Text(context.texts.labelNewTask),
+              value: _addNewTask,
+              onChanged: (value) {
+                if (value != null) {
+                  setState(() {
+                    _addNewTask = value;
+                    clearControllers();
+                  });
+                }
+              },
+            ),
+            const SizedBox(height: 10),
+          ],
+          Expanded(
+            child: isCreateDialog && !_addNewTask && _selectedTask == null
+                ? TaskViewer.buildFromModels(
+                    context: context,
+                    hideHeader: true,
+                    searchText: searchText,
+                    hideDurations: true,
+                    hideCopyButton: true,
+                    onTapItem: (task, _) {
+                      setState(() => _selectedTask = task.item);
+                    },
+                    onSearchTextChanged: (value) {
+                      searchText = value;
+                      context.read<TaskModel>().loadTasks(searchText: value);
+                    },
+                  )
+                : details,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(top: 15),
+            child: Row(
+              mainAxisAlignment: _selectedTask == null
+                  ? MainAxisAlignment.end
+                  : MainAxisAlignment.spaceBetween,
+              children: [
+                if (isCreateDialog && _selectedTask != null)
+                  TextButton(
+                    child: Text(context.texts.buttonBack),
+                    onPressed: () {
+                      setState(() {
+                        _selectedTask = null;
+                        clearControllers();
+                      });
+                    },
+                  ),
+                FilledButton.icon(
                   label: Text(
                     taskEntry == null
                         ? context.texts.buttonAdd
@@ -334,8 +314,8 @@ class EditTaskEntryPanelState extends State<EditTaskEntryPanel> {
                     }
                   },
                 ),
-              ),
-            ],
+              ],
+            ),
           )
         ],
       ),

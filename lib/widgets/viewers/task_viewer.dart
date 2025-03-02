@@ -17,6 +17,7 @@ class TaskViewer extends StatelessWidget {
     required this.tasks,
     this.highlightedTasks = const [],
     this.hideHeader = false,
+    this.searchText,
     this.hideCopyButton = false,
     this.hideDurations = false,
     this.autoLinkGroups,
@@ -40,6 +41,7 @@ class TaskViewer extends StatelessWidget {
   final List<Task> tasks;
   final List<Task> highlightedTasks;
   final bool hideHeader;
+  final String? searchText;
   final bool hideCopyButton;
   final bool hideDurations;
   final List<Tuple<String, String>>? autoLinkGroups;
@@ -55,6 +57,7 @@ class TaskViewer extends StatelessWidget {
     required BuildContext context,
     List<Task> highlightedTasks = const [],
     bool hideHeader = false,
+    String? searchText,
     bool hideCopyButton = false,
     bool hideDurations = false,
     List<Tuple<String, String>>? autoLinkGroups,
@@ -75,6 +78,7 @@ class TaskViewer extends StatelessWidget {
       tasks: tasks,
       highlightedTasks: highlightedTasks,
       hideHeader: hideHeader,
+      searchText: searchText,
       hideCopyButton: hideCopyButton,
       hideDurations: hideDurations,
       autoLinkGroups: autoLinksEnabled
@@ -105,6 +109,7 @@ class TaskViewer extends StatelessWidget {
       getItemId: (item) => item.id!,
       title: context.texts.labelTasks,
       hideHeader: hideHeader,
+      searchText: searchText,
       showSearchField: onSearchTextChanged != null,
       searchFieldHintText: context.texts.labelSearchPlaceholderTaskEntry,
       onTapItem: onTapItem,
