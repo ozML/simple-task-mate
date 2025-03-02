@@ -20,6 +20,15 @@ PageRouteBuilder get configViewRoute => PageRouteBuilder(
       pageBuilder: (_, __, ___) => const ConfigView(),
     );
 
+PageRouteBuilder taskViewForTaskAtDateRoute({
+  required int taskId,
+  required DateTime date,
+}) =>
+    PageRouteBuilder(
+      pageBuilder: (_, __, ___) => const TaskView(),
+      settings: RouteSettings(arguments: {'task': taskId, 'date': date}),
+    );
+
 PageRouteBuilder taskSummaryViewForTaskRoute({required int taskId}) =>
     PageRouteBuilder(
       pageBuilder: (_, __, ___) => const TaskSummaryView(),

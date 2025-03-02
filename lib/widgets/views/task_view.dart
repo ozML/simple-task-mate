@@ -37,7 +37,29 @@ class TaskViewState extends State<TaskView> {
   void initState() {
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) => _refresh());
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      final taskIdAndDate =
+          ModalRoute.of(context)?.settings.arguments as Map<String, Object>?;
+      final taskId = taskIdAndDate?['task'];
+      final date = taskIdAndDate?['date'];
+      if (taskId is int && date is DateTime) {
+        context.read<DateTimeModel>().selectDate(date);
+
+        final taskModel = context.read<TaskModel>();
+        final stampModel = context.read<StampModel>();
+
+        await taskModel.loadFilledTasksForDate(date);
+        await stampModel.loadStampsForDate(date);
+
+        setState(() {
+          _selectedTask = taskModel.tasks.firstWhereOrNull(
+            (element) => element.id == taskId,
+          );
+        });
+      } else {
+        _refresh();
+      }
+    });
   }
 
   Future<void> _refresh([bool? success]) async {

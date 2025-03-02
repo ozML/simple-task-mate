@@ -27,6 +27,7 @@ class TaskEntryViewer extends StatelessWidget {
     this.onTapItem,
     this.onDeleteItem,
     this.onEditItem,
+    this.onInspectItem,
     super.key,
   });
 
@@ -53,6 +54,7 @@ class TaskEntryViewer extends StatelessWidget {
   final void Function(ItemRef<TaskEntry> ref, TapInfo info)? onTapItem;
   final void Function(ItemRef<TaskEntry> ref)? onDeleteItem;
   final void Function(ItemRef<TaskEntry> ref)? onEditItem;
+  final void Function(ItemRef<TaskEntry> ref)? onInspectItem;
 
   static Widget buildFromModels({
     required BuildContext context,
@@ -70,6 +72,7 @@ class TaskEntryViewer extends StatelessWidget {
     void Function(ItemRef<TaskEntry> ref, TapInfo info)? onTapItem,
     void Function(ItemRef<TaskEntry> ref)? onDeleteItem,
     void Function(ItemRef<TaskEntry> ref)? onEditItem,
+    void Function(ItemRef<TaskEntry> ref)? onInspectItem,
     Key? key,
   }) {
     final config = context.watch<ConfigModel>();
@@ -90,6 +93,7 @@ class TaskEntryViewer extends StatelessWidget {
       onTapItem: onTapItem,
       onDeleteItem: onDeleteItem,
       onEditItem: onEditItem,
+      onInspectItem: onInspectItem,
       key: key,
     );
   }
@@ -103,6 +107,7 @@ class TaskEntryViewer extends StatelessWidget {
     final onChangeTask = this.onChangeTask;
     final onEditItem = this.onEditItem;
     final onDeleteItem = this.onDeleteItem;
+    final onInspectItem = this.onInspectItem;
 
     final languageCode = locale.languageCode;
 
@@ -209,6 +214,12 @@ class TaskEntryViewer extends StatelessWidget {
                 Clipboard.setData(ClipboardData(text: item.info ?? ''));
               },
             ),
+            if (onInspectItem != null)
+              LocalItemAction(
+                key: keyItemActionDelete,
+                icon: IconUtils.magnifier(context),
+                onPressed: onInspectItem,
+              ),
             LocalItemsGroup(
               key: keyItemActionGroupAdditional,
               icon: IconUtils.ellipsisVertical(context),

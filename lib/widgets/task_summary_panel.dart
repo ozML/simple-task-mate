@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:simple_task_mate/services/api.dart';
+import 'package:simple_task_mate/utils/page_navigation_utils.dart';
 import 'package:simple_task_mate/widgets/viewers/task_entry_viewer.dart';
 import 'package:simple_task_mate/widgets/views/task_summary_view.dart';
 
@@ -35,6 +36,15 @@ class TaskSummaryPanel extends StatelessWidget {
             hideHeader: true,
             showDate: true,
             taskEntries: task.entries ?? [],
+            onInspectItem: (ref) {
+              Navigator.of(context).pushAndRemoveUntil(
+                taskViewForTaskAtDateRoute(
+                  taskId: ref.item.taskId,
+                  date: ref.item.date,
+                ),
+                (_) => false,
+              );
+            },
           ),
         ),
       ],
