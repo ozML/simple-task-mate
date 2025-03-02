@@ -139,6 +139,7 @@ class ItemTileState<T> extends State<ItemTile<T>> {
     final footNote = widget.footNote;
     final infoIcon = widget.infoIcon;
     final linkIcon = widget.linkIcon;
+    final onTap = widget.onTap;
 
     Widget buildActionButton(LocalActionsElement element) {
       final icon = element.icon;
@@ -197,11 +198,15 @@ class ItemTileState<T> extends State<ItemTile<T>> {
         .toList();
 
     return GestureDetector(
-      onTap: () => widget.onTap?.call(widget.ref, TapInfo.left()),
-      onDoubleTap: () => widget.onTap?.call(
-        widget.ref,
-        TapInfo.left(isDouble: true),
-      ),
+      onTap: onTap != null
+          ? () => widget.onTap?.call(widget.ref, TapInfo.left())
+          : null,
+      onDoubleTap: onTap != null
+          ? () => widget.onTap?.call(
+                widget.ref,
+                TapInfo.left(isDouble: true),
+              )
+          : null,
       child: MouseRegion(
         onEnter: (event) => setState(() => isHovering = true),
         onExit: (event) => setState(() => isHovering = false),
