@@ -1,6 +1,11 @@
 extension DurationExtension on Duration {
   String get asHHMM {
-    return '${inHours.toString().padLeft(2, '0')}:'
-        '${inMinutes.remainder(60).toString().padLeft(2, '0')}';
+    final hours = inHours;
+    final minutes = inMinutes;
+    final isNegative = hours < 0 || minutes < 0;
+
+    return '${isNegative ? '-' : ''}'
+        '${hours.abs().toString().padLeft(2, '0')}:'
+        '${minutes.remainder(60).abs().toString().padLeft(2, '0')}';
   }
 }
