@@ -26,7 +26,7 @@ abstract class DataBaseHelper {
         db?.close();
       } else if (accessCounter < 0) {
         if (kDebugMode) {
-          print('access counter became negative');
+          print('db access counter became negative');
         }
       }
     }

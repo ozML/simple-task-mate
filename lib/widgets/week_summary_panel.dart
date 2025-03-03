@@ -16,6 +16,7 @@ class WeekSummaryPanel extends StatelessWidget {
     required this.summaries,
     this.date,
     this.locale = const Locale('en'),
+    this.durationFormat = DurationFormat.standard,
     this.isLoading = false,
     super.key,
   });
@@ -30,11 +31,15 @@ class WeekSummaryPanel extends StatelessWidget {
   final Map<int, StampSummary> summaries;
   final DateTime? date;
   final Locale locale;
+  final DurationFormat durationFormat;
   final bool isLoading;
 
   static Widget buildFromModels({required BuildContext context, Key? key}) {
     final locale = context.select<ConfigModel, Locale>(
       (value) => value.getValue<Locale>(settingLanguage),
+    );
+    final durationFormat = context.select<ConfigModel, DurationFormat>(
+      (value) => value.getValue<DurationFormat>(settingTimeTrackingFormat),
     );
 
     final date = context.select<DateTimeModel, DateTime>(
@@ -61,6 +66,7 @@ class WeekSummaryPanel extends StatelessWidget {
       date: date,
       isLoading: summaryModel.isLoading,
       locale: locale,
+      durationFormat: durationFormat,
       key: key,
     );
   }
@@ -78,6 +84,11 @@ class WeekSummaryPanel extends StatelessWidget {
 
       return [for (int i = 0; i < result.length; i++) result[(i + 1) % 7]];
     }();
+
+    String getTimeText(Duration time) =>
+        durationFormat == DurationFormat.decimal
+            ? time.asDecimal(locale.languageCode)
+            : time.asHHMM;
 
     return Container(
       decoration: BoxDecoration(
@@ -137,7 +148,7 @@ class WeekSummaryPanel extends StatelessWidget {
                                   child: Text(
                                     key: keyTileDuration,
                                     time != null && time != Duration.zero
-                                        ? time.asHHMM
+                                        ? getTimeText(time)
                                         : '',
                                     style: secondaryTextStyle,
                                   ),

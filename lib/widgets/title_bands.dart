@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:simple_task_mate/extensions/context.dart';
 import 'package:simple_task_mate/extensions/duration.dart';
+import 'package:simple_task_mate/models/config_model.dart';
 import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
 import 'package:simple_task_mate/utils/time_summary_utils.dart';
@@ -72,6 +74,15 @@ class WorkTimeSummaryBand extends StatelessWidget {
     final workTime = getWorkTime(stamps);
     final pauseTime = getPauseTime(stamps);
 
+    final configModel = context.watch<ConfigModel>();
+    final locale = configModel.getValue<Locale>(settingLanguage);
+
+    String getTimeText(Duration time) =>
+        configModel.getValue(settingTimeTrackingFormat) ==
+                DurationFormat.decimal
+            ? time.asDecimal(locale.languageCode)
+            : time.asHHMM;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
@@ -94,7 +105,7 @@ class WorkTimeSummaryBand extends StatelessWidget {
                     ),
                     Text(
                       key: keyWorkingTime,
-                      workTime.asHHMM,
+                      getTimeText(workTime),
                       style: secondaryTextStyle,
                     ),
                   ],
@@ -108,7 +119,7 @@ class WorkTimeSummaryBand extends StatelessWidget {
                     Text(context.texts.labelPauseTime, style: primaryTextStyle),
                     Text(
                       key: keyPauseTime,
-                      pauseTime.asHHMM,
+                      getTimeText(pauseTime),
                       style: secondaryTextStyle,
                     ),
                   ],
@@ -125,7 +136,7 @@ class WorkTimeSummaryBand extends StatelessWidget {
                     ),
                     Text(
                       key: keyPresentnessTime,
-                      presentnessTime.asHHMM,
+                      getTimeText(presentnessTime),
                       style: secondaryTextStyle,
                     ),
                   ],
@@ -168,6 +179,15 @@ class BookedTimeSummaryBand extends StatelessWidget {
           (previousValue, element) => previousValue + element.time(),
         );
 
+    final configModel = context.watch<ConfigModel>();
+    final locale = configModel.getValue<Locale>(settingLanguage);
+
+    String getTimeText(Duration time) =>
+        configModel.getValue(settingTimeTrackingFormat) ==
+                DurationFormat.decimal
+            ? time.asDecimal(locale.languageCode)
+            : time.asHHMM;
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
@@ -190,7 +210,7 @@ class BookedTimeSummaryBand extends StatelessWidget {
                     ),
                     Text(
                       key: keyWorkingTime,
-                      workTime.asHHMM,
+                      getTimeText(workTime),
                       style: secondaryTextStyle,
                     ),
                   ],
@@ -207,7 +227,7 @@ class BookedTimeSummaryBand extends StatelessWidget {
                     ),
                     Text(
                       key: keyBookedTime,
-                      bookedTime.asHHMM,
+                      getTimeText(bookedTime),
                       style: secondaryTextStyle,
                     ),
                   ],
@@ -224,7 +244,7 @@ class BookedTimeSummaryBand extends StatelessWidget {
                     ),
                     Text(
                       key: keyLeftTime,
-                      (workTime - bookedTime).asHHMM,
+                      getTimeText((workTime - bookedTime)),
                       style: secondaryTextStyle,
                     ),
                   ],

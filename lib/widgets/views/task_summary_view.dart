@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_task_mate/models/config_model.dart';
 import 'package:simple_task_mate/models/task_summary_model.dart';
 import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/dialog_utils.dart';
@@ -162,6 +163,11 @@ class TaskSummaryViewState extends State<TaskSummaryView> {
       showDialog(context: context, builder: (context) => dialogContent);
     }
 
+    final config = context.watch<ConfigModel>();
+    final locale = config.getValue<Locale>(settingLanguage);
+    final durationFormat =
+        config.getValue<DurationFormat>(settingTimeTrackingFormat);
+
     return Scaffold(
       body: Row(
         children: [
@@ -213,6 +219,8 @@ class TaskSummaryViewState extends State<TaskSummaryView> {
                       hideHeader: true,
                       searchText: _searchText,
                       isExtendedSearchEnabled: _extendedSearch,
+                      locale: locale,
+                      durationFormat: durationFormat,
                       onAddItem: () => openEntryDialog(),
                       onTapItem: (summary, _) =>
                           value.loadFilledTask(summary.item.taskId),

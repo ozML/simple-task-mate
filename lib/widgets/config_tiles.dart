@@ -75,6 +75,8 @@ class ConfigEntryTile<T extends Object> extends StatelessWidget {
             settingAutoLinks => context.texts.labelSettingAutoLinks,
             settingAutoLinkGroups => context.texts.labelSettingAutoLinkGoups,
             settingClockTimeFormat => context.texts.labelSettingClockTimeFormat,
+            settingTimeTrackingFormat =>
+              context.texts.labelSettingTimeTrackingFormat,
             _ => ''
           };
 

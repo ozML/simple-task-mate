@@ -190,6 +190,32 @@ class ConfigViewState extends State<ConfigView> {
                           return items ?? [];
                         },
                       ),
+                      DropdownConfigTile<DurationFormat, DurationFormat>(
+                        configKey: settingTimeTrackingFormat,
+                        itemsBuilder: (state) {
+                          final options = ConfigModel.getDef(state.configKey)
+                              .optionValues()
+                              ?.whereType<ConfigEntryOption<DurationFormat>>();
+
+                          final items = options?.map(
+                            (e) {
+                              final label = switch (e.value) {
+                                DurationFormat.standard =>
+                                  context.texts.labelTimeTrackingStandard,
+                                DurationFormat.decimal =>
+                                  context.texts.labelTimeTrackingDecimal,
+                              };
+
+                              return DropdownMenuItem(
+                                value: e.value,
+                                child: Text(label),
+                              );
+                            },
+                          ).toList();
+
+                          return items ?? [];
+                        },
+                      ),
                       BinaryStateConfigTile(configKey: settingInvertStampList),
                       BinaryStateConfigTile(configKey: settingAutoLinks),
                       if (configModel.getValue(settingAutoLinks))

@@ -17,6 +17,7 @@ class TaskEntryViewer extends StatelessWidget {
     this.subTitle,
     this.hideHeader = false,
     this.locale = const Locale('en'),
+    this.durationFormat = DurationFormat.standard,
     this.showDate = false,
     this.showSelectOption = false,
     this.onAddItem,
@@ -44,6 +45,7 @@ class TaskEntryViewer extends StatelessWidget {
   final List<TaskEntry> taskEntries;
   final bool hideHeader;
   final Locale locale;
+  final DurationFormat durationFormat;
   final bool showDate;
   final bool showSelectOption;
   final void Function()? onAddItem;
@@ -83,6 +85,8 @@ class TaskEntryViewer extends StatelessWidget {
       taskEntries: taskEntries,
       hideHeader: hideHeader,
       locale: config.getValue<Locale>(settingLanguage),
+      durationFormat:
+          config.getValue<DurationFormat>(settingTimeTrackingFormat),
       showDate: showDate,
       showSelectOption: showSelectOption,
       onAddItem: onAddItem,
@@ -110,6 +114,11 @@ class TaskEntryViewer extends StatelessWidget {
     final onInspectItem = this.onInspectItem;
 
     final languageCode = locale.languageCode;
+
+    String getTimeText(Duration time) =>
+        durationFormat == DurationFormat.decimal
+            ? time.asDecimal(locale.languageCode)
+            : time.asHHMM;
 
     final duration = taskEntries.fold<Duration>(
       Duration.zero,
@@ -204,7 +213,7 @@ class TaskEntryViewer extends StatelessWidget {
           footNote:
               '${showDate ? '${CustomDateFormats.yMMdd(item.date, languageCode)} | ' : ''}'
               '${showDate ? '${languageCode == 'de' ? 'KW' : 'CW'} ${getWeekNumber(item.date)} | ' : ''}'
-              '${context.texts.labelDuration(item.time().asHHMM)}',
+              '${context.texts.labelDuration(getTimeText(item.time()))}',
           onTap: onTap,
           actions: [
             LocalItemAction(
@@ -264,7 +273,7 @@ class TaskEntryViewer extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           children: [
             Text(
-              context.texts.labelDuration(duration.asHHMM),
+              context.texts.labelDuration(getTimeText(duration)),
               style: secondaryTextStyleFrom(context, bold: true),
             ),
           ],

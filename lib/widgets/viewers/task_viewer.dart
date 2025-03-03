@@ -21,6 +21,8 @@ class TaskViewer extends StatelessWidget {
     this.hideCopyButton = false,
     this.hideDurations = false,
     this.autoLinkGroups,
+    this.locale = const Locale('en'),
+    this.durationFormat = DurationFormat.standard,
     this.onAddItem,
     this.onCopy,
     this.onCopyAll,
@@ -46,6 +48,8 @@ class TaskViewer extends StatelessWidget {
   final bool hideCopyButton;
   final bool hideDurations;
   final List<Tuple<String, String>>? autoLinkGroups;
+  final Locale locale;
+  final DurationFormat durationFormat;
   final void Function()? onAddItem;
   final void Function()? onCopy;
   final void Function()? onCopyAll;
@@ -74,6 +78,9 @@ class TaskViewer extends StatelessWidget {
   }) {
     final config = context.watch<ConfigModel>();
     final autoLinksEnabled = config.getValue<bool>(settingAutoLinks);
+    final locale = config.getValue<Locale>(settingLanguage);
+    final durationFormat =
+        config.getValue<DurationFormat>(settingTimeTrackingFormat);
 
     final tasks = context.watch<TaskModel>().tasks;
 
@@ -87,6 +94,8 @@ class TaskViewer extends StatelessWidget {
       autoLinkGroups: autoLinksEnabled
           ? config.getValue<List<Tuple<String, String>>>(settingAutoLinkGroups)
           : null,
+      locale: locale,
+      durationFormat: durationFormat,
       onAddItem: onAddItem,
       onCopy: onCopy,
       onCopyAll: onCopyAll,
@@ -108,6 +117,11 @@ class TaskViewer extends StatelessWidget {
     final onInspectItem = this.onInspectItem;
 
     final autoLinkGroups = this.autoLinkGroups;
+
+    String getTimeText(Duration time) =>
+        durationFormat == DurationFormat.decimal
+            ? time.asDecimal(locale.languageCode)
+            : time.asHHMM;
 
     return ItemListViewer<Task>(
       items: tasks,
@@ -168,7 +182,7 @@ class TaskViewer extends StatelessWidget {
           subTitle: item.name,
           footNote: hideDurations
               ? null
-              : context.texts.labelDuration(item.time().asHHMM),
+              : context.texts.labelDuration(getTimeText(item.time())),
           infoIcon: item.info != null
               ? Tooltip(
                   key: keyItemInfoIcon,

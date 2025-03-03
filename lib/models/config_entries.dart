@@ -44,6 +44,11 @@ enum ClockTimeFormat {
   twentyFourHours,
 }
 
+enum DurationFormat {
+  standard,
+  decimal,
+}
+
 final _entries = <ConfigEntry>[
   ConfigEntry<String>(
     key: settingDbFilePath,
@@ -118,6 +123,19 @@ final _entries = <ConfigEntry>[
     toText: (value) => switch (value) {
       ClockTimeFormat.twelveHours => '12',
       ClockTimeFormat.twentyFourHours => '24',
+    },
+  ),
+  ConfigEntry<DurationFormat>(
+    key: settingTimeTrackingFormat,
+    defaultText: 'standard',
+    options: ['standard', 'decimal'],
+    fromText: (text) => switch (text) {
+      'decimal' => DurationFormat.decimal,
+      _ => DurationFormat.standard,
+    },
+    toText: (value) => switch (value) {
+      DurationFormat.standard => 'standard',
+      DurationFormat.decimal => 'decimal',
     },
   ),
 ];

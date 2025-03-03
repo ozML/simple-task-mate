@@ -78,6 +78,8 @@
 	"labelViewTask" : "Task",
 	"label24Hours" : "24 hours",
 	"label12Hours" : "12 hours",
+	"labelTimeTrackingStandard": "Standard",
+	"labelTimeTrackingDecimal": "Decimal",
 	"labelPattern" : "Pattern",
 	"labelLink" : "Link",
 	"labelSettingDatabasePath" : "Database path",
@@ -88,6 +90,7 @@
 	"labelSettingAutoLinks" : "Automatic links",
 	"labelSettingAutoLinkGoups" : "Automatic link groups",
 	"labelSettingClockTimeFormat" : "Clock time format",
+	"labelSettingTimeTrackingFormat" : "Time tracking format",
 	"dialogTitleStampDelete": "Delete stamp",
 	"dialogInfoStampDelete" : "Stamp \"{type}\" at {time} will be deleted",
 	"@dialogInfoStampDelete" : {

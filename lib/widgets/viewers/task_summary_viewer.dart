@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:simple_task_mate/extensions/context.dart';
 import 'package:simple_task_mate/extensions/duration.dart';
+import 'package:simple_task_mate/models/config_model.dart';
 import 'package:simple_task_mate/services/api.dart';
 import 'package:simple_task_mate/utils/icon_utils.dart';
 import 'package:simple_task_mate/utils/theme_utils.dart';
@@ -13,6 +14,8 @@ class TaskSummaryViewer extends StatelessWidget {
     this.hideHeader = false,
     this.searchText,
     this.isExtendedSearchEnabled = false,
+    this.locale = const Locale('en'),
+    this.durationFormat = DurationFormat.standard,
     this.onAddItem,
     this.onTapItem,
     this.onDeleteItem,
@@ -32,6 +35,8 @@ class TaskSummaryViewer extends StatelessWidget {
   final bool hideHeader;
   final String? searchText;
   final bool isExtendedSearchEnabled;
+  final Locale locale;
+  final DurationFormat durationFormat;
   final void Function()? onAddItem;
   final void Function(ItemRef<TaskSummary> ref, TapInfo info)? onTapItem;
   final void Function(ItemRef<TaskSummary> ref)? onDeleteItem;
@@ -44,6 +49,11 @@ class TaskSummaryViewer extends StatelessWidget {
     final onAddItem = this.onAddItem;
     final onDeleteItem = this.onDeleteItem;
     final onEditItem = this.onEditItem;
+
+    String getTimeText(Duration time) =>
+        durationFormat == DurationFormat.decimal
+            ? time.asDecimal(locale.languageCode)
+            : time.asHHMM;
 
     return ItemListViewer<TaskSummary>(
       items: summaries,
@@ -99,7 +109,7 @@ class TaskSummaryViewer extends StatelessWidget {
           ref: ref,
           title: item.refId,
           subTitle: item.name,
-          footNote: context.texts.labelDuration(item.time.asHHMM),
+          footNote: context.texts.labelDuration(getTimeText(item.time)),
           onTap: onTap,
           actions: [
             LocalItemAction(
