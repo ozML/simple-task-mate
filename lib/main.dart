@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:provider/provider.dart';
+import 'package:simple_task_mate/l10n/generated/app_localizations.dart';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 import 'package:simple_task_mate/database/data_base_migration_helper.dart';
 import 'package:simple_task_mate/models/config_model.dart';
@@ -11,7 +12,6 @@ import 'package:simple_task_mate/models/task_model.dart';
 import 'package:simple_task_mate/models/task_summary_model.dart';
 import 'package:simple_task_mate/widgets/views/stamp_view.dart';
 import 'package:simple_task_mate/widgets/views/task_view.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 Future<void> main() async {
   sqfliteFfiInit();
